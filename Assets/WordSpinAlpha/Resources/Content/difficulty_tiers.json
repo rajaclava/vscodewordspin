@@ -1,0 +1,59 @@
+﻿{
+    "tiers":  [
+                  {
+                      "difficultyTierId":  "intro_perfect",
+                      "displayName":  "Intro Perfect",
+                      "perfectWindowScale":  1.42,
+                      "goodWindowScale":  1.22,
+                      "nearMissScale":  1.08,
+                      "rotationSpeedScale":  0.96,
+                      "armedAssistScale":  1.2,
+                      "perfectChainAssistScale":  1.28,
+                      "waitCapScale":  0.86
+                  },
+                  {
+                      "difficultyTierId":  "early_flow",
+                      "displayName":  "Early Flow",
+                      "perfectWindowScale":  1.24,
+                      "goodWindowScale":  1.14,
+                      "nearMissScale":  1.06,
+                      "rotationSpeedScale":  1.0,
+                      "armedAssistScale":  1.12,
+                      "perfectChainAssistScale":  1.18,
+                      "waitCapScale":  0.92
+                  },
+                  {
+                      "difficultyTierId":  "mid_pressure",
+                      "displayName":  "Mid Pressure",
+                      "perfectWindowScale":  1.06,
+                      "goodWindowScale":  1.12,
+                      "nearMissScale":  1.08,
+                      "rotationSpeedScale":  1.04,
+                      "armedAssistScale":  1.0,
+                      "perfectChainAssistScale":  1.04,
+                      "waitCapScale":  1.0
+                  },
+                  {
+                      "difficultyTierId":  "late_variation",
+                      "displayName":  "Late Variation",
+                      "perfectWindowScale":  0.94,
+                      "goodWindowScale":  1.08,
+                      "nearMissScale":  1.05,
+                      "rotationSpeedScale":  1.08,
+                      "armedAssistScale":  0.94,
+                      "perfectChainAssistScale":  0.96,
+                      "waitCapScale":  1.06
+                  },
+                  {
+                      "difficultyTierId":  "expert_drive",
+                      "displayName":  "Expert Drive",
+                      "perfectWindowScale":  0.82,
+                      "goodWindowScale":  0.9,
+                      "nearMissScale":  0.95,
+                      "rotationSpeedScale":  1.12,
+                      "armedAssistScale":  0.88,
+                      "perfectChainAssistScale":  0.9,
+                      "waitCapScale":  1.12
+                  }
+              ]
+}

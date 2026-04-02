@@ -1,0 +1,25 @@
+{
+  "themes": [
+    {
+      "themeId": "myth_hades",
+      "softCurrencyPrice": 1200,
+      "iapProductId": "theme.myth_hades"
+    }
+  ],
+  "energyPacks": [
+    {
+      "productId": "energy_pack_small",
+      "energyAmount": 3,
+      "gemPrice": 250
+    }
+  ],
+  "hintPacks": [
+    {
+      "productId": "hint_pack_small",
+      "hintAmount": 3,
+      "gemPrice": 200
+    }
+  ],
+  "noAdsProductId": "supporter.no_ads",
+  "premiumMembershipProductId": "membership.premium"
+}

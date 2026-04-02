@@ -1,0 +1,64 @@
+﻿{
+    "profiles":  [
+                     {
+                         "difficultyProfileId":  "hook",
+                         "displayName":  "Hook",
+                         "rotationSpeedMultiplier":  1.0,
+                         "perfectAngle":  8.0,
+                         "toleranceAngle":  18.0,
+                         "obstacleBudget":  0,
+                         "maxQuestionLength":  6,
+                         "enableRandomSlots":  false,
+                         "dopamineSpike":  false,
+                         "breathLevel":  false
+                     },
+                     {
+                         "difficultyProfileId":  "rhythm",
+                         "displayName":  "Rhythm",
+                         "rotationSpeedMultiplier":  1.08,
+                         "perfectAngle":  7.0,
+                         "toleranceAngle":  16.0,
+                         "obstacleBudget":  1,
+                         "maxQuestionLength":  8,
+                         "enableRandomSlots":  false,
+                         "dopamineSpike":  false,
+                         "breathLevel":  false
+                     },
+                     {
+                         "difficultyProfileId":  "variation",
+                         "displayName":  "Variation",
+                         "rotationSpeedMultiplier":  1.16,
+                         "perfectAngle":  6.0,
+                         "toleranceAngle":  15.0,
+                         "obstacleBudget":  2,
+                         "maxQuestionLength":  8,
+                         "enableRandomSlots":  false,
+                         "dopamineSpike":  false,
+                         "breathLevel":  false
+                     },
+                     {
+                         "difficultyProfileId":  "pressure",
+                         "displayName":  "Pressure",
+                         "rotationSpeedMultiplier":  1.24,
+                         "perfectAngle":  5.5,
+                         "toleranceAngle":  14.0,
+                         "obstacleBudget":  3,
+                         "maxQuestionLength":  8,
+                         "enableRandomSlots":  false,
+                         "dopamineSpike":  false,
+                         "breathLevel":  false
+                     },
+                     {
+                         "difficultyProfileId":  "showcase",
+                         "displayName":  "Showcase",
+                         "rotationSpeedMultiplier":  1.32,
+                         "perfectAngle":  5.0,
+                         "toleranceAngle":  13.0,
+                         "obstacleBudget":  4,
+                         "maxQuestionLength":  8,
+                         "enableRandomSlots":  false,
+                         "dopamineSpike":  true,
+                         "breathLevel":  false
+                     }
+                 ]
+}

@@ -1,0 +1,64 @@
+{
+  "profiles": [
+    {
+      "rhythmProfileId": "hook",
+      "displayName": "Hook",
+      "baseRotationSpeed": 42.0,
+      "speedVariance": 0.05,
+      "directionPattern": "steady_clockwise",
+      "targetWindowLeadTime": 0.18,
+      "postHitRetargetDelay": 0.08,
+      "easyFlowAssist": 0.95,
+      "musicSyncStrength": 0.35,
+      "lightPulseStrength": 0.45
+    },
+    {
+      "rhythmProfileId": "rhythm",
+      "displayName": "Rhythm",
+      "baseRotationSpeed": 48.0,
+      "speedVariance": 0.08,
+      "directionPattern": "steady_clockwise",
+      "targetWindowLeadTime": 0.16,
+      "postHitRetargetDelay": 0.09,
+      "easyFlowAssist": 0.8,
+      "musicSyncStrength": 0.45,
+      "lightPulseStrength": 0.55
+    },
+    {
+      "rhythmProfileId": "variation",
+      "displayName": "Variation",
+      "baseRotationSpeed": 54.0,
+      "speedVariance": 0.12,
+      "directionPattern": "swing",
+      "targetWindowLeadTime": 0.14,
+      "postHitRetargetDelay": 0.1,
+      "easyFlowAssist": 0.62,
+      "musicSyncStrength": 0.55,
+      "lightPulseStrength": 0.68
+    },
+    {
+      "rhythmProfileId": "pressure",
+      "displayName": "Pressure",
+      "baseRotationSpeed": 60.0,
+      "speedVariance": 0.16,
+      "directionPattern": "pressure_shift",
+      "targetWindowLeadTime": 0.12,
+      "postHitRetargetDelay": 0.11,
+      "easyFlowAssist": 0.48,
+      "musicSyncStrength": 0.62,
+      "lightPulseStrength": 0.75
+    },
+    {
+      "rhythmProfileId": "showcase",
+      "displayName": "Showcase",
+      "baseRotationSpeed": 66.0,
+      "speedVariance": 0.2,
+      "directionPattern": "showcase_pulse",
+      "targetWindowLeadTime": 0.1,
+      "postHitRetargetDelay": 0.12,
+      "easyFlowAssist": 0.4,
+      "musicSyncStrength": 0.8,
+      "lightPulseStrength": 0.9
+    }
+  ]
+}

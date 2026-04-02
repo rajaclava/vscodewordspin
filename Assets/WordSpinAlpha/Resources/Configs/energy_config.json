@@ -1,0 +1,7 @@
+{
+  "maxEnergy": 5,
+  "refillMinutes": 30,
+  "bypassForPremiumMembership": true,
+  "startingHints": 3,
+  "startingSoftCurrency": 1500
+}

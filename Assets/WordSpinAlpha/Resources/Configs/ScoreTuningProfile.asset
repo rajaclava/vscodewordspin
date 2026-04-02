@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c1f9e87c6c64a3e9fb88e34e0ef01a1, type: 3}
+  m_Name: ScoreTuningProfile
+  m_EditorClassIdentifier: 
+  perfectBasePoints: 100
+  goodBasePoints: 65
+  goodUsesCurrentMultiplier: 1
+  goodResetsPerfectChain: 1
+  perfectMultiplierTiers:
+  - requiredPerfectStreak: 1
+    multiplier: 1
+  - requiredPerfectStreak: 2
+    multiplier: 1.5
+  - requiredPerfectStreak: 3
+    multiplier: 2
+  - requiredPerfectStreak: 5
+    multiplier: 3
+  reactionBonusWindows:
+  - maxSeconds: 0.75
+    bonusPoints: 40
+  - maxSeconds: 1.4
+    bonusPoints: 20
+  levelClearBonus: 300
+  noMistakeBonus: 200
+  allPerfectBonus: 400
+  clearTimeBonusWindows:
+  - maxSeconds: 10
+    bonusPoints: 320
+  - maxSeconds: 16
+    bonusPoints: 180
+  - maxSeconds: 24
+    bonusPoints: 100
+  defaultTimedModeLimitSeconds: 0
+  remainingTimeBonusPerSecond: 25

@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 883d86f754c68ad4ea958a12c7093ff7, type: 3}
+  m_Name: KeyboardLayoutTuningProfile
+  m_EditorClassIdentifier: Assembly-CSharp::WordSpinAlpha.Presentation.KeyboardLayoutTuningProfile
+  languages:
+  - languageCode: tr
+    bottomBarAnchoredPosition: {x: 0, y: -18}
+    bottomBarSize: {x: 1080, y: 362}
+    keyboardSkinFrameAnchoredPosition: {x: 0, y: -8}
+    keyboardSkinFrameSize: {x: 1000, y: 320}
+    keyboardGridAnchoredPosition: {x: 0, y: 20}
+    keyboardGridSize: {x: 964, y: 292}
+    keyboardCellSize: {x: 72, y: 82}
+    keyboardSpacing: {x: 2, y: 6}
+    menuButtonAnchors: {x: 0.16, y: 1}
+    storeButtonAnchors: {x: 0.84, y: 1}
+    navButtonSize: {x: 156, y: 52}
+    navButtonTopOffset: 34
+    swipeHintAnchors: {x: 0.5, y: 1.24}
+    horizontalPadding: 34
+    topPadding: 8
+    bottomPadding: 8
+    columnSpacing: 1
+    rowSpacing: 3
+    maxButtonWidth: 100
+    maxButtonHeight: 100
+    minButtonWidth: 60
+    minButtonHeight: 42
+    buttonAspectRatio: 0.88
+    minLabelFontSize: 18
+    maxLabelFontSize: 26
+  - languageCode: en
+    bottomBarAnchoredPosition: {x: 0, y: -18}
+    bottomBarSize: {x: 1080, y: 362}
+    keyboardSkinFrameAnchoredPosition: {x: 0, y: -8}
+    keyboardSkinFrameSize: {x: 1000, y: 320}
+    keyboardGridAnchoredPosition: {x: 0, y: 20}
+    keyboardGridSize: {x: 964, y: 292}
+    keyboardCellSize: {x: 72, y: 82}
+    keyboardSpacing: {x: 2, y: 6}
+    menuButtonAnchors: {x: 0.16, y: 1}
+    storeButtonAnchors: {x: 0.84, y: 1}
+    navButtonSize: {x: 156, y: 52}
+    navButtonTopOffset: 34
+    swipeHintAnchors: {x: 0.5, y: 1.24}
+    horizontalPadding: 34
+    topPadding: 8
+    bottomPadding: 8
+    columnSpacing: 1
+    rowSpacing: 3
+    maxButtonWidth: 100
+    maxButtonHeight: 100
+    minButtonWidth: 60
+    minButtonHeight: 42
+    buttonAspectRatio: 0.88
+    minLabelFontSize: 18
+    maxLabelFontSize: 26
+  - languageCode: es
+    bottomBarAnchoredPosition: {x: 0, y: -18}
+    bottomBarSize: {x: 1080, y: 362}
+    keyboardSkinFrameAnchoredPosition: {x: 0, y: -8}
+    keyboardSkinFrameSize: {x: 1000, y: 320}
+    keyboardGridAnchoredPosition: {x: 0, y: 20}
+    keyboardGridSize: {x: 964, y: 292}
+    keyboardCellSize: {x: 72, y: 82}
+    keyboardSpacing: {x: 2, y: 6}
+    menuButtonAnchors: {x: 0.16, y: 1}
+    storeButtonAnchors: {x: 0.84, y: 1}
+    navButtonSize: {x: 156, y: 52}
+    navButtonTopOffset: 34
+    swipeHintAnchors: {x: 0.5, y: 1.24}
+    horizontalPadding: 34
+    topPadding: 8
+    bottomPadding: 8
+    columnSpacing: 1
+    rowSpacing: 3
+    maxButtonWidth: 100
+    maxButtonHeight: 100
+    minButtonWidth: 60
+    minButtonHeight: 42
+    buttonAspectRatio: 0.88
+    minLabelFontSize: 18
+    maxLabelFontSize: 26
+  - languageCode: de
+    bottomBarAnchoredPosition: {x: 0, y: -18}
+    bottomBarSize: {x: 1080, y: 362}
+    keyboardSkinFrameAnchoredPosition: {x: 0, y: -8}
+    keyboardSkinFrameSize: {x: 1000, y: 320}
+    keyboardGridAnchoredPosition: {x: 0, y: 20}
+    keyboardGridSize: {x: 964, y: 292}
+    keyboardCellSize: {x: 72, y: 82}
+    keyboardSpacing: {x: 2, y: 6}
+    menuButtonAnchors: {x: 0.16, y: 1}
+    storeButtonAnchors: {x: 0.84, y: 1}
+    navButtonSize: {x: 156, y: 52}
+    navButtonTopOffset: 34
+    swipeHintAnchors: {x: 0.5, y: 1.24}
+    horizontalPadding: 34
+    topPadding: 8
+    bottomPadding: 8
+    columnSpacing: 1
+    rowSpacing: 3
+    maxButtonWidth: 100
+    maxButtonHeight: 100
+    minButtonWidth: 60
+    minButtonHeight: 42
+    buttonAspectRatio: 0.88
+    minLabelFontSize: 18
+    maxLabelFontSize: 26

@@ -1,0 +1,229 @@
+{
+  "questions": [
+    {
+      "questionId": "q001",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "de": "Welche Farbe hat der Himmel?" },
+      "answer": { "de": "BLAU" },
+      "infoCardId": "c001"
+    },
+    {
+      "questionId": "q005",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "de": "Welches Tier bellt?" },
+      "answer": { "de": "HUND" },
+      "infoCardId": "c005"
+    },
+    {
+      "questionId": "q002",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "de": "Was trinken wir jeden Tag?" },
+      "answer": { "de": "WASSER" },
+      "infoCardId": "c002"
+    },
+    {
+      "questionId": "q010",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "de": "Was machen Bienen?" },
+      "answer": { "de": "HONIG" },
+      "infoCardId": "c010"
+    },
+    {
+      "questionId": "q004",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "de": "Womit schreibt man?" },
+      "answer": { "de": "STIFT" },
+      "infoCardId": "c004"
+    },
+    {
+      "questionId": "q003",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "de": "Auf welchem Planeten leben wir?" },
+      "answer": { "de": "ERDE" },
+      "infoCardId": "c003"
+    },
+    {
+      "questionId": "q009",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "de": "Was ist gefrorenes Wasser?" },
+      "answer": { "de": "EIS" },
+      "infoCardId": "c009"
+    },
+    {
+      "questionId": "q007",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "de": "Wie viel ist zwei plus zwei?" },
+      "answer": { "de": "VIER" },
+      "infoCardId": "c007"
+    },
+    {
+      "questionId": "q006",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "de": "Welcher Stern scheint am Tag?" },
+      "answer": { "de": "SONNE" },
+      "infoCardId": "c006"
+    },
+    {
+      "questionId": "q017",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "de": "Was ist das Gegenteil von kalt?" },
+      "answer": { "de": "HEISS" },
+      "infoCardId": "c017"
+    },
+    {
+      "questionId": "q014",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "de": "Welches ist das groesste Meer?" },
+      "answer": { "de": "PAZIFIK" },
+      "infoCardId": "c014"
+    },
+    {
+      "questionId": "q012",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "de": "Welches Tier ist ein Koenig?" },
+      "answer": { "de": "LOEWE" },
+      "infoCardId": "c012"
+    },
+    {
+      "questionId": "q011",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "de": "Womit telefoniert man?" },
+      "answer": { "de": "HANDY" },
+      "infoCardId": "c011"
+    },
+    {
+      "questionId": "q019",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "de": "Welches Gas atmen wir?" },
+      "answer": { "de": "OXYGEN" },
+      "infoCardId": "c019"
+    },
+    {
+      "questionId": "q008",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "de": "Welche Form hat drei Seiten?" },
+      "answer": { "de": "DREIECK" },
+      "infoCardId": "c008"
+    },
+    {
+      "questionId": "q018",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "de": "Welcher Planet ist rot?" },
+      "answer": { "de": "MARS" },
+      "infoCardId": "c018"
+    },
+    {
+      "questionId": "q015",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "de": "Wer malte die Mona Lisa?" },
+      "answer": { "de": "LEONARDO" },
+      "infoCardId": "c015"
+    },
+    {
+      "questionId": "q013",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "de": "Welche Sportart ist Wimbledon?" },
+      "answer": { "de": "TENNIS" },
+      "infoCardId": "c013"
+    },
+    {
+      "questionId": "q020",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "de": "Welche Firma machte das iPhone?" },
+      "answer": { "de": "APPLE" },
+      "infoCardId": "c020"
+    },
+    {
+      "questionId": "q016",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "de": "Welche Stadt heisst Windstadt?" },
+      "answer": { "de": "CHICAGO" },
+      "infoCardId": "c016"
+    },
+    {
+      "questionId": "q021",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "de": "Welches Wort liest sich vorwaerts gleich?" },
+      "answer": { "de": "RADAR" },
+      "infoCardId": "c021"
+    },
+    {
+      "questionId": "q022",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "de": "Welches Land hat viele Seen?" },
+      "answer": { "de": "KANADA" },
+      "infoCardId": "c022"
+    },
+    {
+      "questionId": "q023",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "de": "Welches Element hat Au?" },
+      "answer": { "de": "GOLD" },
+      "infoCardId": "c023"
+    },
+    {
+      "questionId": "q024",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "de": "Wer erfand Relativitaet?" },
+      "answer": { "de": "EINSTEIN" },
+      "infoCardId": "c024"
+    },
+    {
+      "questionId": "q025",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "de": "Welche Sprache ist nach Kaffee benannt?" },
+      "answer": { "de": "JAVA" },
+      "infoCardId": "c025"
+    }
+  ]
+}

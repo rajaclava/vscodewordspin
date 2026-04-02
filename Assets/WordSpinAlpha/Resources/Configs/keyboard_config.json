@@ -1,0 +1,20 @@
+{
+  "layouts": [
+    {
+      "languageCode": "tr",
+      "keys": ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "\u011E", "\u00DC", "A", "S", "D", "F", "G", "H", "J", "K", "L", "\u015E", "\u0130", "Z", "X", "C", "V", "B", "N", "M", "\u00D6", "\u00C7"]
+    },
+    {
+      "languageCode": "en",
+      "keys": ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"]
+    },
+    {
+      "languageCode": "es",
+      "keys": ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "\u00D1", "Z", "X", "C", "V", "B", "N", "M"]
+    },
+    {
+      "languageCode": "de",
+      "keys": ["Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P", "\u00DC", "A", "S", "D", "F", "G", "H", "J", "K", "L", "\u00D6", "\u00C4", "Y", "X", "C", "V", "B", "N", "M"]
+    }
+  ]
+}

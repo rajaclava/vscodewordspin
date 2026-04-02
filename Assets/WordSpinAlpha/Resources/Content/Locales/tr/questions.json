@@ -1,0 +1,229 @@
+﻿{
+  "questions": [
+    {
+      "questionId": "q001",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "tr": "Türkiye'nin başkenti neresidir?" },
+      "answer": { "tr": "ANKARA" },
+      "infoCardId": "c001"
+    },
+    {
+      "questionId": "q005",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "tr": "Suyun temel adı nedir?" },
+      "answer": { "tr": "SU" },
+      "infoCardId": "c005"
+    },
+    {
+      "questionId": "q002",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "tr": "Türk bayrağında öne çıkan renk hangisidir?" },
+      "answer": { "tr": "KIRMIZI" },
+      "infoCardId": "c002"
+    },
+    {
+      "questionId": "q010",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "tr": "Türk mutfağının simge tatlılarından biri hangisidir?" },
+      "answer": { "tr": "BAKLAVA" },
+      "infoCardId": "c010"
+    },
+    {
+      "questionId": "q004",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "tr": "Güneş sistemindeki en büyük gezegen hangisidir?" },
+      "answer": { "tr": "JUPITER" },
+      "infoCardId": "c004"
+    },
+    {
+      "questionId": "q003",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "tr": "Türkiye'nin en büyük şehri hangisidir?" },
+      "answer": { "tr": "ISTANBUL" },
+      "infoCardId": "c003"
+    },
+    {
+      "questionId": "q009",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "tr": "Dünyanın en uzun nehirlerinden biri hangisidir?" },
+      "answer": { "tr": "NIL" },
+      "infoCardId": "c009"
+    },
+    {
+      "questionId": "q007",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "tr": "Türkiye'nin ilk cumhurbaşkanı kimdir?" },
+      "answer": { "tr": "ATATURK" },
+      "infoCardId": "c007"
+    },
+    {
+      "questionId": "q006",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "tr": "Efes antik kenti hangi ilimizdedir?" },
+      "answer": { "tr": "IZMIR" },
+      "infoCardId": "c006"
+    },
+    {
+      "questionId": "q017",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "tr": "Türkiye'nin en yüksek dağı hangisidir?" },
+      "answer": { "tr": "AGRI" },
+      "infoCardId": "c017"
+    },
+    {
+      "questionId": "q014",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "tr": "Osmanlı İmparatorluğu'nun kurucusu kimdir?" },
+      "answer": { "tr": "OSMAN" },
+      "infoCardId": "c014"
+    },
+    {
+      "questionId": "q012",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "tr": "Türkiye'nin dünyada lider olduğu tarım ürünlerinden biri hangisidir?" },
+      "answer": { "tr": "FINDIK" },
+      "infoCardId": "c012"
+    },
+    {
+      "questionId": "q011",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "tr": "Truva Savaşı ile bilinen antik kent hangisidir?" },
+      "answer": { "tr": "TROYA" },
+      "infoCardId": "c011"
+    },
+    {
+      "questionId": "q019",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "tr": "Türkiye'de ilk demiryolu hattı hangi şehirden başlamıştır?" },
+      "answer": { "tr": "IZMIR" },
+      "infoCardId": "c019"
+    },
+    {
+      "questionId": "q008",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "tr": "Kapadokya hangi ilimizde yer alır?" },
+      "answer": { "tr": "NEVSEHIR" },
+      "infoCardId": "c008"
+    },
+    {
+      "questionId": "q018",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "tr": "DNA'nın çift sarmal yapısını bulan bilim insanlarından biri kimdir?" },
+      "answer": { "tr": "WATSON" },
+      "infoCardId": "c018"
+    },
+    {
+      "questionId": "q015",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "tr": "Asya ile Avrupa'yı ayıran boğaz hangisidir?" },
+      "answer": { "tr": "BOGAZICI" },
+      "infoCardId": "c015"
+    },
+    {
+      "questionId": "q013",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "tr": "Işık hızının yaklaşık kilometre karşılığı nedir?" },
+      "answer": { "tr": "UCYUZBIN" },
+      "infoCardId": "c013"
+    },
+    {
+      "questionId": "q020",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "tr": "Demir çelik kenti olarak bilinen şehir hangisidir?" },
+      "answer": { "tr": "KARABUK" },
+      "infoCardId": "c020"
+    },
+    {
+      "questionId": "q016",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "tr": "Latin harfleri Türkiye'de hangi ayda kabul edildi?" },
+      "answer": { "tr": "KASIM" },
+      "infoCardId": "c016"
+    },
+    {
+      "questionId": "q021",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "tr": "Kanuni lakabıyla bilinen Osmanlı padişahı kimdir?" },
+      "answer": { "tr": "KANUNI" },
+      "infoCardId": "c021"
+    },
+    {
+      "questionId": "q022",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "tr": "Türkiye kıyılarında görülen nadir deniz memelisi nedir?" },
+      "answer": { "tr": "FOK" },
+      "infoCardId": "c022"
+    },
+    {
+      "questionId": "q023",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "tr": "İlk Türkçe roman olarak bilinen eser hangisidir?" },
+      "answer": { "tr": "INTIBAH" },
+      "infoCardId": "c023"
+    },
+    {
+      "questionId": "q024",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "tr": "Göbeklitepe'nin bulunduğu il halk arasında hangi adla anılır?" },
+      "answer": { "tr": "URFA" },
+      "infoCardId": "c024"
+    },
+    {
+      "questionId": "q025",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "tr": "Fetih temalı gişe rekoru kıran Türk filmi hangisidir?" },
+      "answer": { "tr": "FETIH" },
+      "infoCardId": "c025"
+    }
+  ]
+}

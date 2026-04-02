@@ -1,0 +1,229 @@
+{
+  "questions": [
+    {
+      "questionId": "q001",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "en": "What color is the sky on a clear day?" },
+      "answer": { "en": "BLUE" },
+      "infoCardId": "c001"
+    },
+    {
+      "questionId": "q005",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "en": "What fruit is yellow and curved?" },
+      "answer": { "en": "BANANA" },
+      "infoCardId": "c005"
+    },
+    {
+      "questionId": "q002",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "en": "What animal barks?" },
+      "answer": { "en": "DOG" },
+      "infoCardId": "c002"
+    },
+    {
+      "questionId": "q010",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "en": "What do bees produce?" },
+      "answer": { "en": "HONEY" },
+      "infoCardId": "c010"
+    },
+    {
+      "questionId": "q004",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "hook",
+      "text": { "en": "What do you use to write on paper?" },
+      "answer": { "en": "PEN" },
+      "infoCardId": "c004"
+    },
+    {
+      "questionId": "q003",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "en": "What planet do we live on?" },
+      "answer": { "en": "EARTH" },
+      "infoCardId": "c003"
+    },
+    {
+      "questionId": "q009",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "en": "What is frozen water called?" },
+      "answer": { "en": "ICE" },
+      "infoCardId": "c009"
+    },
+    {
+      "questionId": "q007",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "en": "What is two plus two?" },
+      "answer": { "en": "FOUR" },
+      "infoCardId": "c007"
+    },
+    {
+      "questionId": "q006",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "en": "What star lights our planet?" },
+      "answer": { "en": "SUN" },
+      "infoCardId": "c006"
+    },
+    {
+      "questionId": "q017",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "rhythm",
+      "text": { "en": "What do you drink when you are thirsty?" },
+      "answer": { "en": "WATER" },
+      "infoCardId": "c017"
+    },
+    {
+      "questionId": "q014",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "en": "What is the largest ocean?" },
+      "answer": { "en": "PACIFIC" },
+      "infoCardId": "c014"
+    },
+    {
+      "questionId": "q012",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "en": "What animal is known as the king of the jungle?" },
+      "answer": { "en": "LION" },
+      "infoCardId": "c012"
+    },
+    {
+      "questionId": "q011",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "en": "What device do you use to call someone?" },
+      "answer": { "en": "PHONE" },
+      "infoCardId": "c011"
+    },
+    {
+      "questionId": "q019",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "en": "What gas do humans breathe in?" },
+      "answer": { "en": "OXYGEN" },
+      "infoCardId": "c019"
+    },
+    {
+      "questionId": "q008",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "variation",
+      "text": { "en": "What shape has three sides?" },
+      "answer": { "en": "TRIANGLE" },
+      "infoCardId": "c008"
+    },
+    {
+      "questionId": "q018",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "en": "What planet is known as the Red Planet?" },
+      "answer": { "en": "MARS" },
+      "infoCardId": "c018"
+    },
+    {
+      "questionId": "q015",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "en": "Who painted the Mona Lisa?" },
+      "answer": { "en": "LEONARDO" },
+      "infoCardId": "c015"
+    },
+    {
+      "questionId": "q013",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "en": "What sport is played at Wimbledon?" },
+      "answer": { "en": "TENNIS" },
+      "infoCardId": "c013"
+    },
+    {
+      "questionId": "q020",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "en": "What company created the iPhone?" },
+      "answer": { "en": "APPLE" },
+      "infoCardId": "c020"
+    },
+    {
+      "questionId": "q016",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "pressure",
+      "text": { "en": "What city is known as the Windy City?" },
+      "answer": { "en": "CHICAGO" },
+      "infoCardId": "c016"
+    },
+    {
+      "questionId": "q021",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "en": "What word reads the same forward and backward?" },
+      "answer": { "en": "RACECAR" },
+      "infoCardId": "c021"
+    },
+    {
+      "questionId": "q022",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "en": "What country has the most lakes?" },
+      "answer": { "en": "CANADA" },
+      "infoCardId": "c022"
+    },
+    {
+      "questionId": "q023",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "en": "What element has the symbol Au?" },
+      "answer": { "en": "GOLD" },
+      "infoCardId": "c023"
+    },
+    {
+      "questionId": "q024",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "en": "Who developed relativity?" },
+      "answer": { "en": "EINSTEIN" },
+      "infoCardId": "c024"
+    },
+    {
+      "questionId": "q025",
+      "packId": "alpha25_pack",
+      "themeId": "base_default",
+      "difficultyTier": "showcase",
+      "text": { "en": "What programming language is named after coffee?" },
+      "answer": { "en": "JAVA" },
+      "infoCardId": "c025"
+    }
+  ]
+}

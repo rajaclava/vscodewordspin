@@ -1,0 +1,504 @@
+﻿{
+    "levels":  [
+                   {
+                       "levelId":  1,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "hook",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "hook",
+                       "shape":  "circle",
+                       "shapeLayoutId":  "circle_classic",
+                       "rotationSpeed":  40.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  false,
+                       "questionIds":  [
+                                           "q001"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  2,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "hook",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "hook",
+                       "shape":  "oval",
+                       "shapeLayoutId":  "oval_flow",
+                       "rotationSpeed":  42.0,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  false,
+                       "questionIds":  [
+                                           "q002"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  3,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "hook",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "hook",
+                       "shape":  "shield",
+                       "shapeLayoutId":  "shield_guard",
+                       "rotationSpeed":  44.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  false,
+                       "questionIds":  [
+                                           "q003"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  4,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "hook",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "hook",
+                       "shape":  "diamond",
+                       "shapeLayoutId":  "diamond_drive",
+                       "rotationSpeed":  46.0,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  false,
+                       "questionIds":  [
+                                           "q004"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  5,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "hook",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "hook",
+                       "shape":  "square",
+                       "shapeLayoutId":  "square_lock",
+                       "rotationSpeed":  48.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  false,
+                       "questionIds":  [
+                                           "q005"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  6,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "rhythm",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "rhythm",
+                       "shape":  "hex",
+                       "shapeLayoutId":  "hex_bloom",
+                       "rotationSpeed":  58.79999923706055,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q006"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  7,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "rhythm",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "rhythm",
+                       "shape":  "crown",
+                       "shapeLayoutId":  "crown_arc",
+                       "rotationSpeed":  60.599998474121097,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q007"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  8,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "rhythm",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "rhythm",
+                       "shape":  "circle",
+                       "shapeLayoutId":  "circle_classic",
+                       "rotationSpeed":  62.400001525878909,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q008"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  9,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "rhythm",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "rhythm",
+                       "shape":  "oval",
+                       "shapeLayoutId":  "oval_flow",
+                       "rotationSpeed":  64.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q009"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  10,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "rhythm",
+                       "difficultyTierId":  "intro_perfect",
+                       "rhythmProfileId":  "rhythm",
+                       "shape":  "shield",
+                       "shapeLayoutId":  "shield_guard",
+                       "rotationSpeed":  64.0,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q010"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  11,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "variation",
+                       "difficultyTierId":  "early_flow",
+                       "rhythmProfileId":  "variation",
+                       "shape":  "diamond",
+                       "shapeLayoutId":  "diamond_drive",
+                       "rotationSpeed":  76.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q011"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  12,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "variation",
+                       "difficultyTierId":  "early_flow",
+                       "rhythmProfileId":  "variation",
+                       "shape":  "square",
+                       "shapeLayoutId":  "square_lock",
+                       "rotationSpeed":  76.0,
+                       "clockwise":  false,
+                       "randomSlots":  true,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q012"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  13,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "variation",
+                       "difficultyTierId":  "early_flow",
+                       "rhythmProfileId":  "variation",
+                       "shape":  "hex",
+                       "shapeLayoutId":  "hex_bloom",
+                       "rotationSpeed":  76.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q013"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  14,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "variation",
+                       "difficultyTierId":  "early_flow",
+                       "rhythmProfileId":  "variation",
+                       "shape":  "crown",
+                       "shapeLayoutId":  "crown_arc",
+                       "rotationSpeed":  76.0,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q014"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  15,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "variation",
+                       "difficultyTierId":  "early_flow",
+                       "rhythmProfileId":  "variation",
+                       "shape":  "circle",
+                       "shapeLayoutId":  "circle_classic",
+                       "rotationSpeed":  76.0,
+                       "clockwise":  true,
+                       "randomSlots":  true,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q015"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  16,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "pressure",
+                       "difficultyTierId":  "mid_pressure",
+                       "rhythmProfileId":  "pressure",
+                       "shape":  "square",
+                       "shapeLayoutId":  "square_lock",
+                       "rotationSpeed":  88.0,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q016"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  17,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "pressure",
+                       "difficultyTierId":  "mid_pressure",
+                       "rhythmProfileId":  "pressure",
+                       "shape":  "diamond",
+                       "shapeLayoutId":  "diamond_drive",
+                       "rotationSpeed":  88.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q017"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  18,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "pressure",
+                       "difficultyTierId":  "mid_pressure",
+                       "rhythmProfileId":  "pressure",
+                       "shape":  "shield",
+                       "shapeLayoutId":  "shield_guard",
+                       "rotationSpeed":  88.0,
+                       "clockwise":  false,
+                       "randomSlots":  true,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q018"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  19,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "pressure",
+                       "difficultyTierId":  "mid_pressure",
+                       "rhythmProfileId":  "pressure",
+                       "shape":  "hex",
+                       "shapeLayoutId":  "hex_bloom",
+                       "rotationSpeed":  88.0,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q019"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  20,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "pressure",
+                       "difficultyTierId":  "mid_pressure",
+                       "rhythmProfileId":  "pressure",
+                       "shape":  "crown",
+                       "shapeLayoutId":  "crown_arc",
+                       "rotationSpeed":  88.0,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q020"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  21,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "showcase",
+                       "difficultyTierId":  "late_variation",
+                       "rhythmProfileId":  "showcase",
+                       "shape":  "oval",
+                       "shapeLayoutId":  "oval_flow",
+                       "rotationSpeed":  81.9000015258789,
+                       "clockwise":  true,
+                       "randomSlots":  true,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q021"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  22,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "showcase",
+                       "difficultyTierId":  "late_variation",
+                       "rhythmProfileId":  "showcase",
+                       "shape":  "circle",
+                       "shapeLayoutId":  "circle_classic",
+                       "rotationSpeed":  83.80000305175781,
+                       "clockwise":  false,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q022"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  23,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "showcase",
+                       "difficultyTierId":  "late_variation",
+                       "rhythmProfileId":  "showcase",
+                       "shape":  "shield",
+                       "shapeLayoutId":  "shield_guard",
+                       "rotationSpeed":  85.69999694824219,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q023"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  24,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "showcase",
+                       "difficultyTierId":  "late_variation",
+                       "rhythmProfileId":  "showcase",
+                       "shape":  "diamond",
+                       "shapeLayoutId":  "diamond_drive",
+                       "rotationSpeed":  87.5999984741211,
+                       "clockwise":  false,
+                       "randomSlots":  true,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q024"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   },
+                   {
+                       "levelId":  25,
+                       "campaignId":  "alpha_main",
+                       "themeId":  "base_default",
+                       "difficultyProfileId":  "showcase",
+                       "difficultyTierId":  "late_variation",
+                       "rhythmProfileId":  "showcase",
+                       "shape":  "hex",
+                       "shapeLayoutId":  "hex_bloom",
+                       "rotationSpeed":  89.5,
+                       "clockwise":  true,
+                       "randomSlots":  false,
+                       "skipAllowed":  true,
+                       "questionIds":  [
+                                           "q025"
+                                       ],
+                       "obstacles":  [
+
+                                     ]
+                   }
+               ]
+}

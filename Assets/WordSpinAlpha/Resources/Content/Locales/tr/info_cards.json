@@ -1,0 +1,29 @@
+﻿{
+  "cards": [
+    { "infoCardId": "c001", "themeId": "base_default", "title": { "tr": "ANKARA" }, "body": { "tr": "Ankara, Cumhuriyet döneminde başkent olarak seçildi ve bugün Türkiye'nin yönetim merkezidir." }, "imageResourcePath": "Cards/Base/c001" },
+    { "infoCardId": "c002", "themeId": "base_default", "title": { "tr": "KIRMIZI" }, "body": { "tr": "Türk bayrağındaki kırmızı, tarihsel olarak fedakarlık ve bağımsızlıkla ilişkilendirilir." }, "imageResourcePath": "Cards/Base/c002" },
+    { "infoCardId": "c003", "themeId": "base_default", "title": { "tr": "İSTANBUL" }, "body": { "tr": "İstanbul, iki kıtaya yayılan yapısı ve tarihi geçmişiyle dünyanın en özel şehirlerinden biridir." }, "imageResourcePath": "Cards/Base/c003" },
+    { "infoCardId": "c004", "themeId": "base_default", "title": { "tr": "JÜPİTER" }, "body": { "tr": "Jüpiter, Güneş Sistemi'ndeki en büyük gezegendir ve dev bir gaz gezegeni olarak sınıflandırılır." }, "imageResourcePath": "Cards/Base/c004" },
+    { "infoCardId": "c005", "themeId": "base_default", "title": { "tr": "SU" }, "body": { "tr": "Su yaşam için temel unsurdur. Dünyanın büyük kısmı suyla kaplı olsa da içilebilir oran sınırlıdır." }, "imageResourcePath": "Cards/Base/c005" },
+    { "infoCardId": "c006", "themeId": "base_default", "title": { "tr": "İZMİR" }, "body": { "tr": "Efes antik kenti İzmir sınırları içindedir ve Roma döneminin en önemli merkezlerinden biridir." }, "imageResourcePath": "Cards/Base/c006" },
+    { "infoCardId": "c007", "themeId": "base_default", "title": { "tr": "ATATÜRK" }, "body": { "tr": "Mustafa Kemal Atatürk, Türkiye Cumhuriyeti'nin kurucusu ve ilk cumhurbaşkanıdır." }, "imageResourcePath": "Cards/Base/c007" },
+    { "infoCardId": "c008", "themeId": "base_default", "title": { "tr": "NEVŞEHİR" }, "body": { "tr": "Kapadokya'nın peri bacaları ve yer altı şehirleri Nevşehir çevresinde yoğunlaşır." }, "imageResourcePath": "Cards/Base/c008" },
+    { "infoCardId": "c009", "themeId": "base_default", "title": { "tr": "NİL" }, "body": { "tr": "Nil, Afrika'nın en ünlü nehirlerinden biridir ve çok sayıda ülkenin içinden geçer." }, "imageResourcePath": "Cards/Base/c009" },
+    { "infoCardId": "c010", "themeId": "base_default", "title": { "tr": "BAKLAVA" }, "body": { "tr": "Baklava, kat kat hamur ve şerbetle yapılan, Türk mutfağının en bilinen tatlılarından biridir." }, "imageResourcePath": "Cards/Base/c010" },
+    { "infoCardId": "c011", "themeId": "base_default", "title": { "tr": "TROYA" }, "body": { "tr": "Troya, Truva Savaşı ile tanınan antik kenttir ve arkeoloji tarihinde önemli bir yere sahiptir." }, "imageResourcePath": "Cards/Base/c011" },
+    { "infoCardId": "c012", "themeId": "base_default", "title": { "tr": "FINDIK" }, "body": { "tr": "Türkiye, dünya fındık üretiminde uzun yıllardır lider ülkelerden biridir." }, "imageResourcePath": "Cards/Base/c012" },
+    { "infoCardId": "c013", "themeId": "base_default", "title": { "tr": "ÜÇ YÜZ BİN" }, "body": { "tr": "Işık, boşlukta saniyede yaklaşık üç yüz bin kilometre yol alır." }, "imageResourcePath": "Cards/Base/c013" },
+    { "infoCardId": "c014", "themeId": "base_default", "title": { "tr": "OSMAN" }, "body": { "tr": "Osman Bey, Osmanlı Beyliği'nin kurucusu olarak kabul edilir." }, "imageResourcePath": "Cards/Base/c014" },
+    { "infoCardId": "c015", "themeId": "base_default", "title": { "tr": "BOĞAZİÇİ" }, "body": { "tr": "Boğaziçi, Asya ile Avrupa'yı ayıran ve İstanbul'un simgesi haline gelen su yoludur." }, "imageResourcePath": "Cards/Base/c015" },
+    { "infoCardId": "c016", "themeId": "base_default", "title": { "tr": "KASIM" }, "body": { "tr": "Türkiye'de Latin harflerine geçiş 1928 yılının Kasım ayında resmileşti." }, "imageResourcePath": "Cards/Base/c016" },
+    { "infoCardId": "c017", "themeId": "base_default", "title": { "tr": "AĞRI" }, "body": { "tr": "Ağrı Dağı, Türkiye'nin en yüksek dağıdır ve efsanelerle sık sık anılır." }, "imageResourcePath": "Cards/Base/c017" },
+    { "infoCardId": "c018", "themeId": "base_default", "title": { "tr": "WATSON" }, "body": { "tr": "Watson, Crick ile birlikte DNA'nın çift sarmal yapısının açıklanmasında rol oynadı." }, "imageResourcePath": "Cards/Base/c018" },
+    { "infoCardId": "c019", "themeId": "base_default", "title": { "tr": "İZMİR" }, "body": { "tr": "Türkiye'deki ilk demiryolu hattı İzmir merkezli olarak gelişti." }, "imageResourcePath": "Cards/Base/c019" },
+    { "infoCardId": "c020", "themeId": "base_default", "title": { "tr": "KARABÜK" }, "body": { "tr": "Karabük, demir çelik üretimiyle özdeşleşmiş önemli bir sanayi kentidir." }, "imageResourcePath": "Cards/Base/c020" },
+    { "infoCardId": "c021", "themeId": "base_default", "title": { "tr": "KANUNİ" }, "body": { "tr": "Kanuni Sultan Süleyman, Osmanlı tarihinin en uzun süre hüküm süren padişahlarından biridir." }, "imageResourcePath": "Cards/Base/c021" },
+    { "infoCardId": "c022", "themeId": "base_default", "title": { "tr": "AKDENİZ FOKU" }, "body": { "tr": "Akdeniz foku, Türkiye kıyılarında da görülen en nadir deniz memelilerinden biridir." }, "imageResourcePath": "Cards/Base/c022" },
+    { "infoCardId": "c023", "themeId": "base_default", "title": { "tr": "İNTİBAH" }, "body": { "tr": "Namık Kemal'in İntibah eseri, ilk Türkçe romanlardan biri olarak anılır." }, "imageResourcePath": "Cards/Base/c023" },
+    { "infoCardId": "c024", "themeId": "base_default", "title": { "tr": "URFA" }, "body": { "tr": "Göbeklitepe, Şanlıurfa il sınırları içinde yer alır ve dünya tarihini yeniden düşündürmüştür." }, "imageResourcePath": "Cards/Base/c024" },
+    { "infoCardId": "c025", "themeId": "base_default", "title": { "tr": "FETİH" }, "body": { "tr": "Fetih temalı Türk filmleri gişe başarısıyla geniş kitlelere ulaşmıştır." }, "imageResourcePath": "Cards/Base/c025" }
+  ]
+}

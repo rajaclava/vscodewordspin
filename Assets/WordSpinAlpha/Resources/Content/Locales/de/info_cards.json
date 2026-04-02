@@ -1,0 +1,29 @@
+{
+  "cards": [
+    { "infoCardId": "c001", "themeId": "base_default", "title": { "de": "BLAU" }, "body": { "de": "Der Himmel erscheint blau durch Lichtstreuung." }, "imageResourcePath": "Cards/Base/c001" },
+    { "infoCardId": "c005", "themeId": "base_default", "title": { "de": "HUND" }, "body": { "de": "Hunde sind seit Jahrtausenden Begleiter des Menschen." }, "imageResourcePath": "Cards/Base/c005" },
+    { "infoCardId": "c002", "themeId": "base_default", "title": { "de": "WASSER" }, "body": { "de": "Der Koerper besteht groesstenteils aus Wasser." }, "imageResourcePath": "Cards/Base/c002" },
+    { "infoCardId": "c010", "themeId": "base_default", "title": { "de": "HONIG" }, "body": { "de": "Honig kann extrem lange haltbar bleiben." }, "imageResourcePath": "Cards/Base/c010" },
+    { "infoCardId": "c004", "themeId": "base_default", "title": { "de": "STIFT" }, "body": { "de": "Der Stift ersetzte alte Schreibfedern." }, "imageResourcePath": "Cards/Base/c004" },
+    { "infoCardId": "c003", "themeId": "base_default", "title": { "de": "ERDE" }, "body": { "de": "Die Erde ist einzigartig fuer Leben." }, "imageResourcePath": "Cards/Base/c003" },
+    { "infoCardId": "c009", "themeId": "base_default", "title": { "de": "EIS" }, "body": { "de": "Wasser dehnt sich beim Gefrieren aus." }, "imageResourcePath": "Cards/Base/c009" },
+    { "infoCardId": "c007", "themeId": "base_default", "title": { "de": "VIER" }, "body": { "de": "Einfache Rechenaufgaben gehen sofort." }, "imageResourcePath": "Cards/Base/c007" },
+    { "infoCardId": "c006", "themeId": "base_default", "title": { "de": "SONNE" }, "body": { "de": "Die Sonne liefert Energie fuer alles Leben." }, "imageResourcePath": "Cards/Base/c006" },
+    { "infoCardId": "c017", "themeId": "base_default", "title": { "de": "HEISS" }, "body": { "de": "Temperatur beeinflusst alles." }, "imageResourcePath": "Cards/Base/c017" },
+    { "infoCardId": "c014", "themeId": "base_default", "title": { "de": "PAZIFIK" }, "body": { "de": "Der Pazifik ist riesig." }, "imageResourcePath": "Cards/Base/c014" },
+    { "infoCardId": "c012", "themeId": "base_default", "title": { "de": "LOEWE" }, "body": { "de": "Loewen leben meist in Savannen." }, "imageResourcePath": "Cards/Base/c012" },
+    { "infoCardId": "c011", "themeId": "base_default", "title": { "de": "HANDY" }, "body": { "de": "Smartphones sind kleine Computer." }, "imageResourcePath": "Cards/Base/c011" },
+    { "infoCardId": "c019", "themeId": "base_default", "title": { "de": "OXYGEN" }, "body": { "de": "Oxygen liefert Energie im Koerper." }, "imageResourcePath": "Cards/Base/c019" },
+    { "infoCardId": "c008", "themeId": "base_default", "title": { "de": "DREIECK" }, "body": { "de": "Ein Dreieck ist die einfachste Form." }, "imageResourcePath": "Cards/Base/c008" },
+    { "infoCardId": "c018", "themeId": "base_default", "title": { "de": "MARS" }, "body": { "de": "Die Farbe kommt von Eisenoxid." }, "imageResourcePath": "Cards/Base/c018" },
+    { "infoCardId": "c015", "themeId": "base_default", "title": { "de": "LEONARDO" }, "body": { "de": "Da Vinci war auch Erfinder." }, "imageResourcePath": "Cards/Base/c015" },
+    { "infoCardId": "c013", "themeId": "base_default", "title": { "de": "TENNIS" }, "body": { "de": "Wimbledon ist das aelteste Turnier." }, "imageResourcePath": "Cards/Base/c013" },
+    { "infoCardId": "c020", "themeId": "base_default", "title": { "de": "APPLE" }, "body": { "de": "Das iPhone veraenderte alles." }, "imageResourcePath": "Cards/Base/c020" },
+    { "infoCardId": "c016", "themeId": "base_default", "title": { "de": "CHICAGO" }, "body": { "de": "Der Name kommt aus der Politik." }, "imageResourcePath": "Cards/Base/c016" },
+    { "infoCardId": "c021", "themeId": "base_default", "title": { "de": "RADAR" }, "body": { "de": "Radar ist ein einfaches Palindrom." }, "imageResourcePath": "Cards/Base/c021" },
+    { "infoCardId": "c022", "themeId": "base_default", "title": { "de": "KANADA" }, "body": { "de": "Kanada hat die meisten Seen." }, "imageResourcePath": "Cards/Base/c022" },
+    { "infoCardId": "c023", "themeId": "base_default", "title": { "de": "GOLD" }, "body": { "de": "Gold ist seit Jahrtausenden wertvoll." }, "imageResourcePath": "Cards/Base/c023" },
+    { "infoCardId": "c024", "themeId": "base_default", "title": { "de": "EINSTEIN" }, "body": { "de": "Er veraenderte die Physik." }, "imageResourcePath": "Cards/Base/c024" },
+    { "infoCardId": "c025", "themeId": "base_default", "title": { "de": "JAVA" }, "body": { "de": "Java ist weltweit verbreitet." }, "imageResourcePath": "Cards/Base/c025" }
+  ]
+}

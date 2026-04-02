@@ -1,0 +1,29 @@
+{
+  "cards": [
+    { "infoCardId": "c001", "themeId": "base_default", "title": { "en": "BLUE" }, "body": { "en": "The sky appears blue because sunlight scatters through the atmosphere." }, "imageResourcePath": "Cards/Base/c001" },
+    { "infoCardId": "c005", "themeId": "base_default", "title": { "en": "BANANA" }, "body": { "en": "Bananas are one of the most widely eaten fruits in the world." }, "imageResourcePath": "Cards/Base/c005" },
+    { "infoCardId": "c002", "themeId": "base_default", "title": { "en": "DOG" }, "body": { "en": "Dogs have lived alongside humans for thousands of years." }, "imageResourcePath": "Cards/Base/c002" },
+    { "infoCardId": "c010", "themeId": "base_default", "title": { "en": "HONEY" }, "body": { "en": "Honey can last for an extremely long time without spoiling." }, "imageResourcePath": "Cards/Base/c010" },
+    { "infoCardId": "c004", "themeId": "base_default", "title": { "en": "PEN" }, "body": { "en": "Modern pens replaced quills and ink as everyday writing tools." }, "imageResourcePath": "Cards/Base/c004" },
+    { "infoCardId": "c003", "themeId": "base_default", "title": { "en": "EARTH" }, "body": { "en": "Earth is the only known planet that supports life." }, "imageResourcePath": "Cards/Base/c003" },
+    { "infoCardId": "c009", "themeId": "base_default", "title": { "en": "ICE" }, "body": { "en": "Water expands when it freezes, unlike most materials." }, "imageResourcePath": "Cards/Base/c009" },
+    { "infoCardId": "c007", "themeId": "base_default", "title": { "en": "FOUR" }, "body": { "en": "Simple math facts are often recognized by the brain almost instantly." }, "imageResourcePath": "Cards/Base/c007" },
+    { "infoCardId": "c006", "themeId": "base_default", "title": { "en": "SUN" }, "body": { "en": "The Sun provides the energy that powers most life on Earth." }, "imageResourcePath": "Cards/Base/c006" },
+    { "infoCardId": "c017", "themeId": "base_default", "title": { "en": "WATER" }, "body": { "en": "The human body is made up mostly of water." }, "imageResourcePath": "Cards/Base/c017" },
+    { "infoCardId": "c014", "themeId": "base_default", "title": { "en": "PACIFIC" }, "body": { "en": "The Pacific Ocean covers more of Earth than any other ocean." }, "imageResourcePath": "Cards/Base/c014" },
+    { "infoCardId": "c012", "themeId": "base_default", "title": { "en": "LION" }, "body": { "en": "Lions are commonly linked with jungles, but they mostly live in savannas." }, "imageResourcePath": "Cards/Base/c012" },
+    { "infoCardId": "c011", "themeId": "base_default", "title": { "en": "PHONE" }, "body": { "en": "Modern phones are far more powerful than early computers." }, "imageResourcePath": "Cards/Base/c011" },
+    { "infoCardId": "c019", "themeId": "base_default", "title": { "en": "OXYGEN" }, "body": { "en": "Oxygen is essential for releasing energy inside the body." }, "imageResourcePath": "Cards/Base/c019" },
+    { "infoCardId": "c008", "themeId": "base_default", "title": { "en": "TRIANGLE" }, "body": { "en": "A triangle is the simplest polygon in geometry." }, "imageResourcePath": "Cards/Base/c008" },
+    { "infoCardId": "c018", "themeId": "base_default", "title": { "en": "MARS" }, "body": { "en": "Mars looks red because of iron oxide covering its surface." }, "imageResourcePath": "Cards/Base/c018" },
+    { "infoCardId": "c015", "themeId": "base_default", "title": { "en": "LEONARDO" }, "body": { "en": "Leonardo da Vinci was both a painter and an inventor." }, "imageResourcePath": "Cards/Base/c015" },
+    { "infoCardId": "c013", "themeId": "base_default", "title": { "en": "TENNIS" }, "body": { "en": "Wimbledon is the oldest tennis tournament in the world." }, "imageResourcePath": "Cards/Base/c013" },
+    { "infoCardId": "c020", "themeId": "base_default", "title": { "en": "APPLE" }, "body": { "en": "The iPhone changed the direction of modern mobile technology." }, "imageResourcePath": "Cards/Base/c020" },
+    { "infoCardId": "c016", "themeId": "base_default", "title": { "en": "CHICAGO" }, "body": { "en": "The Windy City nickname originally had political roots." }, "imageResourcePath": "Cards/Base/c016" },
+    { "infoCardId": "c021", "themeId": "base_default", "title": { "en": "RACECAR" }, "body": { "en": "Racecar is a classic example of a palindrome." }, "imageResourcePath": "Cards/Base/c021" },
+    { "infoCardId": "c022", "themeId": "base_default", "title": { "en": "CANADA" }, "body": { "en": "Canada has more natural lakes than any other country." }, "imageResourcePath": "Cards/Base/c022" },
+    { "infoCardId": "c023", "themeId": "base_default", "title": { "en": "GOLD" }, "body": { "en": "Gold has been valued for thousands of years." }, "imageResourcePath": "Cards/Base/c023" },
+    { "infoCardId": "c024", "themeId": "base_default", "title": { "en": "EINSTEIN" }, "body": { "en": "Einstein changed modern physics with the theory of relativity." }, "imageResourcePath": "Cards/Base/c024" },
+    { "infoCardId": "c025", "themeId": "base_default", "title": { "en": "JAVA" }, "body": { "en": "Java remains one of the most widely used programming languages." }, "imageResourcePath": "Cards/Base/c025" }
+  ]
+}
