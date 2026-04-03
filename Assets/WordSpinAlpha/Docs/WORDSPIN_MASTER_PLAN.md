@@ -1,276 +1,568 @@
-# WordSpin Alpha — Alpha Demo Öncesi Güncellenmiş Ana Plan
+# WordSpin Alpha - Alpha Demo Oncesi Guncellenmis Ana Plan
 
-## Özet
-Bu sürüm, mevcut `aPLAN` içeriğinin repo ile doğrulanmış halidir. Daha önce `YAPILDI` işaretlenen maddeler korunmuştur; yalnızca yeni tamamlanan işler, aktif riskler ve sıradaki en sağlıklı geliştirme sırası eklenmiştir.  
-Önemli karar güncellemesi:
-- `Telemetry / AI / cloud / developer panel` işleri alpha demo sonrasına ertelendi.
-- Referans ekran artık `9:16` ve ilk gerçek doğrulama ortamı `aktif Android cihaz`.
-- Proje artık `mobil-first`, `safe-area aware` ve `çok dilli` ilerleyecek.
+## Ozet
+
+Bu surum, repodaki onceki `WORDSPIN_MASTER_PLAN` ile `01.04.2026-guncellenmis PLAN.md` iceriginin caprazlanmis ve mevcut kod tabaniyla dogrulanmis halidir.
+
+Temel prensip:
+
+- Daha once `YAPILDI` olarak isaretlenen maddeler korunmustur.
+- Yeni tamamlanan sistemler, aktif riskler ve nasil kurulduklari plana eklenmistir.
+- Kodda gercekten olmayan hicbir madde plana "tamamlandi" diye yazilmamistir.
+
+Guncel kararlar:
+
+- `Telemetry / AI / cloud / developer panel` alpha demo sonrasina ertelendi.
+- Referans ekran `9:16`.
+- Ilk gercek dogrulama ortami bilgisayar preview degil, aktif Android cihaz.
+- Proje `mobil-first`, `safe-area aware`, `cok dilli` ve `data-driven` ilerliyor.
+- Ekonomi tarafinda `Default` gercek gelistirme/runtime modudur; `FreePlayer` ve `PremiumPlayer` yalnizca test sandbox modlaridir.
 
 ---
 
 ## 1. Mevcut Durum
 
-### Gameplay Core Loop — `YAPILDI`
-- Akış çalışıyor:
-  - `harf seç -> pin yükle -> swipe -> fırlat -> hit -> reveal -> soru tamamla -> level ilerle`
-- `Store -> Back -> Gameplay` akışı bağlı.
-- `InfoCard / Result / Level progression` omurgası bağlı.
-- Save/restore sonrası:
-  - cevap ilerlemesi geri geliyor
-  - sıradaki hedef yeniden aktif oluyor
-  - saplanmış pinler sahnede yeniden kuruluyor
-- Device Simulator için pin hit kaçırma problemi segment-tabanlı hit kontrolüyle güçlendirildi.
+### Gameplay Core Loop - `YAPILDI`
 
-### Fail / Continue Economy — `YAPILDI`
-- `3 hata` sonrası otomatik reset kaldırıldı.
-- `Fail Modal` çalışıyor.
+- Akis calisiyor:
+  - `harf sec -> pin yukle -> swipe -> firlat -> hit -> reveal -> soru tamamla -> level ilerle`
+- `Store -> Back -> Gameplay` akis omurgasi bagli.
+- `InfoCard / Result / Level progression` omurgasi bagli.
+- Save/restore sonrasinda:
+  - cevap ilerlemesi geri geliyor
+  - aktif hedef geri geliyor
+  - saplanmis pinler geri kuruluyor
+- Device Simulator tarafindaki pin hit kacirma problemi segment-tabanli hit tespitiyle guclendirildi.
+
+Nasil kuruldu:
+
+- `GameManager`, `LevelFlowController`, `Pin`, `SlotManager`, `RotatorPlaquePresenter` ve bagli event zinciri ayni ana loop'u tasiyor.
+- Tek frame nokta kontrolu yerine segment taramasi kullanilarak simulator/cihaz parity problemi azaltildi.
+
+### Fail / Continue Economy - `YAPILDI`
+
+- `3 hata -> otomatik reset` kaldirildi.
+- `Fail Modal` calisiyor.
 - `Devam Et`:
   - enerji yemez
-  - mevcut soru state’ini korur
-  - `1 can` ile döner
+  - mevcut soru state'ini korur
+  - `1 can` ile geri doner
 - `Tekrar Dene` enerji maliyetlidir.
-- `Continue` sonrası hedef kutusu yeniden yanar.
-- `Level complete -> next level` geçişinde yanlış enerji tüketimi kaynaklı blokaj düzeltildi.
+- `Continue` sonrasi hedef kutusu tekrar yanar.
+- `Level complete -> next level` gecisindeki yanlis enerji tuketimi duzeltildi.
 
-### Plaque Tabanlı Hit Sistemi — `AKTİF`
-- `Magnet snap` kaldırıldı.
-- Hit sonucu `pin ucu` üzerinden hesaplanıyor.
-- `Perfect / Good / NearMiss / WrongSlot / WrongLetter / Miss` ayrımı bağlı.
-- Pin başarılı hit’te merkeze çekilmiyor; değdiği gerçek noktada kalıyor.
-- Dış saplanma yüzeyi esas alınıyor.
-- Restore sırasında pinler save’deki gerçek lokal poz/rot ile geri geliyor.
-- Mekanik çekirdek hazır; final tuning ve parity kontrolü sürüyor.
+Nasil kuruldu:
 
-### HUD Hedef Gösterimi — `YAPILDI`
-- `Şunu at` metni kaldırıldı.
-- Aktif hedef cevap alanındaki kutu vurgusuyla gösteriliyor.
-- Bu yapı random slot order mantığıyla uyumlu.
+- `GameManager`, `FailModalPresenter`, `QuestionLifeManager`, `EnergyManager` ve `SceneNavigator` uzerinden continue/retry ayrimi yapildi.
+- Result ekranindaki `Next` akisi enerji tuketmeden sonraki levele aciliyor.
 
-### Wrong Slot Kırılma Hissi — `YAPILDI`
-- Doğru harf yanlış slota saplandığında pin kaybolmuyor.
-- Pin ve harf birlikte parçalanma efektine giriyor.
+### Plaque Tabanli Hit Sistemi - `AKTIF`
 
-### Camera Shake / Vibrate Feedback — `AKTİF`
-- `WrongSlot`, `WrongLetter`, `Miss`, `NearMiss` için shake bağlı.
-- Mobil titreşim çağrısı bağlı.
-- Doğru saplanma hissi ve audio zinciri kullanıcı hissi açısından hâlâ kilitlenme aşamasında.
+- `Magnet snap` kaldirildi.
+- Hit sonucu `pin ucu` uzerinden hesaplanir.
+- `Perfect / Good / NearMiss / WrongSlot / WrongLetter / Miss` ayrimi bagli.
+- Pin basarili hitte merkeze cekilmez; degdigi gercek noktada kalir.
+- Dis saplanma yuzeyi esas alinir.
+- Restore sirasinda pinler save'deki lokal poz/rot ile geri gelir.
 
-### Çoklu Dil İçerik ve Klavye Omurgası — `YAPILDI`
-- `tr / en / de / es` locale içerik klasörleri ve soru/info card/level dosyaları mevcut.
-- Dil değişimi event akışı bağlı.
-- Locale bazlı klavye dizilimleri mevcut:
-  - Türkçe Q klavye
-  - İngilizce QWERTY
-  - İspanyolca locale düzeni
+Nasil kuruldu:
+
+- Hit siniflandirmasi plaque zonlari uzerinden yapilir.
+- Restore icin pin lokal pozisyon ve rotasyonlari save modelinde tutulur.
+- Mekanik cekirdek hazirdir; final tuning ve parity kontrolu hala aciktir.
+
+### HUD Hedef Gosterimi - `YAPILDI`
+
+- `Sunu at` metni kaldirildi.
+- Aktif hedef cevap alanindaki kutu vurgusuyla gosterilir.
+- Bu yapi random slot order mantigiyla uyumludur.
+
+Nasil kuruldu:
+
+- `GameplayHudPresenter` cevap kutularini hedef indeks uzerinden pulse ederek gunceller.
+
+### Wrong Slot Kirilma Hissi - `YAPILDI`
+
+- Dogru harf yanlis slota saplandiginda pin kaybolmaz.
+- Pin ve harf birlikte parcalanma efektine girer.
+
+Nasil kuruldu:
+
+- Hit sonucunda `WrongSlot` dali artik pin yok etme yerine kirilma hissi ve fail feedback uretir.
+
+### Camera Shake / Vibrate Feedback - `AKTIF`
+
+- `WrongSlot`, `WrongLetter`, `Miss`, `NearMiss` icin shake bagli.
+- Mobil titreşim cagrisi bagli.
+- Dogru saplanma hissi ve audio zinciri henuz tam kilitlenmedi.
+
+Nasil kuruldu:
+
+- `GameEvents` ile hit sonucu yayilip presentation katmaninda shake/vibration tetikleniyor.
+
+### Coklu Dil Icerik ve Klavye Omurgasi - `YAPILDI`
+
+- `tr / en / de / es` locale icerik klasorleri mevcut.
+- Dil degisimi event akisi bagli.
+- Locale bazli klavye dizilimleri mevcut:
+  - Turkce Q
+  - Ingilizce QWERTY
+  - Ispanyolca locale duzeni
   - Almanca QWERTZ
-- Locale bazlı içerik yükleme omurgası `ContentService + Local/RemoteProvider` üzerinde çalışıyor.
+- Locale bazli icerik yukleme `ContentService + Local/RemoteProvider` uzerinden calisiyor.
 
-### Score Sistemi — `YAPILDI`
+Nasil kuruldu:
+
+- `WordSpinContentModels`, `ContentService`, `LocalContentProvider`, `RemoteContentProvider` ve locale dosyalari ayni veri omurgasini kullaniyor.
+- `KeyboardPresenter` dil degisim event'inde layout'u yeniden kuruyor.
+
+### Score Sistemi - `YAPILDI`
+
 - `ScoreManager` ve `ScoreTuningProfile` mevcut.
-- `Perfect / Good / hız bonusu / level sonu bonusu` omurgası bağlı.
-- Çarpan ve hız bonusu veri odaklı ayarlanabilir durumda.
+- `Perfect / Good / hiz bonusu / level sonu bonusu` omurgasi bagli.
+- Carpan ve hiz bonusu veri odakli ayarlanabilir.
 
-### Mobil Runtime ve 9:16 Omurgası — `AKTİF`
-- `MobileRuntimeController` sahne bazında portrait/orientation ve safe area uygular.
-- `SceneBootstrap` üzerinden runtime singleton kuruluyor.
-- `Gameplay` sahnesinde mobil-first layout tuning omurgası var.
-- Ancak `safe area`, alt keyboard dock ve bazı UI yüzeylerinde final görsel kilit tamamlanmış değil.
+Nasil kuruldu:
 
-### Android Cihaz Test Altyapısı — `AKTİF`
-- `AndroidDeviceBuildTools` ile editor menüsünden APK build akışı eklendi.
-- Cihaz smoke checklist dokümana işlendi.
-- Repo tarafı hazır; kullanıcı makinesindeki Unity Android modül/toolchain kurulumu ayrı doğrulama gerektiriyor.
+- Skor sonucu `LevelScoreFinalized` uzerinden result ekranina ve ekonomi katmanina geciyor.
 
-### Türkçe Geliştirici Editörleri — `YAPILDI`
-- Türkçe telemetry paneli mevcut.
-- Yeni olarak klavye layout tuning için profil + Türkçe editor penceresi eklendi:
-  - dil bazlı ayrı ayar
-  - canlı önizleme
-  - dil ayarı kopyalama
-- Bu, ileride tek bir birleşik tuning editorüne taşınacak modüler altyapı olarak değerlendirilecek.
+### Mobil Runtime ve 9:16 Omurgasi - `AKTIF`
 
-### Local + Remote Content / Telemetry Omurgası — `YAPILDI`
+- `MobileRuntimeController` sahne bazinda portrait/orientation ve safe area uygular.
+- `SceneBootstrap` singleton runtime kurulumunu garanti eder.
+- `Gameplay` sahnesinde mobil-first layout tuning omurgasi vardir.
+- Klavye ve safe area tarafinda ciddi ilerleme var, ancak final estetik kilit henuz tamamlanmis degildir.
+
+Nasil kuruldu:
+
+- Runtime safe area offset + size duzeltmesi birlikte uygulanir.
+- Gameplay alt klavye dock'u ve ilgili presentation tuning'i hem builder hem runtime katmanina dagitildi.
+
+### Android Cihaz Test Altyapisi - `AKTIF`
+
+- `AndroidDeviceBuildTools` ile editor menusunden APK build akisi eklendi.
+- Cihaz smoke checklist dokumana islendi.
+- Repo tarafinda cihaz test akisi hazir; kullanici makinesindeki Unity Android modulu/toolchain kurulumu ayrica dogrulanir.
+
+Nasil kuruldu:
+
+- `Tools/WordSpin Alpha/Android/Build APK (Device Test)`
+- `Tools/WordSpin Alpha/Android/Build And Run APK (USB Device)`
+- `Tools/WordSpin Alpha/Android/Open Build Folder`
+
+### Turkce Gelistirici Editorleri - `YAPILDI`
+
+- Turkce telemetry/editor altyapisi mevcut.
+- Klavye layout tuning editoru eklendi:
+  - dil bazli ayar
+  - canli onizleme
+  - oran secimi
+  - dil ayari kopyalama
+- Ekonomi denge editoru eklendi:
+  - economy profile secimi
+  - sandbox mod secimi
+  - level bazli coin ayari
+  - theme offer ayari
+  - bolgesel fiyat taslagi
+  - simulasyon
+  - test reset araclari
+
+Nasil kuruldu:
+
+- `KeyboardLayoutTuningWindow`
+- `EconomyBalanceWindow`
+- ilgili `ScriptableObject` profilleri ile asset tabanli tuning modeli kuruldu.
+
+### Local + Remote Content / Telemetry Omurgasi - `YAPILDI`
+
 - `ContentService`
 - `LocalContentProvider`
 - `RemoteContentProvider`
-- `TelemetryService` ve snapshot mantığı mevcut
-- Production-ready değiller; istemci kontratı seviyesinde kuruldular.
+- `TelemetryService`
+- snapshot mantigi
+
+mevcuttur.
+
+Not:
+
+- Bu katman client-contract seviyesinde kuruldu.
+- Production-ready telemetry pipeline olarak kabul edilmemelidir.
+
+### Completion UI Persistence ve Restore - `YAPILDI`
+
+- Level bittikten sonra acilan `InfoCard` ve `Result` popup state'i save'e yaziliyor.
+- Oyuncu bu ekranlarda menuye gider veya oyunu kapatirsa geri geldiginde dogrudan ayni completion UI'ye donebiliyor.
+- Boylece oyuncu haksiz enerji harcamadan sonraki level akisini tamamlayabiliyor.
+
+Nasil kuruldu:
+
+- `PlayerSaveModels` icine pending info/result alanlari eklendi.
+- `GameManager` restore sirasinda pending info card veya pending result varsa ilgili UI'yi geri aciyor.
+- `ResultPresenter.RestorePendingResultFromSave()` ve `InfoCard` restore akisi buna baglandi.
+
+### Gameplay, Store ve Completion UI Localization - `YAPILDI`
+
+- Gameplay HUD uzerindeki `Level`, `Score/Puan`, `Hearts/Can`, alt `Menu/Store`, swipe hint gibi sabit metinler locale'e baglandi.
+- Info card altindaki `Continue` butonu locale'e baglandi.
+- Result ekranindaki baslik, skor satirlari, yildiz/coin satirlari ve `Next/Menu` butonlari locale'e baglandi.
+- Store ekranindaki store coin, teaser ve pricing notlari locale'e baglandi.
+
+Nasil kuruldu:
+
+- `GameplayHudPresenter`
+- `GameSceneNavigationButtons`
+- `InfoCardPresenter`
+- `ResultPresenter`
+- `StorePresenter`
+
+bu siniflar `GameEvents.LanguageChanged` dinleyip label'lari yeniden yaziyor.
+
+### Ekonomi / Monetization Test Sandbox Katmani - `YAPILDI`
+
+- `Default` gercek gelistirme/runtime ekonomisi olarak korunuyor.
+- `FreePlayer` ve `PremiumPlayer` yalnizca test sandbox modlari olarak calisiyor.
+- Runtime override'lari `AppliedMode` uzerinden okunuyor; editor dropdown degismesi tek basina davranisi degistirmiyor.
+- Her modun ayri save snapshot'i tutuluyor:
+  - default snapshot
+  - free snapshot
+  - premium snapshot
+- Mod degisimi sirasinda snapshot geri yukleniyor; sandbox denemeleri `Default` verisini kirletmiyor.
+
+Nasil kuruldu:
+
+- `TestPlayerModeProfile`
+- `TestPlayerModeManager`
+- `SaveManager.ReplaceData`
+- `EconomyBalanceProfile` icin ayri `Default / Free / Premium` asset yolu
+
+ile bu izolasyon saglandi.
+
+### Fake Rewarded Ad ve Free/Premium Akis Testi - `YAPILDI`
+
+- Free test modunda continue akisi fake rewarded reklam countdown ile test edilebiliyor.
+- Premium test modunda premium/no-ads/enerji bypass davranisi gorulebiliyor.
+- Bu yapi ana mekanige dagitilmadan ayri test katmani olarak tutuldu.
+
+Nasil kuruldu:
+
+- `DebugRewardedAdPresenter`
+- `FailModalPresenter`
+- `TestPlayerModeManager`
+- `EnergyManager`
+- `QuestionLifeManager`
+
+uclerinden baglandi.
+
+### Store Pricing Abstraction ve Regional Pricing Hazirligi - `YAPILDI`
+
+- Store ekrani artik fiyat kaynagini dogrudan bilmez.
+- Yeni katman kuruldu:
+  - `IStorePricingProvider`
+  - `StorePricingManager`
+  - `PreviewStorePricingProvider`
+- Simdilik test/preview icin dil -> varsayilan bolge eslemesi kullanilir:
+  - `tr -> TR`
+  - `en -> US`
+  - `de -> DE`
+  - `es -> ES`
+- Bu final ticari mantik degildir; yalnizca test preview katmanidir.
+
+Nasil kuruldu:
+
+- `StorePresenter` fiyatlari `StorePricingManager` uzerinden alir.
+- `PreviewStorePricingProvider` preview fiyatlarini `EconomyBalanceProfile` icindeki bolgesel taslaklardan ceker.
+- Bu sayede ileride `GooglePlayStorePricingProvider` eklenip manager icinden provider degistirilerek store UI bozulmadan gercek storefront fiyatina gecilebilir.
 
 ---
 
-## 2. Güncellenen Kararlar
+## 2. Guncellenen Kararlar
 
 ### Hit Sistemi
+
 - `Magnet-assisted snap` iptal edildi.
-- Nihai alpha mantığı:
-  - pin ucu geçerli plaque bölgesine değerse saplanır
-  - `Perfect / Good / NearMiss` plaque içi zonlara göre verilir
-  - pin saplandığı gerçek noktada sabit kalır
+- Nihai alpha mantigi:
+  - pin ucu gecerli plaque bolgesine degerse saplanir
+  - `Perfect / Good / NearMiss` plaque ici zonlara gore verilir
+  - pin saplandigi gercek noktada sabit kalir
 
-### Rotator Yapısı
-- Alpha demo için `9 plaque` sabit.
-- Shape/layout verisi JSON tabanlı kalacak.
-- Kutu sayısı ve görsel form ileride veriyle değişebilir.
+### Rotator Yapisi
 
-### Çoklu Dil
-- Her dil için ayrı soru/cevap/içerik seti kullanılacak.
-- Sorular birebir çeviri olmak zorunda değil.
-- Klavye ve içerik locale bazlı ayrışacak.
+- Alpha demo icin `9 plaque` sabit.
+- Shape/layout verisi JSON tabanli kalir.
+- Kutu sayisi ve gorsel form ileride veriyle degisebilir.
 
-### Mobil Öncelik
+### Coklu Dil
+
+- Her dil icin ayri soru/cevap/icerik seti kullanilir.
+- Sorular birebir ceviri olmak zorunda degildir.
+- Klavye ve icerik locale bazli ayrisir.
+
+### Mobil Oncelik
+
 - Referans ekran `9:16`.
-- İlk oynanış doğrulaması bilgisayar Game view değil, gerçek Android cihaz olacak.
-- Tüm scene yerleşimleri safe area içinde çalışmalı.
+- Ilk oynanis dogrulamasi bilgisayar Game view degil, gercek Android cihaz olacaktir.
+- Tum scene yerlesimleri safe area icinde calismalidir.
 
 ### Telemetry / AI / Cloud
-- Alpha demo öncesi kapsam dışı.
-- İstemci omurgası korunacak ama üretim sistemine geçilmeyecek.
+
+- Alpha demo oncesi kapsam disi.
+- Client omurgasi korunur, production pipeline daha sonra acilir.
+
+### Ekonomi Sandbox Karari
+
+- `Default` gercek oyun ve nihai tuning ortamidir.
+- `FreePlayer` ve `PremiumPlayer` sadece test akisini gormek icin sandbox modlaridir.
+- Release oncesi test katmani silinmek zorunda degildir; gerekirse kapatilir.
+
+### Fiyatlandirma Karari
+
+- Test asamasinda preview fiyatlar dil bazli varsayilan bolge eslemesi ile gosterilebilir.
+- Nihai surumde fiyat dil bazli olmayacak.
+- Fiyat Google Play storefront bolgesinden ve Billing product details sonucundan alinacaktir.
 
 ---
 
-## 3. Sonraki Uygulama Sırası
+## 3. Sonraki Uygulama Sirasi
 
-### Faz A — Android Gerçek Cihaz Test Kilidi — `AKTİF`
-- Unity Android modül/toolchain kurulumu doğrulanacak.
-- `Build And Run APK (USB Device)` akışı tek cihaz üzerinde uçtan uca çalışır hale getirilecek.
-- İlk smoke test sırası sabitlenecek:
+### Faz A - Android Gercek Cihaz Test Kilidi - `AKTIF`
+
+- Unity Android modulu/toolchain kurulumu kesin dogrulanacak.
+- `Build And Run APK (USB Device)` akisi tek cihaz uzerinde uctan uca calisir hale gelecek.
+- Ilk smoke test sirasi sabitlenecek:
   - `MainMenu`
   - `Play`
   - ilk 3 level
   - `Fail -> Continue / Retry`
   - `save/quit -> resume`
-  - dil değiştirip tekrar `Play`
+  - dil degistirip tekrar `Play`
   - `Store -> Back`
 
-### Faz B — 9:16 Mobil Layout ve Safe Area Polish — `AKTİF`
-- `Gameplay`, `MainMenu`, `Store`, `FailModal`, `InfoCard`, `Result` aynı mobil yerleşim mantığına çekilecek.
-- Özellikle şu yüzeyler kilitlenecek:
-  - üst bar
+### Faz B - 9:16 Mobil Layout ve Safe Area Polish - `AKTIF`
+
+- `Gameplay`, `MainMenu`, `Store`, `FailModal`, `InfoCard`, `Result` ayni mobil yerlesim mantigina cekilecek.
+- Ozellikle su yuzeyler kilitlenecek:
+  - ust bar
   - soru/cevap paneli
   - rotator alanı
   - launcher/saplanma ekseni
   - alt keyboard dock
-- `safe area` yalnız pozisyonla değil, boyut ve iç margin ile birlikte ele alınacak.
-- Alt keyboard dock final estetik ve tüm telefon oranları için taşmasız hale getirilecek.
+- `safe area` pozisyon + boyut + ic margin birlikte ele alinacak.
+- Alt keyboard dock tum telefon oranlari icin hem sigan hem estetik hale getirilecek.
 
-### Faz C — Görsel Okunurluk ve Canlılık Pass — `SIRADA`
-- Sürekli açık büyük haze/glow katmanları düşürülecek.
-- Canlılık:
-  - kontrast
-  - sıcak accent
-  - hit anı flash
-  üzerinden verilecek.
-- Amaç: puslu değil, net ve doygun mobil görünüm.
+### Faz C - Pre-Polish Sistem Taramasi ve Bug Kilidi - `SIRADA`
 
-### Faz D — Hit Feel / Audio / Rhythm Stabilizasyonu — `SIRADA`
-- Kilit davranışlar sabitlenecek:
+- Gorsellik tasarimi ve juicy hissiyat pass'ine gecmeden once, son ufak iterasyonlar tamamlanacak.
+- Ardindan tum yeni katmanlar uzerinde kapsamli bir sistem taramasi yapilacak:
+  - gameplay core loop
+  - save/restore
+  - pending info/result popup restore
+  - localization
+  - mobile safe area
+  - keyboard docking
+  - default/free/premium sandbox izolasyonu
+  - economy/store/coin senkronizasyonu
+  - pricing preview davranisi
+- Bu taramadan `muhtemel bug listesi` cikarilacak ve risk seviyesine gore siralanacak.
+- Once manuel olarak yeniden uretilmeye uygun happy-path ve edge-case senaryolari denenecek.
+- Dogrulanan buglar once fixlenecek.
+- Daha sonra kalan yuksek riskli mantiklar icin hedefli test katmani yazilacak:
+  - saf hesaplama ve karar kurallari icin unit test
+  - save/restore, sandbox mode switch, level completion flow gibi alanlar icin integration test
+- Bu faz tamamlanmadan gameplay juicy/visual polish baslatilmayacak.
+
+Neden eklendi:
+
+- Projeye cok sayida yeni sistem eklendi ancak henuz kapsamli bir test gecisi yapilmadi.
+- Entegrasyon tipi kiriklar, polish sonrasi degil once yakalanmalidir.
+
+### Faz D - Gameplay Visual Lock - `SIRADA`
+
+- Gameplay sahnesinin gorsel dili kilitlenecek:
+  - panel kontrasti
+  - plaque okunurlugu
+  - glow/haze azaltimi
+  - alt dock final estetik
+
+### Faz E - Hit Feel / Audio / Rhythm Stabilizasyonu - `SIRADA`
+
+- Kilit davranislar sabitlenecek:
   - ilk perfect normal hit sesi
-  - ardışık perfect’lerde tizleşen zincir
+  - ardışık perfect'lerde tizlesen zincir
   - good hitte reset
-  - wrong-slot parçalanma sesi + shake
-  - harf yükleme / fire sesi
+  - wrong-slot parcalanma sesi + shake
+  - harf yukleme / fire sesi
 - `ImpactFeelProfile` ve mevcut event zinciri korunacak.
-- `RhythmProfile` mevcut flow’u destekleyecek kadar bağlanacak; yeni karmaşık ekonomi açılmayacak.
 
-### Faz E — Alpha Kabul Matrisi — `SIRADA`
-- Her buildte şu matris çalıştırılacak:
+### Faz F - Alpha Kabul Matrisi - `SIRADA`
+
+- Her buildte:
   - `TR / EN / DE / ES`
   - `Play`
   - `Level Select`
   - `Store -> Back`
   - `save/quit -> resume`
-- Kabul testleri:
-  - first letter doğru kabul ediliyor
-  - doğru slot yanlış sayılmıyor
-  - restore sonrası pin doğru dış saplanma noktasına geliyor
-  - continue sonrası hedef vurgusu sürüyor
-  - dil değişimi sonrası `Play` boş soru açmıyor
-  - UI safe area dışına taşmıyor
-  - keyboard farklı telefon oranlarında bozulmuyor
 
-### Faz F — Alpha Demo Sonrası Backlog — `SIRADA`
-- Türkçe metrics / hotfix editor genişlemesi
+akislari calistirilacak.
+
+- Buna ek olarak yeni zorunlu kabul:
+  - info card restore
+  - result popup restore
+  - default/free/premium snapshot izolasyonu
+  - sandbox'tan `Default`e donus
+  - store preview fiyatinin profile/language degisimine cevap vermesi
+
+### Faz F - Monetization Production Pass - `SIRADA`
+
+- Gercek `IPurchaseService` implementasyonu
+- Gercek `IStorePricingProvider` implementasyonu
+- Play Billing product details entegrasyonu
+- Play Console urun tanimi
+- Preview fiyat katmanindan storefront pricing'e gecis
+
+### Faz G - Alpha Demo Sonrasi Backlog - `SIRADA`
+
+- Turkce metrics / hotfix editor genislemesi
 - AI telemetry / cloud / developer panel
-- gelişmiş canlı yönetim araçları
+- gelismis canli yonetim araclari
 - telemetry schema ve aggregate snapshot production pass
 
 ---
 
-## 4. Önemli Arayüz / Tip / Veri Güncellemeleri
+## 4. Onemli Arayuz / Tip / Veri Guncellemeleri
 
-### Yeni veya Güncellenmiş Veri Yüzeyleri
+### Yeni veya Guncellenmis Veri Yuzeyleri
+
 - `ScoreTuningProfile : ScriptableObject`
 - `ImpactFeelProfile : ScriptableObject`
 - `KeyboardLayoutTuningProfile : ScriptableObject`
-- locale bazlı `questions.json / info_cards.json / levels.json`
-- `shape_layouts.json`, `difficulty_profiles.json`, `rhythm_profiles.json` akışı korunuyor
+- `EconomyBalanceProfile : ScriptableObject`
+- `TestPlayerModeProfile : ScriptableObject`
+- locale bazli `questions.json / info_cards.json / levels.json`
+- `shape_layouts.json`, `difficulty_profiles.json`, `rhythm_profiles.json`
+- `store_catalog.json`
+- `membership_profile.json`
 
-### Yeni Editor Yüzeyleri
+### Yeni Editor Yuzeyleri
+
 - `DeveloperTelemetryWindow`
 - `AndroidDeviceBuildTools`
 - `KeyboardLayoutTuningWindow`
-  - dil bazlı tuning
-  - önizleme oran seçimi
-  - dil ayarı kopyalama
+  - dil bazli tuning
+  - onizleme oran secimi
+  - dil ayari kopyalama
+- `EconomyBalanceWindow`
+  - default/free/premium ekonomi profili secimi
+  - test modu secimi
+  - level coin ayari
+  - theme offer ayari
+  - bolgesel fiyat taslagi
+  - simulasyon
+  - reset araclari
 
-### Runtime Bağlantıları
-- `KeyboardPresenter` artık klavye tuning profilini okuyabiliyor
-- `GameplaySceneTuner` locale bazlı keyboard dock tuning’ini profilden alabiliyor
-- `MobileRuntimeController` safe area ve mobil runtime davranışını uygular
-- `SceneBootstrap` üzerinden `ScoreManager` ve `MobileRuntimeController` gibi singleton’lar garanti ediliyor
+### Yeni Runtime Katmanlari
+
+- `TestPlayerModeManager`
+- `DebugRewardedAdPresenter`
+- `StorePricingManager`
+- `PreviewStorePricingProvider`
+
+### Runtime Baglantilari
+
+- `KeyboardPresenter` klavye tuning profilini okur
+- `GameplaySceneTuner` locale bazli keyboard dock tuning'ini profilden alir
+- `MobileRuntimeController` safe area ve mobil runtime davranisini uygular
+- `SceneBootstrap` uzerinden singleton'lar garanti edilir
+- `GameManager` completion UI restore'ini yonetir
+- `ResultPresenter` pending result state'i save ile geri acabilir
+- `StorePresenter` fiyat ve ekonomi bilgisini provider + economy manager uzerinden gunceller
 
 ---
 
-## 5. Test Planı
+## 5. Test Plani
 
-### Zaten Doğrulananlar
+### Zaten Dogrulananlar
+
 - `3 hata -> Fail Modal`
 - `Devam Et -> 1 canla devam`
 - `Tekrar Dene -> enerji maliyeti`
-- `Continue` sonrası hedef kutunun yeniden yanması
-- Save/restore sonrası cevap ilerlemesi
-- Save/restore sonrası saplanmış pinlerin geri gelmesi
-- Yanlış slotta parçalanma efekti
-- Hedef kutunun cevap panelinden gösterilmesi
-- Locale içerik dosya omurgası
-- Score sisteminin veri odaklı omurgası
-- Klavye tuning editorünün asset tabanlı çalışması
+- `Continue` sonrasi hedef kutusunun yeniden yanmasi
+- Save/restore sonrasi cevap ilerlemesi
+- Save/restore sonrasi saplanmis pinlerin geri gelmesi
+- Yanlis slotta parcalanma efekti
+- Hedef kutunun cevap panelinden gosterilmesi
+- Locale icerik dosya omurgasi
+- Score sisteminin veri odakli omurgasi
+- Klavye tuning editorunun asset tabanli calismasi
+- Info card localization
+- Result screen localization
+- Gameplay HUD localization
+- Store preview price abstraction katmani
+- Ekonomi sandbox snapshot izolasyonu
 
-### Alpha Öncesi Zorunlu Kabul Testleri
+### Alpha Oncesi Zorunlu Kabul Testleri
+
 - `Perfect` hit:
   - net audio
-  - görünür feel
-  - multiplier/score düzgün
+  - gorunur feel
+  - multiplier/score duzgun
 - `Good` hit:
-  - doğru ses
-  - chain reset davranışı
+  - dogru ses
+  - chain reset davranisi
 - `WrongSlot`:
-  - parçalanma + fail feedback
+  - parcalanma + fail feedback
 - `WrongLetter`:
-  - klavye bazlı fail feedback
+  - klavye bazli fail feedback
 - `Android`:
   - `1080x1920`
   - `1080x2160`
   - `1080x2340`
   - `1080x2400`
 - `Locale`:
-  - `TR / EN / DE / ES` sorular doğru geliyor
-  - klavyeler locale’e göre doğru açılıyor
+  - `TR / EN / DE / ES` sorular dogru geliyor
+  - klavyeler locale'e gore dogru aciliyor
+  - gameplay/store/result/info card metinleri locale'e gore degisiyor
 - `Keyboard`:
-  - safe area dışına taşmıyor
-  - kenar tuşlar frame köşelerine yaslanmıyor
-  - oran değişiminde estetik bozulmuyor
+  - safe area disina tasmiyor
+  - kenar tuslar frame koselerine yaslanmiyor
+  - oran degisiminde estetik bozulmuyor
+- `Completion Restore`:
+  - info card ekraninda quit -> relaunch
+  - result ekraninda quit -> relaunch
+  - sonraki level akisi ekstra enerji harcamadan devam ediyor
+- `Economy Sandbox`:
+  - `Default -> FreePlayer -> Default`
+  - `Default -> PremiumPlayer -> Default`
+  - snapshot izolasyonu bozulmuyor
+  - default ekonomi free/premium testleri ile kirlenmiyor
+- `Store Pricing Preview`:
+  - preview fiyat dil eslemesine gore degisiyor
+  - farkli economy profile seciminde store preview fiyati da degisiyor
+  - coin fiyati ve preview para fiyatlari ayni anda tutarli gorunuyor
 
 ---
 
-## 6. Varsayımlar ve Sabitler
+## 6. Varsayimlar ve Sabitler
 
-- Alpha demo için `9 plaque` sabit.
-- Görsel kalite hâlâ placeholder seviyede; öncelik mekanik kilidi ve mobil okunurluk.
-- `Continue` sonrası dönüş canı `1`.
+- Alpha demo icin `9 plaque` sabit.
+- Gorsel kalite hala placeholder'dan cikan ama tam final olmayan seviyede; oncelik gameplay kilidi ve mobil okunurluk.
+- `Continue` sonrasi donus cani `1`.
 - `Retry` enerji maliyetlidir.
-- `Impact feel`, `score` ve `keyboard layout` veri odaklı kalacak.
-- Theme yalnız presentation yoğunluğunu yönetecek; mekanik kararları yönetmeyecek.
-- `Telemetry / AI / cloud / developer panel` alpha demo sonrasına ertelendi.
-- İlk gerçek kalite eşiği bilgisayar Game view değil, Android cihaz üstü test olacak.
+- `Impact feel`, `score`, `keyboard layout` ve `economy` veri odakli kalacak.
+- Theme yalniz presentation yogunlugunu yonetecek; mekanik kararlari yonetmeyecek.
+- `Telemetry / AI / cloud / developer panel` alpha demo sonrasina ertelendi.
+- Ilk gercek kalite esigi bilgisayar Game view degil, Android cihaz ustu test olacak.
+- Preview fiyatlar test amaclidir; nihai fiyat storefront bolgesinden gelecektir.
+- Test sandbox katmani release oncesi silinmek zorunda degil; gerekirse kapatilacaktir.
+
+---
+
+## 7. Ek Not
+
+Bu plan dosyasi artik yalnizca "ne hedefleniyor" listesi degildir. Ayni zamanda:
+
+- repoda gercekten kurulu sistemlerin kaydi
+- nasil kuruldugunun ozeti
+- hangi katmanin finala yakin, hangisinin test-only oldugunun ayrimi
+- market oncesi gecis icin teknik referans
+
+olarak tutulmalidir.

@@ -123,6 +123,20 @@ namespace WordSpinAlpha.Core
     }
 
     [Serializable]
+    public struct LevelEconomySummaryData
+    {
+        public int levelId;
+        public int starsEarned;
+        public int baseCoinReward;
+        public int coinReward;
+        public int adBonusCoins;
+        public bool adBonusEligible;
+        public bool firstClear;
+        public bool continueUsed;
+        public int completionCount;
+    }
+
+    [Serializable]
     public struct FailModalContext
     {
         public int levelId;
@@ -146,6 +160,7 @@ namespace WordSpinAlpha.Core
         public static event Action<RhythmFlowStateData> RhythmFlowStateChanged;
         public static event Action<ScoreStateData> ScoreChanged;
         public static event Action<LevelScoreSummaryData> LevelScoreFinalized;
+        public static event Action<LevelEconomySummaryData> LevelEconomyFinalized;
         public static event Action<int> QuestionHeartsChanged;
         public static event Action QuestionFailed;
         public static event Action<QuestionContext> QuestionCompleted;
@@ -154,8 +169,10 @@ namespace WordSpinAlpha.Core
         public static event Action InfoCardClosed;
         public static event Action<FailModalContext> FailModalRequested;
         public static event Action<int, int> EntryEnergyChanged;
+        public static event Action<int, int> SoftCurrencyChanged;
         public static event Action<string> ThemeUnlocked;
         public static event Action<bool> MembershipChanged;
+        public static event Action<bool> LevelContinueUsed;
         public static event Action<string, string> MetricEventRaised;
         public static event Action<string> LanguageChanged;
 
@@ -172,6 +189,7 @@ namespace WordSpinAlpha.Core
         public static void RaiseRhythmFlowStateChanged(RhythmFlowStateData state) => RhythmFlowStateChanged?.Invoke(state);
         public static void RaiseScoreChanged(ScoreStateData state) => ScoreChanged?.Invoke(state);
         public static void RaiseLevelScoreFinalized(LevelScoreSummaryData summary) => LevelScoreFinalized?.Invoke(summary);
+        public static void RaiseLevelEconomyFinalized(LevelEconomySummaryData summary) => LevelEconomyFinalized?.Invoke(summary);
         public static void RaiseQuestionHeartsChanged(int hearts) => QuestionHeartsChanged?.Invoke(hearts);
         public static void RaiseQuestionFailed() => QuestionFailed?.Invoke();
         public static void RaiseQuestionCompleted(QuestionContext context) => QuestionCompleted?.Invoke(context);
@@ -180,8 +198,10 @@ namespace WordSpinAlpha.Core
         public static void RaiseInfoCardClosed() => InfoCardClosed?.Invoke();
         public static void RaiseFailModalRequested(FailModalContext context) => FailModalRequested?.Invoke(context);
         public static void RaiseEntryEnergyChanged(int current, int max) => EntryEnergyChanged?.Invoke(current, max);
+        public static void RaiseSoftCurrencyChanged(int current, int delta) => SoftCurrencyChanged?.Invoke(current, delta);
         public static void RaiseThemeUnlocked(string themeId) => ThemeUnlocked?.Invoke(themeId);
         public static void RaiseMembershipChanged(bool isActive) => MembershipChanged?.Invoke(isActive);
+        public static void RaiseLevelContinueUsed(bool usedPremiumContinue) => LevelContinueUsed?.Invoke(usedPremiumContinue);
         public static void RaiseMetric(string eventName, string payload) => MetricEventRaised?.Invoke(eventName, payload);
         public static void RaiseLanguageChanged(string languageCode) => LanguageChanged?.Invoke(languageCode);
     }

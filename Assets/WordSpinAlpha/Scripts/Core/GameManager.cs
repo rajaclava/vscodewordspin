@@ -14,6 +14,8 @@ namespace WordSpinAlpha.Core
         private bool _pendingQuestionAdvanceAfterInfoCard;
         private bool _pendingLevelCompleteAfterInfoCard;
         private bool _awaitingFailResolution;
+        private bool _usedContinueInCurrentLevel;
+        private string _pendingInfoCardId;
 
         public bool IsAwaitingFailResolution => _awaitingFailResolution;
         public int CurrentLevelId => levelFlow != null && levelFlow.CurrentLevel != null ? levelFlow.CurrentLevel.levelId : 0;
@@ -36,7 +38,9 @@ namespace WordSpinAlpha.Core
                 if (resumeSavedSession && CanRestoreActiveSession())
                 {
                     levelFlow.RestoreSession(SaveManager.Instance.Data.session);
+                    RestoreContinuationStateFromSession();
                     EnterPendingFailResolutionStateIfNeeded();
+                    RestorePendingCompletionUi();
                     return;
                 }
 
@@ -51,7 +55,9 @@ namespace WordSpinAlpha.Core
             if (CanRestoreActiveSession())
             {
                 levelFlow.RestoreSession(SaveManager.Instance.Data.session);
+                RestoreContinuationStateFromSession();
                 EnterPendingFailResolutionStateIfNeeded();
+                RestorePendingCompletionUi();
                 return;
             }
 
@@ -146,11 +152,14 @@ namespace WordSpinAlpha.Core
             if (SaveManager.Instance != null)
             {
                 SaveManager.Instance.Data.progress.highestUnlockedLevel = Mathf.Max(SaveManager.Instance.Data.progress.highestUnlockedLevel, levelId);
+                ClearPendingCompletionState(SaveManager.Instance.Data.session);
                 SaveManager.Instance.Save();
             }
 
             _awaitingFailResolution = false;
+            _usedContinueInCurrentLevel = false;
             SetGameplayInputEnabled(true);
+            sessionManager?.TakeSnapshot();
 
             return true;
         }
@@ -298,8 +307,10 @@ namespace WordSpinAlpha.Core
 
             if (hasInfoCard)
             {
+                _pendingInfoCardId = levelFlow.CurrentQuestion.infoCardId;
                 _pendingQuestionAdvanceAfterInfoCard = hasAnotherQuestion;
                 _pendingLevelCompleteAfterInfoCard = !hasAnotherQuestion;
+                PersistPendingCompletionState();
                 GameEvents.RaiseInfoCardRequested(levelFlow.CurrentQuestion.infoCardId);
                 return;
             }
@@ -309,6 +320,11 @@ namespace WordSpinAlpha.Core
 
         private void ContinueAfterQuestionCompletion(bool hasAnotherQuestion)
         {
+            _pendingInfoCardId = string.Empty;
+            _pendingQuestionAdvanceAfterInfoCard = false;
+            _pendingLevelCompleteAfterInfoCard = false;
+            PersistPendingCompletionState();
+
             if (hasAnotherQuestion && levelFlow.AdvanceQuestion())
             {
                 return;
@@ -325,7 +341,6 @@ namespace WordSpinAlpha.Core
 
             GameEvents.RaiseLevelCompleted(context);
             GameEvents.RaiseMetric("levelComplete", $"{{\"levelId\":{context.levelId}}}");
-            SessionManager.Instance?.ClearSnapshot();
         }
 
         private void HandleQuestionFailed()
@@ -338,16 +353,28 @@ namespace WordSpinAlpha.Core
         {
             if (_pendingQuestionAdvanceAfterInfoCard)
             {
-                _pendingQuestionAdvanceAfterInfoCard = false;
                 ContinueAfterQuestionCompletion(true);
                 return;
             }
 
             if (_pendingLevelCompleteAfterInfoCard)
             {
-                _pendingLevelCompleteAfterInfoCard = false;
                 ContinueAfterQuestionCompletion(false);
             }
+        }
+
+        public void PopulateSessionSnapshot(SessionSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                return;
+            }
+
+            snapshot.pendingInfoCard = !string.IsNullOrEmpty(_pendingInfoCardId);
+            snapshot.pendingInfoCardId = _pendingInfoCardId ?? string.Empty;
+            snapshot.pendingQuestionAdvanceAfterInfoCard = _pendingQuestionAdvanceAfterInfoCard;
+            snapshot.pendingLevelCompleteAfterInfoCard = _pendingLevelCompleteAfterInfoCard;
+            snapshot.usedContinueInCurrentLevel = _usedContinueInCurrentLevel;
         }
 
         private LevelContext BuildLevelContext()
@@ -388,6 +415,7 @@ namespace WordSpinAlpha.Core
             }
 
             _awaitingFailResolution = false;
+            _usedContinueInCurrentLevel = true;
             QuestionLifeManager.Instance?.Restore(1);
             levelFlow?.RefreshCurrentTarget();
             SetPendingFailResolutionFlag(false, 1);
@@ -395,6 +423,7 @@ namespace WordSpinAlpha.Core
             SetGameplayInputEnabled(true);
 
             string payload = $"{{\"levelId\":{CurrentLevelId},\"questionIndex\":{(levelFlow != null ? levelFlow.CurrentQuestionIndex : 0)},\"premium\":{usedPremiumContinue.ToString().ToLowerInvariant()}}}";
+            GameEvents.RaiseLevelContinueUsed(usedPremiumContinue);
             GameEvents.RaiseMetric("continueLevel", payload);
             GameEvents.RaiseMetric(usedPremiumContinue ? "continueLevelPremium" : "continueLevelRewardedAd", payload);
             return true;
@@ -471,6 +500,77 @@ namespace WordSpinAlpha.Core
             SaveManager.Instance.Data.session.pendingFailResolution = pending;
             SaveManager.Instance.Data.session.questionHeartsRemaining = hearts;
             SaveManager.Instance.Save();
+        }
+
+        private void RestorePendingCompletionUi()
+        {
+            if (SaveManager.Instance == null)
+            {
+                return;
+            }
+
+            SessionSnapshot snapshot = SaveManager.Instance.Data.session;
+            _pendingInfoCardId = snapshot.pendingInfoCardId ?? string.Empty;
+            _pendingQuestionAdvanceAfterInfoCard = snapshot.pendingQuestionAdvanceAfterInfoCard;
+            _pendingLevelCompleteAfterInfoCard = snapshot.pendingLevelCompleteAfterInfoCard;
+
+            if (snapshot.pendingInfoCard && !string.IsNullOrEmpty(_pendingInfoCardId))
+            {
+                GameEvents.RaiseInfoCardRequested(_pendingInfoCardId);
+                return;
+            }
+
+            ResultPresenter resultPresenter = FindObjectOfType<ResultPresenter>();
+            resultPresenter?.RestorePendingResultFromSave();
+        }
+
+        private void PersistPendingCompletionState()
+        {
+            if (SaveManager.Instance == null)
+            {
+                return;
+            }
+
+            PopulateSessionSnapshot(SaveManager.Instance.Data.session);
+            SaveManager.Instance.Save();
+        }
+
+        private static void ClearPendingCompletionState(SessionSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                return;
+            }
+
+            snapshot.pendingInfoCard = false;
+            snapshot.pendingInfoCardId = string.Empty;
+            snapshot.pendingQuestionAdvanceAfterInfoCard = false;
+            snapshot.pendingLevelCompleteAfterInfoCard = false;
+            snapshot.pendingLevelResult = false;
+            snapshot.pendingResultLevelId = 0;
+            snapshot.pendingResultTotalScore = 0;
+            snapshot.pendingResultHitScore = 0;
+            snapshot.pendingResultClearScore = 0;
+            snapshot.pendingResultBestMultiplier = 0f;
+            snapshot.pendingResultStars = 0;
+            snapshot.pendingResultCoinReward = 0;
+            snapshot.pendingResultAdBonusCoins = 0;
+            snapshot.pendingResultAdBonusEligible = false;
+            snapshot.usedContinueInCurrentLevel = false;
+        }
+
+        private void RestoreContinuationStateFromSession()
+        {
+            if (SaveManager.Instance == null)
+            {
+                return;
+            }
+
+            _usedContinueInCurrentLevel = SaveManager.Instance.Data.session.usedContinueInCurrentLevel;
+            if (_usedContinueInCurrentLevel)
+            {
+                GameEvents.RaiseLevelContinueUsed(false);
+            }
         }
 
         private static bool CanRestoreActiveSession()

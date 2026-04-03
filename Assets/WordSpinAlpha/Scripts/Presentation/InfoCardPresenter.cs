@@ -41,6 +41,8 @@ namespace WordSpinAlpha.Presentation
                 root.SetActive(true);
             }
 
+            RefreshLocalizedTexts();
+
             if (_catalog == null || _catalog.cards == null)
             {
                 return;
@@ -89,6 +91,67 @@ namespace WordSpinAlpha.Presentation
         private void HandleLanguageChanged(string _)
         {
             _catalog = null;
+            RefreshLocalizedTexts();
+        }
+
+        private void RefreshLocalizedTexts()
+        {
+            SetButtonLabel("InfoClose", GetLocalized("continue"));
+        }
+
+        private void SetButtonLabel(string objectName, string value)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            Transform target = root.transform.Find(objectName);
+            if (target == null)
+            {
+                return;
+            }
+
+            TextMeshProUGUI label = target.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (label != null)
+            {
+                label.text = value;
+            }
+        }
+
+        private static string GetLocalized(string key)
+        {
+            string language = SaveManager.Instance != null
+                ? GameConstants.NormalizeLanguageCode(SaveManager.Instance.Data.languageCode)
+                : GameConstants.DefaultLanguageCode;
+
+            switch (language)
+            {
+                case "en":
+                    return key switch
+                    {
+                        "continue" => "Continue",
+                        _ => key
+                    };
+                case "es":
+                    return key switch
+                    {
+                        "continue" => "Continuar",
+                        _ => key
+                    };
+                case "de":
+                    return key switch
+                    {
+                        "continue" => "Weiter",
+                        _ => key
+                    };
+                default:
+                    return key switch
+                    {
+                        "continue" => "Devam Et",
+                        _ => key
+                    };
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] private TextMeshProUGUI premiumButtonLabel;
 
         private bool _buttonsHooked;
+        private bool _awaitingFakeRewardedAd;
 
         private void Awake()
         {
@@ -45,7 +46,39 @@ namespace WordSpinAlpha.Presentation
 
         public void Continue()
         {
+            if (_awaitingFakeRewardedAd)
+            {
+                return;
+            }
+
             bool premium = EconomyManager.Instance != null && EconomyManager.Instance.PremiumMembershipActive;
+            if (!premium &&
+                TestPlayerModeManager.Instance != null &&
+                TestPlayerModeManager.Instance.RequiresRewardedContinue())
+            {
+                if (DebugRewardedAdPresenter.Instance != null)
+                {
+                    _awaitingFakeRewardedAd = true;
+                    RefreshText();
+                    DebugRewardedAdPresenter.Instance.ShowCountdown(
+                        TestPlayerModeManager.Instance.RewardedContinueSeconds(),
+                        CompleteRewardedContinue);
+                    return;
+                }
+            }
+
+            AttemptContinue(premium);
+        }
+
+        private void CompleteRewardedContinue()
+        {
+            _awaitingFakeRewardedAd = false;
+            RefreshText();
+            AttemptContinue(false);
+        }
+
+        private void AttemptContinue(bool premium)
+        {
             if (GameManager.Instance != null && GameManager.Instance.ContinueAfterFailure(premium))
             {
                 HideImmediate();
@@ -117,9 +150,22 @@ namespace WordSpinAlpha.Presentation
 
             if (bodyLabel != null)
             {
-                bodyLabel.text = premium
-                    ? "Premium aktif. Reklam izlemeden 1 can ile kaldigin yerden devam edebilirsin."
-                    : "Reklam izleyerek 1 can ile kaldigin yerden devam et. Premium uyelik alirsan bunu reklamsiz ve sinirsiz kullanirsin.";
+                if (_awaitingFakeRewardedAd)
+                {
+                    bodyLabel.text = "Test reklam ekrani oynatiliyor. Sayac bitince 1 can ile ayni sorudan devam edeceksin.";
+                }
+                else if (premium)
+                {
+                    bodyLabel.text = "Premium aktif. Reklam izlemeden 1 can ile kaldigin yerden devam edebilirsin.";
+                }
+                else if (TestPlayerModeManager.Instance != null && TestPlayerModeManager.Instance.RequiresRewardedContinue())
+                {
+                    bodyLabel.text = "Free oyuncu testi aktif. Devam etmek icin sahte reklam akisi calisacak. Premium uyelikte bu adim atlanir.";
+                }
+                else
+                {
+                    bodyLabel.text = "Reklam izleyerek 1 can ile kaldigin yerden devam et. Premium uyelik alirsan bunu reklamsiz ve sinirsiz kullanirsin.";
+                }
             }
 
             if (energyLabel != null)
@@ -147,7 +193,12 @@ namespace WordSpinAlpha.Presentation
 
             if (retryButton != null)
             {
-                retryButton.interactable = canRetry;
+                retryButton.interactable = canRetry && !_awaitingFakeRewardedAd;
+            }
+
+            if (continueButton != null)
+            {
+                continueButton.interactable = !_awaitingFakeRewardedAd;
             }
         }
 

@@ -78,6 +78,7 @@ namespace WordSpinAlpha.Core
             SaveManager.Instance.Data.session.revealedTipLocalPoints = new List<Vector2>(levelFlow.RevealedTipLocalHistory);
             SaveManager.Instance.Data.session.revealedPinLocalPositions = new List<Vector2>(levelFlow.RevealedPinLocalPositionHistory);
             SaveManager.Instance.Data.session.revealedPinLocalRotations = new List<float>(levelFlow.RevealedPinLocalRotationHistory);
+            GameManager.Instance?.PopulateSessionSnapshot(SaveManager.Instance.Data.session);
             SaveManager.Instance.Save();
         }
 

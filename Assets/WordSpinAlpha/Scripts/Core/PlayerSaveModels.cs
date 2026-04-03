@@ -9,6 +9,21 @@ namespace WordSpinAlpha.Core
     {
         public bool hasActiveSession;
         public bool pendingFailResolution;
+        public bool pendingInfoCard;
+        public string pendingInfoCardId;
+        public bool pendingQuestionAdvanceAfterInfoCard;
+        public bool pendingLevelCompleteAfterInfoCard;
+        public bool pendingLevelResult;
+        public bool usedContinueInCurrentLevel;
+        public int pendingResultLevelId;
+        public int pendingResultTotalScore;
+        public int pendingResultHitScore;
+        public int pendingResultClearScore;
+        public float pendingResultBestMultiplier;
+        public int pendingResultStars;
+        public int pendingResultCoinReward;
+        public int pendingResultAdBonusCoins;
+        public bool pendingResultAdBonusEligible;
         public int levelId;
         public int questionIndex;
         public int revealedLetters;
@@ -49,6 +64,8 @@ namespace WordSpinAlpha.Core
     {
         public int hints;
         public int softCurrency;
+        public bool startingHintsGranted;
+        public bool startingSoftCurrencyGranted;
     }
 
     [Serializable]
@@ -57,6 +74,17 @@ namespace WordSpinAlpha.Core
         public string activeCampaignId = GameConstants.DefaultCampaignId;
         public int highestUnlockedLevel = 1;
         public int lastCompletedLevel = 0;
+        public List<LevelRewardProgressState> levelRewards = new List<LevelRewardProgressState>();
+    }
+
+    [Serializable]
+    public class LevelRewardProgressState
+    {
+        public int levelId;
+        public int bestStars;
+        public int completionCount;
+        public bool firstClearCoinsGranted;
+        public int totalCoinsEarned;
     }
 
     [Serializable]

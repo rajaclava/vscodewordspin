@@ -81,6 +81,12 @@ namespace WordSpinAlpha.Core
             }
         }
 
+        public void ReplaceData(PlayerSaveData data)
+        {
+            _data = data ?? new PlayerSaveData();
+            Save();
+        }
+
         private void OnApplicationPause(bool pauseStatus)
         {
             if (pauseStatus)

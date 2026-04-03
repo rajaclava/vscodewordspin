@@ -9,8 +9,16 @@ namespace WordSpinAlpha.Core
     {
         private EnergyConfigDefinition _config;
 
-        public int MaxEnergy => Mathf.Max(1, _config != null ? _config.maxEnergy : GameConstants.DefaultMaxEnergy);
-        public int CurrentEnergy => SaveManager.Instance != null ? SaveManager.Instance.Data.energy.currentEnergy : MaxEnergy;
+        public int MaxEnergy
+        {
+            get
+            {
+                ResolveEffectiveRules(out int maxEnergy, out _, out _);
+                return maxEnergy;
+            }
+        }
+
+        public int CurrentEnergy => SaveManager.Instance != null ? Mathf.Clamp(SaveManager.Instance.Data.energy.currentEnergy, 0, MaxEnergy) : MaxEnergy;
 
         protected override void Awake()
         {
@@ -36,9 +44,14 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            if (SaveManager.Instance.Data.energy.currentEnergy <= 0)
+            bool needsInitialFill = SaveManager.Instance.Data.energy.lastRefillUtcTicks <= 0;
+            if (needsInitialFill)
             {
                 SaveManager.Instance.Data.energy.currentEnergy = MaxEnergy;
+            }
+            else
+            {
+                SaveManager.Instance.Data.energy.currentEnergy = Mathf.Clamp(SaveManager.Instance.Data.energy.currentEnergy, 0, MaxEnergy);
             }
 
             if (SaveManager.Instance.Data.energy.lastRefillUtcTicks <= 0)
@@ -57,9 +70,10 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            if (EconomyManager.Instance != null && EconomyManager.Instance.PremiumMembershipActive && _config != null && _config.bypassForPremiumMembership)
+            ResolveEffectiveRules(out int maxEnergy, out int refillMinutes, out bool bypassEntryEnergy);
+            if (bypassEntryEnergy)
             {
-                SaveManager.Instance.Data.energy.currentEnergy = MaxEnergy;
+                SaveManager.Instance.Data.energy.currentEnergy = maxEnergy;
                 SaveManager.Instance.Save();
                 GameEvents.RaiseEntryEnergyChanged(CurrentEnergy, MaxEnergy);
                 return;
@@ -67,14 +81,13 @@ namespace WordSpinAlpha.Core
 
             DateTime lastRefill = new DateTime(SaveManager.Instance.Data.energy.lastRefillUtcTicks, DateTimeKind.Utc);
             TimeSpan elapsed = DateTime.UtcNow - lastRefill;
-            int refillMinutes = Mathf.Max(1, _config != null ? _config.refillMinutes : GameConstants.DefaultEnergyRefillMinutes);
             int refillCount = Mathf.FloorToInt((float)elapsed.TotalMinutes / refillMinutes);
             if (refillCount <= 0)
             {
                 return;
             }
 
-            SaveManager.Instance.Data.energy.currentEnergy = Mathf.Min(MaxEnergy, SaveManager.Instance.Data.energy.currentEnergy + refillCount);
+            SaveManager.Instance.Data.energy.currentEnergy = Mathf.Min(maxEnergy, SaveManager.Instance.Data.energy.currentEnergy + refillCount);
             SaveManager.Instance.Data.energy.lastRefillUtcTicks = DateTime.UtcNow.Ticks;
             SaveManager.Instance.Save();
             GameEvents.RaiseEntryEnergyChanged(CurrentEnergy, MaxEnergy);
@@ -84,9 +97,10 @@ namespace WordSpinAlpha.Core
         {
             RefillFromElapsedTime();
 
-            if (EconomyManager.Instance != null && EconomyManager.Instance.PremiumMembershipActive && _config != null && _config.bypassForPremiumMembership)
+            ResolveEffectiveRules(out int maxEnergy, out _, out bool bypassEntryEnergy);
+            if (bypassEntryEnergy)
             {
-                GameEvents.RaiseEntryEnergyChanged(MaxEnergy, MaxEnergy);
+                GameEvents.RaiseEntryEnergyChanged(maxEnergy, maxEnergy);
                 return true;
             }
 
@@ -114,6 +128,22 @@ namespace WordSpinAlpha.Core
             SaveManager.Instance.Data.energy.lastRefillUtcTicks = DateTime.UtcNow.Ticks;
             SaveManager.Instance.Save();
             GameEvents.RaiseEntryEnergyChanged(CurrentEnergy, MaxEnergy);
+        }
+
+        private void ResolveEffectiveRules(out int maxEnergy, out int refillMinutes, out bool bypassEntryEnergy)
+        {
+            if (TestPlayerModeManager.Instance != null &&
+                TestPlayerModeManager.Instance.TryGetEnergyOverride(out maxEnergy, out refillMinutes, out bypassEntryEnergy))
+            {
+                return;
+            }
+
+            maxEnergy = Mathf.Max(1, _config != null ? _config.maxEnergy : GameConstants.DefaultMaxEnergy);
+            refillMinutes = Mathf.Max(1, _config != null ? _config.refillMinutes : GameConstants.DefaultEnergyRefillMinutes);
+            bypassEntryEnergy = EconomyManager.Instance != null &&
+                               EconomyManager.Instance.PremiumMembershipActive &&
+                               _config != null &&
+                               _config.bypassForPremiumMembership;
         }
     }
 }

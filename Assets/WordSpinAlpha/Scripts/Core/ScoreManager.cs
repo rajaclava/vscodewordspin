@@ -204,5 +204,18 @@ namespace WordSpinAlpha.Core
                 lastHitType = hitType
             });
         }
+
+        public void ResetForTesting()
+        {
+            _totalScore = 0;
+            _hitScore = 0;
+            _perfectStreak = 0;
+            _currentMultiplier = 1f;
+            _bestMultiplier = 1f;
+            _mistakeCount = 0;
+            _perfectHits = 0;
+            _goodHits = 0;
+            PublishScoreChanged(0, 0, 0, 0, HitResultType.Tolerated);
+        }
     }
 }

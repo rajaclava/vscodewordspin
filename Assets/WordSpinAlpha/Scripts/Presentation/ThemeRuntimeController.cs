@@ -54,6 +54,7 @@ namespace WordSpinAlpha.Presentation
         private float _rhythmFlowIntensity;
         private int _rhythmMomentumLevel;
         private int _consecutivePerfectPitchCount;
+        private int _currentLevelId;
         private Color _baseBackgroundGlowColor;
         private Color _baseAmbienceLeftColor;
         private Color _baseAmbienceRightColor;
@@ -106,6 +107,7 @@ namespace WordSpinAlpha.Presentation
             GameEvents.QuestionCompleted += HandleQuestionCompleted;
             GameEvents.QuestionFailed += HandleQuestionFailed;
             GameEvents.LevelCompleted += HandleLevelCompleted;
+            GameEvents.LanguageChanged += HandleLanguageChanged;
         }
 
         private void OnDisable()
@@ -120,21 +122,15 @@ namespace WordSpinAlpha.Presentation
             GameEvents.QuestionCompleted -= HandleQuestionCompleted;
             GameEvents.QuestionFailed -= HandleQuestionFailed;
             GameEvents.LevelCompleted -= HandleLevelCompleted;
+            GameEvents.LanguageChanged -= HandleLanguageChanged;
         }
 
         private void HandleLevelStarted(LevelContext context)
         {
             ApplyTheme(context.themeId, context);
             _consecutivePerfectPitchCount = 0;
-            if (levelLabel != null)
-            {
-                levelLabel.text = $"Level {context.levelId}";
-            }
-
-            if (currencyLabel != null)
-            {
-                currencyLabel.text = EconomyManager.Instance != null ? EconomyManager.Instance.SoftCurrency.ToString() : "0";
-            }
+            _currentLevelId = context.levelId;
+            RefreshLevelLabel();
         }
 
         private void HandleThemeUnlocked(string themeId)
@@ -520,6 +516,11 @@ namespace WordSpinAlpha.Presentation
             FlashSprite(orbitRing, new Color(1f, 0.84f, 0.42f, 0.84f), 1.18f, 0.34f);
         }
 
+        private void HandleLanguageChanged(string _)
+        {
+            RefreshLevelLabel();
+        }
+
         private static Color WithAlpha(Color color, float alpha)
         {
             color.a = alpha;
@@ -746,6 +747,51 @@ namespace WordSpinAlpha.Presentation
             if (ambienceRight != null)
             {
                 ambienceRight.transform.position = new Vector3(4.20f, 0.10f, 2f);
+            }
+        }
+
+        private void RefreshLevelLabel()
+        {
+            if (levelLabel == null || _currentLevelId <= 0)
+            {
+                return;
+            }
+
+            levelLabel.text = $"{GetLocalized("level")} {_currentLevelId}";
+        }
+
+        private static string GetLocalized(string key)
+        {
+            string language = SaveManager.Instance != null
+                ? GameConstants.NormalizeLanguageCode(SaveManager.Instance.Data.languageCode)
+                : GameConstants.DefaultLanguageCode;
+
+            switch (language)
+            {
+                case "en":
+                    return key switch
+                    {
+                        "level" => "Level",
+                        _ => key
+                    };
+                case "es":
+                    return key switch
+                    {
+                        "level" => "Nivel",
+                        _ => key
+                    };
+                case "de":
+                    return key switch
+                    {
+                        "level" => "Stufe",
+                        _ => key
+                    };
+                default:
+                    return key switch
+                    {
+                        "level" => "Seviye",
+                        _ => key
+                    };
             }
         }
     }

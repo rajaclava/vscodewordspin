@@ -11,9 +11,41 @@ namespace WordSpinAlpha.Core
 
         private StoreCatalogDefinition _storeCatalog;
         private MembershipProfileDefinition _membershipProfile;
+        private EconomyBalanceProfile _economyBalanceProfile;
+        private TestPlayerMode _loadedEconomyProfileMode = (TestPlayerMode)(-1);
 
-        public bool PremiumMembershipActive => !ForceDisablePremiumForValidation && SaveManager.Instance != null && SaveManager.Instance.Data.membership.premiumMembershipActive;
-        public bool NoAdsOwned => SaveManager.Instance != null && SaveManager.Instance.Data.membership.noAdsOwned;
+        public bool PremiumMembershipActive
+        {
+            get
+            {
+                if (ForceDisablePremiumForValidation)
+                {
+                    return false;
+                }
+
+                if (TestPlayerModeManager.Instance != null &&
+                    TestPlayerModeManager.Instance.TryGetPremiumMembershipOverride(out bool overrideValue))
+                {
+                    return overrideValue;
+                }
+
+                return SaveManager.Instance != null && SaveManager.Instance.Data.membership.premiumMembershipActive;
+            }
+        }
+
+        public bool NoAdsOwned
+        {
+            get
+            {
+                if (TestPlayerModeManager.Instance != null &&
+                    TestPlayerModeManager.Instance.TryGetNoAdsOverride(out bool overrideValue))
+                {
+                    return overrideValue;
+                }
+
+                return SaveManager.Instance != null && SaveManager.Instance.Data.membership.noAdsOwned;
+            }
+        }
         public int SoftCurrency => SaveManager.Instance != null ? SaveManager.Instance.Data.economy.softCurrency : 0;
         public int Hints => SaveManager.Instance != null ? SaveManager.Instance.Data.economy.hints : 0;
 
@@ -32,6 +64,7 @@ namespace WordSpinAlpha.Core
             }
 
             InitializeDefaultEconomy();
+            GameEvents.RaiseSoftCurrencyChanged(SoftCurrency, 0);
         }
 
         private void InitializeDefaultEconomy()
@@ -42,8 +75,23 @@ namespace WordSpinAlpha.Core
             }
 
             EnergyConfigDefinition config = ContentService.Instance.LoadEnergyConfig();
-            SaveManager.Instance.Data.economy.hints = Mathf.Max(SaveManager.Instance.Data.economy.hints, config.startingHints);
-            SaveManager.Instance.Data.economy.softCurrency = Mathf.Max(SaveManager.Instance.Data.economy.softCurrency, config.startingSoftCurrency);
+            if (config == null)
+            {
+                return;
+            }
+
+            if (!SaveManager.Instance.Data.economy.startingHintsGranted)
+            {
+                SaveManager.Instance.Data.economy.hints = Mathf.Max(SaveManager.Instance.Data.economy.hints, Mathf.Max(0, config.startingHints));
+                SaveManager.Instance.Data.economy.startingHintsGranted = true;
+            }
+
+            if (!SaveManager.Instance.Data.economy.startingSoftCurrencyGranted)
+            {
+                SaveManager.Instance.Data.economy.softCurrency = Mathf.Max(SaveManager.Instance.Data.economy.softCurrency, Mathf.Max(0, config.startingSoftCurrency));
+                SaveManager.Instance.Data.economy.startingSoftCurrencyGranted = true;
+            }
+
             SaveManager.Instance.Save();
         }
 
@@ -85,13 +133,16 @@ namespace WordSpinAlpha.Core
                     continue;
                 }
 
-                if (SaveManager.Instance.Data.economy.softCurrency < price.softCurrencyPrice)
+                int resolvedPrice = ResolveThemeSoftCurrencyPrice(themeId, price.softCurrencyPrice);
+                if (SaveManager.Instance.Data.economy.softCurrency < resolvedPrice)
                 {
                     return false;
                 }
 
-                SaveManager.Instance.Data.economy.softCurrency -= price.softCurrencyPrice;
+                SaveManager.Instance.Data.economy.softCurrency -= resolvedPrice;
                 UnlockTheme(themeId);
+                SaveManager.Instance.Save();
+                GameEvents.RaiseSoftCurrencyChanged(SoftCurrency, -resolvedPrice);
                 return true;
             }
 
@@ -155,7 +206,7 @@ namespace WordSpinAlpha.Core
 
             SaveManager.Instance.Data.membership.premiumMembershipActive = value;
             SaveManager.Instance.Save();
-            GameEvents.RaiseMembershipChanged(value);
+            GameEvents.RaiseMembershipChanged(PremiumMembershipActive);
         }
 
         public void SetNoAdsOwned(bool value)
@@ -167,6 +218,66 @@ namespace WordSpinAlpha.Core
 
             SaveManager.Instance.Data.membership.noAdsOwned = value;
             SaveManager.Instance.Save();
+            GameEvents.RaiseMembershipChanged(PremiumMembershipActive);
+        }
+
+        public void GrantSoftCurrency(int amount, string metricReason = null)
+        {
+            if (SaveManager.Instance == null)
+            {
+                return;
+            }
+
+            int delta = Mathf.Max(0, amount);
+            if (delta <= 0)
+            {
+                return;
+            }
+
+            SaveManager.Instance.Data.economy.softCurrency += delta;
+            SaveManager.Instance.Save();
+            GameEvents.RaiseSoftCurrencyChanged(SoftCurrency, delta);
+
+            if (!string.IsNullOrWhiteSpace(metricReason))
+            {
+                GameEvents.RaiseMetric("softCurrencyGranted", $"{{\"reason\":\"{metricReason}\",\"amount\":{delta}}}");
+            }
+        }
+
+        public void RefreshEconomyProfile()
+        {
+            _economyBalanceProfile = null;
+            _loadedEconomyProfileMode = (TestPlayerMode)(-1);
+            EnsureEconomyBalanceProfile();
+        }
+
+        private int ResolveThemeSoftCurrencyPrice(string themeId, int fallbackPrice)
+        {
+            EnsureEconomyBalanceProfile();
+            return _economyBalanceProfile != null
+                ? _economyBalanceProfile.ResolveThemeSoftCurrencyPrice(themeId, fallbackPrice)
+                : fallbackPrice;
+        }
+
+        private void EnsureEconomyBalanceProfile()
+        {
+            TestPlayerMode desiredMode = TestPlayerModeManager.Instance != null ? TestPlayerModeManager.Instance.AppliedMode : TestPlayerMode.Default;
+            if (_economyBalanceProfile != null && _loadedEconomyProfileMode == desiredMode)
+            {
+                _economyBalanceProfile.EnsureDefaults();
+                return;
+            }
+
+            _economyBalanceProfile = Resources.Load<EconomyBalanceProfile>(EconomyBalanceProfile.GetResourcePathForMode(desiredMode));
+            if (_economyBalanceProfile == null && desiredMode != TestPlayerMode.Default)
+            {
+                _economyBalanceProfile = Resources.Load<EconomyBalanceProfile>(EconomyBalanceProfile.GetResourcePathForMode(TestPlayerMode.Default));
+            }
+            if (_economyBalanceProfile != null)
+            {
+                _loadedEconomyProfileMode = desiredMode;
+                _economyBalanceProfile.EnsureDefaults();
+            }
         }
     }
 }

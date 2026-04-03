@@ -23,7 +23,7 @@ namespace WordSpinAlpha.Core
 
         public void ResetQuestionHearts()
         {
-            CurrentHearts = Mathf.Max(1, defaultHearts);
+            CurrentHearts = ResolveMaxHearts();
             GameEvents.RaiseQuestionHeartsChanged(CurrentHearts);
         }
 
@@ -42,8 +42,31 @@ namespace WordSpinAlpha.Core
 
         public void Restore(int hearts)
         {
-            CurrentHearts = Mathf.Clamp(hearts, 0, defaultHearts);
+            CurrentHearts = Mathf.Clamp(hearts, 0, ResolveMaxHearts());
             GameEvents.RaiseQuestionHeartsChanged(CurrentHearts);
+        }
+
+        public void RefreshForTesting(bool resetToMax)
+        {
+            if (resetToMax)
+            {
+                ResetQuestionHearts();
+                return;
+            }
+
+            CurrentHearts = Mathf.Clamp(CurrentHearts, 0, ResolveMaxHearts());
+            GameEvents.RaiseQuestionHeartsChanged(CurrentHearts);
+        }
+
+        private int ResolveMaxHearts()
+        {
+            if (TestPlayerModeManager.Instance != null &&
+                TestPlayerModeManager.Instance.TryGetQuestionHeartsOverride(out int overrideHearts))
+            {
+                return overrideHearts;
+            }
+
+            return Mathf.Max(1, defaultHearts);
         }
     }
 }

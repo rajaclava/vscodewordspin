@@ -1,6 +1,7 @@
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using WordSpinAlpha.Core;
 
 namespace WordSpinAlpha.Presentation
@@ -14,6 +15,9 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] private TextMeshProUGUI debugAnswerLabel;
         [SerializeField] private TextMeshProUGUI scoreLabel;
         [SerializeField] private TextMeshProUGUI multiplierLabel;
+        [SerializeField] private Button coinHookButton;
+        [SerializeField] private TextMeshProUGUI coinHookTitleLabel;
+        [SerializeField] private TextMeshProUGUI coinHookValueLabel;
         [SerializeField] private float targetPulseRefreshInterval = 0.05f;
 
         private char[] _revealedChars = new char[0];
@@ -25,10 +29,17 @@ namespace WordSpinAlpha.Presentation
         private Vector3 _hintBaseScale = Vector3.one;
         private int _lastPulseStep = -1;
         private readonly StringBuilder _answerBuilder = new StringBuilder(32);
+        private Vector3 _coinHookBaseScale = Vector3.one;
+        private float _coinHookPulseUntil;
+        private int _currentSoftCurrency;
+        private int _currentLevelId;
+        private int _lastScoreTotal;
+        private bool _hasScoreState;
 
         private void Awake()
         {
             EnsureScoreUi();
+            EnsureCoinHookUi();
             if (targetHintLabel != null)
             {
                 _hintBaseScale = targetHintLabel.rectTransform.localScale;
@@ -36,16 +47,14 @@ namespace WordSpinAlpha.Presentation
                 targetHintLabel.text = string.Empty;
                 targetHintLabel.gameObject.SetActive(false);
             }
+
+            _currentSoftCurrency = EconomyManager.Instance != null ? EconomyManager.Instance.SoftCurrency : 0;
+            RefreshCoinHook();
         }
 
         private void Update()
         {
-            if (targetHintLabel == null)
-            {
-                return;
-            }
-
-            if (_feedbackExpiresAt > 0f && Time.time >= _feedbackExpiresAt)
+            if (targetHintLabel != null && _feedbackExpiresAt > 0f && Time.time >= _feedbackExpiresAt)
             {
                 _feedbackExpiresAt = 0f;
                 targetHintLabel.text = _defaultHintText;
@@ -54,7 +63,7 @@ namespace WordSpinAlpha.Presentation
                 targetHintLabel.gameObject.SetActive(!string.IsNullOrWhiteSpace(_defaultHintText));
             }
 
-            if (_currentTargetAnswerIndex >= 0)
+            if (targetHintLabel != null && _currentTargetAnswerIndex >= 0)
             {
                 int pulseStep = Mathf.FloorToInt(Time.time / Mathf.Max(0.01f, targetPulseRefreshInterval));
                 if (pulseStep != _lastPulseStep)
@@ -63,30 +72,52 @@ namespace WordSpinAlpha.Presentation
                     RefreshAnswerLabel();
                 }
             }
+
+            if (coinHookButton != null)
+            {
+                float pulse = _coinHookPulseUntil > Time.unscaledTime
+                    ? 1f + (Mathf.Sin(Time.unscaledTime * 10f) * 0.06f)
+                    : 1f + (Mathf.Sin(Time.unscaledTime * 2.2f) * 0.015f);
+                coinHookButton.transform.localScale = _coinHookBaseScale * pulse;
+            }
         }
 
         private void OnEnable()
         {
+            GameEvents.LevelStarted += HandleLevelStarted;
             GameEvents.QuestionStarted += HandleQuestionStarted;
             GameEvents.LetterRevealed += HandleLetterRevealed;
             GameEvents.TargetSlotUpdated += HandleTargetSlotUpdated;
             GameEvents.HitEvaluated += HandleHitEvaluated;
             GameEvents.ScoreChanged += HandleScoreChanged;
+            GameEvents.SoftCurrencyChanged += HandleSoftCurrencyChanged;
             GameEvents.QuestionHeartsChanged += HandleHeartsChanged;
             GameEvents.QuestionFailed += HandleQuestionFailed;
             GameEvents.LevelCompleted += HandleLevelCompleted;
+            GameEvents.LanguageChanged += HandleLanguageChanged;
+            SyncSoftCurrencyFromSource();
         }
 
         private void OnDisable()
         {
+            GameEvents.LevelStarted -= HandleLevelStarted;
             GameEvents.QuestionStarted -= HandleQuestionStarted;
             GameEvents.LetterRevealed -= HandleLetterRevealed;
             GameEvents.TargetSlotUpdated -= HandleTargetSlotUpdated;
             GameEvents.HitEvaluated -= HandleHitEvaluated;
             GameEvents.ScoreChanged -= HandleScoreChanged;
+            GameEvents.SoftCurrencyChanged -= HandleSoftCurrencyChanged;
             GameEvents.QuestionHeartsChanged -= HandleHeartsChanged;
             GameEvents.QuestionFailed -= HandleQuestionFailed;
             GameEvents.LevelCompleted -= HandleLevelCompleted;
+            GameEvents.LanguageChanged -= HandleLanguageChanged;
+        }
+
+        private void HandleLevelStarted(LevelContext context)
+        {
+            _currentLevelId = context.levelId;
+            SyncSoftCurrencyFromSource();
+            RefreshCoinHook();
         }
 
         private void HandleQuestionStarted(QuestionContext context, string answerWord)
@@ -109,7 +140,7 @@ namespace WordSpinAlpha.Presentation
             _defaultHintText = string.Empty;
             if (context.questionIndex == 0 && scoreLabel != null)
             {
-                scoreLabel.text = "Score: 0";
+                scoreLabel.text = $"{GetLocalized("score")}: 0";
             }
             if (context.questionIndex == 0 && multiplierLabel != null)
             {
@@ -151,15 +182,17 @@ namespace WordSpinAlpha.Presentation
         {
             if (heartsLabel != null)
             {
-                heartsLabel.text = $"Hearts: {hearts}";
+                heartsLabel.text = $"{GetLocalized("hearts")}: {hearts}";
             }
         }
 
         private void HandleScoreChanged(ScoreStateData state)
         {
+            _lastScoreTotal = state.totalScore;
+            _hasScoreState = true;
             if (scoreLabel != null)
             {
-                scoreLabel.text = $"Score: {state.totalScore}";
+                scoreLabel.text = $"{GetLocalized("score")}: {state.totalScore}";
             }
 
             if (multiplierLabel != null)
@@ -173,6 +206,17 @@ namespace WordSpinAlpha.Presentation
                             ? new Color(0.92f, 0.68f, 0.34f)
                             : new Color(0.80f, 0.82f, 0.88f);
             }
+        }
+
+        private void HandleSoftCurrencyChanged(int current, int delta)
+        {
+            _currentSoftCurrency = current;
+            if (delta > 0)
+            {
+                _coinHookPulseUntil = Time.unscaledTime + 0.9f;
+            }
+
+            RefreshCoinHook();
         }
 
         private void HandleHitEvaluated(HitData hit)
@@ -263,7 +307,23 @@ namespace WordSpinAlpha.Presentation
 
         private void HandleLevelCompleted(LevelContext context)
         {
-            ShowTransientHint($"Level {context.levelId} Complete", new Color(1f, 0.88f, 0.60f), 1.2f, 1.10f);
+            ShowTransientHint($"{GetLocalized("level")} {context.levelId} {GetLocalized("complete_hint")}", new Color(1f, 0.88f, 0.60f), 1.2f, 1.10f);
+        }
+
+        private void HandleLanguageChanged(string _)
+        {
+            if (QuestionLifeManager.Instance != null)
+            {
+                HandleHeartsChanged(QuestionLifeManager.Instance.CurrentHearts);
+            }
+
+            if (scoreLabel != null)
+            {
+                scoreLabel.text = $"{GetLocalized("score")}: {(_hasScoreState ? _lastScoreTotal : 0)}";
+            }
+
+            SyncSoftCurrencyFromSource();
+            RefreshCoinHook();
         }
 
         private void ShowTransientHint(string text, Color color, float duration, float scaleMultiplier)
@@ -308,12 +368,12 @@ namespace WordSpinAlpha.Presentation
                 Transform topBar = canvas.transform.Find("TopBar");
                 Transform scoreParent = topBar != null ? topBar : canvas.transform;
                 scoreLabel = CreateHudLabel("ScoreLabel", scoreParent, font, new Vector2(0.82f, 0.5f), new Vector2(220f, 50f), 28f, TextAlignmentOptions.Center);
-                scoreLabel.text = "Score: 0";
+                scoreLabel.text = $"{GetLocalized("score")}: 0";
                 scoreLabel.color = new Color(0.96f, 0.95f, 0.88f);
             }
             else
             {
-                scoreLabel.text = "Score: 0";
+                scoreLabel.text = $"{GetLocalized("score")}: 0";
                 scoreLabel.alignment = TextAlignmentOptions.Center;
                 scoreLabel.fontSize = 28f;
                 scoreLabel.color = new Color(0.96f, 0.95f, 0.88f);
@@ -344,6 +404,172 @@ namespace WordSpinAlpha.Presentation
             label.alignment = alignment;
             label.enableWordWrapping = false;
             return label;
+        }
+
+        private void EnsureCoinHookUi()
+        {
+            EconomyBalanceProfile balanceProfile = LevelEconomyManager.Instance != null ? LevelEconomyManager.Instance.Profile : null;
+            if (balanceProfile != null && !balanceProfile.ShowGameplayCoinHook)
+            {
+                if (coinHookButton != null)
+                {
+                    coinHookButton.gameObject.SetActive(false);
+                }
+                return;
+            }
+
+            if (coinHookButton == null)
+            {
+                GameObject existing = GameObject.Find("CoinHookButton");
+                if (existing != null)
+                {
+                    coinHookButton = existing.GetComponent<Button>();
+                }
+            }
+
+            if (coinHookButton == null)
+            {
+                Canvas canvas = GetComponentInParent<Canvas>();
+                Transform topBar = canvas != null ? canvas.transform.Find("TopBar") : null;
+                if (topBar == null)
+                {
+                    return;
+                }
+
+                GameObject root = new GameObject("CoinHookButton", typeof(RectTransform), typeof(Image), typeof(Button));
+                root.transform.SetParent(topBar, false);
+                RectTransform rect = root.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(0.5f, 0.5f);
+                rect.anchorMax = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = new Vector2(0f, 0f);
+                rect.sizeDelta = new Vector2(170f, 52f);
+
+                Image background = root.GetComponent<Image>();
+                background.color = new Color(0.26f, 0.20f, 0.16f, 0.88f);
+
+                coinHookButton = root.GetComponent<Button>();
+                coinHookButton.onClick.AddListener(OpenStoreFromCoinHook);
+
+                TMP_FontAsset font = questionLabel != null ? questionLabel.font : TMP_Settings.defaultFontAsset;
+                coinHookTitleLabel = CreateHudLabel("CoinHookTitle", root.transform, font, new Vector2(0.5f, 0.68f), new Vector2(150f, 24f), 18f, TextAlignmentOptions.Center);
+                coinHookValueLabel = CreateHudLabel("CoinHookValue", root.transform, font, new Vector2(0.5f, 0.28f), new Vector2(150f, 24f), 18f, TextAlignmentOptions.Center);
+                coinHookTitleLabel.color = new Color(0.98f, 0.87f, 0.66f);
+                coinHookValueLabel.color = Color.white;
+            }
+
+            if (coinHookTitleLabel == null && coinHookButton != null)
+            {
+                Transform found = coinHookButton.transform.Find("CoinHookTitle");
+                if (found != null)
+                {
+                    coinHookTitleLabel = found.GetComponent<TextMeshProUGUI>();
+                }
+            }
+
+            if (coinHookValueLabel == null && coinHookButton != null)
+            {
+                Transform found = coinHookButton.transform.Find("CoinHookValue");
+                if (found != null)
+                {
+                    coinHookValueLabel = found.GetComponent<TextMeshProUGUI>();
+                }
+            }
+
+            if (coinHookButton != null)
+            {
+                coinHookButton.onClick.RemoveListener(OpenStoreFromCoinHook);
+                coinHookButton.onClick.AddListener(OpenStoreFromCoinHook);
+                _coinHookBaseScale = coinHookButton.transform.localScale;
+            }
+        }
+
+        private void RefreshCoinHook()
+        {
+            if (coinHookButton == null)
+            {
+                return;
+            }
+
+            EconomyBalanceProfile balanceProfile = LevelEconomyManager.Instance != null ? LevelEconomyManager.Instance.Profile : null;
+            bool showHook = balanceProfile == null || balanceProfile.ShowGameplayCoinHook;
+            coinHookButton.gameObject.SetActive(showHook);
+            if (!showHook)
+            {
+                return;
+            }
+
+            SyncSoftCurrencyFromSource();
+
+            if (coinHookTitleLabel != null)
+            {
+                coinHookTitleLabel.text = GetLocalized("coin_hook_title");
+            }
+
+            if (coinHookValueLabel != null)
+            {
+                coinHookValueLabel.text = _currentSoftCurrency.ToString();
+            }
+        }
+
+        private void SyncSoftCurrencyFromSource()
+        {
+            _currentSoftCurrency = EconomyManager.Instance != null ? EconomyManager.Instance.SoftCurrency : 0;
+        }
+
+        private static void OpenStoreFromCoinHook()
+        {
+            SceneNavigator.Instance?.OpenStore();
+        }
+
+        private static string GetLocalized(string key)
+        {
+            string language = SaveManager.Instance != null
+                ? GameConstants.NormalizeLanguageCode(SaveManager.Instance.Data.languageCode)
+                : GameConstants.DefaultLanguageCode;
+
+            switch (language)
+            {
+                case "en":
+                    return key switch
+                    {
+                        "score" => "Score",
+                        "hearts" => "Lives",
+                        "level" => "Level",
+                        "complete_hint" => "Complete",
+                        "coin_hook_title" => "Vault",
+                        _ => key
+                    };
+                case "es":
+                    return key switch
+                    {
+                        "score" => "Puntuacion",
+                        "hearts" => "Vidas",
+                        "level" => "Nivel",
+                        "complete_hint" => "Completado",
+                        "coin_hook_title" => "Caja",
+                        _ => key
+                    };
+                case "de":
+                    return key switch
+                    {
+                        "score" => "Punktzahl",
+                        "hearts" => "Leben",
+                        "level" => "Stufe",
+                        "complete_hint" => "Abgeschlossen",
+                        "coin_hook_title" => "Kiste",
+                        _ => key
+                    };
+                default:
+                    return key switch
+                    {
+                        "score" => "Puan",
+                        "hearts" => "Can",
+                        "level" => "Seviye",
+                        "complete_hint" => "Tamamlandi",
+                        "coin_hook_title" => "Kasa",
+                        _ => key
+                    };
+            }
         }
     }
 

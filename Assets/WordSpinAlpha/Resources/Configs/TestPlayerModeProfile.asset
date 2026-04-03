@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2860bd40c40e94a428c1345f30cf350e, type: 3}
+  m_Name: TestPlayerModeProfile
+  m_EditorClassIdentifier: Assembly-CSharp::WordSpinAlpha.Core.TestPlayerModeProfile
+  activeMode: 0
+  lastAppliedMode: 0
+  defaultModeSaveSnapshotJson: '{"languageCode":"tr","session":{"hasActiveSession":true,"pendingFailResolution":false,"pendingInfoCard":false,"pendingInfoCardId":"","pendingQuestionAdvanceAfterInfoCard":false,"pendingLevelCompleteAfterInfoCard":false,"pendingLevelResult":false,"usedContinueInCurrentLevel":false,"pendingResultLevelId":0,"pendingResultTotalScore":0,"pendingResultHitScore":0,"pendingResultClearScore":0,"pendingResultBestMultiplier":0.0,"pendingResultStars":0,"pendingResultCoinReward":0,"pendingResultAdBonusCoins":0,"pendingResultAdBonusEligible":false,"levelId":10,"questionIndex":0,"revealedLetters":0,"currentTargetSlotIndex":0,"questionHeartsRemaining":3,"campaignId":"alpha_main","themeId":"base_default","languageCode":"tr","revealedSlotIndices":[],"revealedTipLocalPoints":[],"revealedPinLocalPositions":[],"revealedPinLocalRotations":[]},"energy":{"currentEnergy":5,"lastRefillUtcTicks":639108237819102845},"membership":{"noAdsOwned":false,"premiumMembershipActive":true},"themes":{"unlockedThemes":["base_default","myth_hades"],"activeThemeId":"myth_hades"},"economy":{"hints":21,"softCurrency":1545,"startingHintsGranted":true,"startingSoftCurrencyGranted":true},"progress":{"activeCampaignId":"alpha_main","highestUnlockedLevel":26,"lastCompletedLevel":9,"levelRewards":[{"levelId":9,"bestStars":3,"completionCount":9,"firstClearCoinsGranted":true,"totalCoinsEarned":34},{"levelId":23,"bestStars":3,"completionCount":5,"firstClearCoinsGranted":true,"totalCoinsEarned":11}]},"metrics":{"perfectHits":489,"toleratedHits":614,"nearMisses":73,"wrongLetters":318,"wrongSlots":78,"completedLevels":169},"remoteContent":{"remoteContentEnabled":true,"activeManifestVersion":"local-only","lastRemoteRefreshUtcTicks":639108305785279340},"telemetry":{"currentSessionId":"367fac489665475db3e870507a99ab6f","lastTelemetryFlushUtcTicks":0,"pendingTelemetryEventCount":7894}}'
+  freeModeSaveSnapshotJson: '{"languageCode":"tr","session":{"hasActiveSession":true,"pendingFailResolution":false,"pendingInfoCard":false,"pendingInfoCardId":"","pendingQuestionAdvanceAfterInfoCard":false,"pendingLevelCompleteAfterInfoCard":false,"pendingLevelResult":false,"usedContinueInCurrentLevel":false,"pendingResultLevelId":0,"pendingResultTotalScore":0,"pendingResultHitScore":0,"pendingResultClearScore":0,"pendingResultBestMultiplier":0.0,"pendingResultStars":0,"pendingResultCoinReward":0,"pendingResultAdBonusCoins":0,"pendingResultAdBonusEligible":false,"levelId":10,"questionIndex":0,"revealedLetters":0,"currentTargetSlotIndex":0,"questionHeartsRemaining":3,"campaignId":"alpha_main","themeId":"base_default","languageCode":"tr","revealedSlotIndices":[],"revealedTipLocalPoints":[],"revealedPinLocalPositions":[],"revealedPinLocalRotations":[]},"energy":{"currentEnergy":4,"lastRefillUtcTicks":639108311028373217},"membership":{"noAdsOwned":false,"premiumMembershipActive":false},"themes":{"unlockedThemes":["base_default"],"activeThemeId":"base_default"},"economy":{"hints":24,"softCurrency":345,"startingHintsGranted":true,"startingSoftCurrencyGranted":true},"progress":{"activeCampaignId":"alpha_main","highestUnlockedLevel":26,"lastCompletedLevel":9,"levelRewards":[{"levelId":9,"bestStars":3,"completionCount":10,"firstClearCoinsGranted":true,"totalCoinsEarned":34},{"levelId":23,"bestStars":3,"completionCount":5,"firstClearCoinsGranted":true,"totalCoinsEarned":11}]},"metrics":{"perfectHits":492,"toleratedHits":614,"nearMisses":73,"wrongLetters":325,"wrongSlots":78,"completedLevels":170},"remoteContent":{"remoteContentEnabled":true,"activeManifestVersion":"local-only","lastRemoteRefreshUtcTicks":639108305785279340},"telemetry":{"currentSessionId":"367fac489665475db3e870507a99ab6f","lastTelemetryFlushUtcTicks":0,"pendingTelemetryEventCount":7994}}'
+  premiumModeSaveSnapshotJson: 
+  freePlayer:
+    overrideMembership: 1
+    premiumMembershipActive: 0
+    noAdsOwned: 0
+    overrideEnergyRules: 1
+    maxEnergy: 5
+    refillMinutes: 10
+    bypassEntryEnergy: 0
+    overrideQuestionHearts: 1
+    questionHearts: 3
+    requireRewardedContinue: 1
+    rewardedAdSeconds: 30
+  premiumPlayer:
+    overrideMembership: 1
+    premiumMembershipActive: 1
+    noAdsOwned: 1
+    overrideEnergyRules: 1
+    maxEnergy: 5
+    refillMinutes: 30
+    bypassEntryEnergy: 1
+    overrideQuestionHearts: 1
+    questionHearts: 999
+    requireRewardedContinue: 0
+    rewardedAdSeconds: 0

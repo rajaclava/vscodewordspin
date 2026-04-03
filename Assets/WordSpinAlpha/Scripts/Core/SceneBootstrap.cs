@@ -1,4 +1,5 @@
 using UnityEngine;
+using WordSpinAlpha.Presentation;
 using WordSpinAlpha.Services;
 
 namespace WordSpinAlpha.Core
@@ -13,15 +14,20 @@ namespace WordSpinAlpha.Core
             EnsureSingleton<ContentService>("ContentService");
             EnsureSingleton<MetricLogger>("MetricLogger");
             EnsureSingleton<TelemetryService>("TelemetryService");
+            EnsureSingleton<TestPlayerModeManager>("TestPlayerModeManager");
             EnsureSingleton<EconomyManager>("EconomyManager");
             EnsureSingleton<EnergyManager>("EnergyManager");
             EnsureSingleton<QuestionLifeManager>("QuestionLifeManager");
             EnsureSingleton<InputManager>("InputManager");
             EnsureSingleton<MockPurchaseService>("MockPurchaseService");
+            EnsureSingleton<PreviewStorePricingProvider>("PreviewStorePricingProvider");
+            EnsureSingleton<StorePricingManager>("StorePricingManager");
             EnsureSingleton<SceneNavigator>("SceneNavigator");
             EnsureSingleton<StatsManager>("StatsManager");
             EnsureSingleton<ScoreManager>("ScoreManager");
+            EnsureSingleton<LevelEconomyManager>("LevelEconomyManager");
             EnsureSingleton<MobileRuntimeController>("MobileRuntimeController");
+            EnsureSingleton<DebugRewardedAdPresenter>("DebugRewardedAdPresenter");
         }
 
         private static void EnsureSingleton<T>(string objectName) where T : Component
