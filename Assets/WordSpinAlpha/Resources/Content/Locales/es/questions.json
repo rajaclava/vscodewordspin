@@ -1,229 +1,479 @@
 {
-  "questions": [
-    {
-      "questionId": "q001",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "hook",
-      "text": { "es": "¿De qué color es el cielo?" },
-      "answer": { "es": "AZUL" },
-      "infoCardId": "c001"
-    },
-    {
-      "questionId": "q005",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "hook",
-      "text": { "es": "¿Qué animal ladra?" },
-      "answer": { "es": "PERRO" },
-      "infoCardId": "c005"
-    },
-    {
-      "questionId": "q002",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "hook",
-      "text": { "es": "¿Qué bebemos todos los días?" },
-      "answer": { "es": "AGUA" },
-      "infoCardId": "c002"
-    },
-    {
-      "questionId": "q010",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "hook",
-      "text": { "es": "¿Qué producen las abejas?" },
-      "answer": { "es": "MIEL" },
-      "infoCardId": "c010"
-    },
-    {
-      "questionId": "q004",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "hook",
-      "text": { "es": "¿Con qué escribes en papel?" },
-      "answer": { "es": "PLUMA" },
-      "infoCardId": "c004"
-    },
-    {
-      "questionId": "q003",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "rhythm",
-      "text": { "es": "¿En qué planeta vivimos?" },
-      "answer": { "es": "TIERRA" },
-      "infoCardId": "c003"
-    },
-    {
-      "questionId": "q009",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "rhythm",
-      "text": { "es": "¿Cómo se llama el agua congelada?" },
-      "answer": { "es": "HIELO" },
-      "infoCardId": "c009"
-    },
-    {
-      "questionId": "q007",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "rhythm",
-      "text": { "es": "¿Cuánto es dos más dos?" },
-      "answer": { "es": "CUATRO" },
-      "infoCardId": "c007"
-    },
-    {
-      "questionId": "q006",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "rhythm",
-      "text": { "es": "¿Qué estrella nos da luz?" },
-      "answer": { "es": "SOL" },
-      "infoCardId": "c006"
-    },
-    {
-      "questionId": "q017",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "rhythm",
-      "text": { "es": "¿Qué bebes cuando tienes sed?" },
-      "answer": { "es": "AGUA" },
-      "infoCardId": "c017"
-    },
-    {
-      "questionId": "q014",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "variation",
-      "text": { "es": "¿Cuál es el océano más grande?" },
-      "answer": { "es": "PACIFICO" },
-      "infoCardId": "c014"
-    },
-    {
-      "questionId": "q012",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "variation",
-      "text": { "es": "¿Qué animal es el rey de la selva?" },
-      "answer": { "es": "LEON" },
-      "infoCardId": "c012"
-    },
-    {
-      "questionId": "q011",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "variation",
-      "text": { "es": "¿Qué usas para llamar a alguien?" },
-      "answer": { "es": "TELEFONO" },
-      "infoCardId": "c011"
-    },
-    {
-      "questionId": "q019",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "variation",
-      "text": { "es": "¿Qué gas respiran los humanos?" },
-      "answer": { "es": "OXIGENO" },
-      "infoCardId": "c019"
-    },
-    {
-      "questionId": "q008",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "variation",
-      "text": { "es": "¿Qué figura tiene cuatro lados iguales?" },
-      "answer": { "es": "CUADRADO" },
-      "infoCardId": "c008"
-    },
-    {
-      "questionId": "q018",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "pressure",
-      "text": { "es": "¿Qué planeta es rojo?" },
-      "answer": { "es": "MARTE" },
-      "infoCardId": "c018"
-    },
-    {
-      "questionId": "q015",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "pressure",
-      "text": { "es": "¿Quién pintó la Mona Lisa?" },
-      "answer": { "es": "LEONARDO" },
-      "infoCardId": "c015"
-    },
-    {
-      "questionId": "q013",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "pressure",
-      "text": { "es": "¿Qué deporte se juega en Wimbledon?" },
-      "answer": { "es": "TENIS" },
-      "infoCardId": "c013"
-    },
-    {
-      "questionId": "q020",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "pressure",
-      "text": { "es": "¿Qué empresa creó el iPhone?" },
-      "answer": { "es": "APPLE" },
-      "infoCardId": "c020"
-    },
-    {
-      "questionId": "q016",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "pressure",
-      "text": { "es": "¿Qué ciudad es llamada ventosa?" },
-      "answer": { "es": "CHICAGO" },
-      "infoCardId": "c016"
-    },
-    {
-      "questionId": "q021",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "showcase",
-      "text": { "es": "¿Qué palabra se lee igual al revés?" },
-      "answer": { "es": "RADAR" },
-      "infoCardId": "c021"
-    },
-    {
-      "questionId": "q022",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "showcase",
-      "text": { "es": "¿Qué país tiene más lagos?" },
-      "answer": { "es": "CANADA" },
-      "infoCardId": "c022"
-    },
-    {
-      "questionId": "q023",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "showcase",
-      "text": { "es": "¿Qué elemento tiene símbolo Au?" },
-      "answer": { "es": "ORO" },
-      "infoCardId": "c023"
-    },
-    {
-      "questionId": "q024",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "showcase",
-      "text": { "es": "¿Quién creó la relatividad?" },
-      "answer": { "es": "EINSTEIN" },
-      "infoCardId": "c024"
-    },
-    {
-      "questionId": "q025",
-      "packId": "alpha25_pack",
-      "themeId": "base_default",
-      "difficultyTier": "showcase",
-      "text": { "es": "¿Qué lenguaje tiene nombre de café?" },
-      "answer": { "es": "JAVA" },
-      "infoCardId": "c025"
-    }
-  ]
+    "questions": [
+        {
+            "questionId": "q001",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "hook",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿De qué color es el cielo?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "AZUL",
+                "de": ""
+            },
+            "infoCardId": "c001"
+        },
+        {
+            "questionId": "q005",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "hook",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué animal ladra?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "PERRO",
+                "de": ""
+            },
+            "infoCardId": "c005"
+        },
+        {
+            "questionId": "q002",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "hook",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué bebemos todos los días?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "AGUA",
+                "de": ""
+            },
+            "infoCardId": "c002"
+        },
+        {
+            "questionId": "q010",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "hook",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué producen las abejas?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "MIEL",
+                "de": ""
+            },
+            "infoCardId": "c010"
+        },
+        {
+            "questionId": "q004",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "hook",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Con qué escribes en papel?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "PLUMA",
+                "de": ""
+            },
+            "infoCardId": "c004"
+        },
+        {
+            "questionId": "q003",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "rhythm",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿En qué planeta vivimos?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "TIERRA",
+                "de": ""
+            },
+            "infoCardId": "c003"
+        },
+        {
+            "questionId": "q009",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "rhythm",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Cómo se llama el agua congelada?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "HIELO",
+                "de": ""
+            },
+            "infoCardId": "c009"
+        },
+        {
+            "questionId": "q007",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "rhythm",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Cuánto es dos más dos?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "CUATRO",
+                "de": ""
+            },
+            "infoCardId": "c007"
+        },
+        {
+            "questionId": "q006",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "rhythm",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué estrella nos da luz?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "SOL",
+                "de": ""
+            },
+            "infoCardId": "c006"
+        },
+        {
+            "questionId": "q017",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "rhythm",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué bebes cuando tienes sed?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "AGUA",
+                "de": ""
+            },
+            "infoCardId": "c017"
+        },
+        {
+            "questionId": "q014",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "variation",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Cuál es el océano más grande?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "PACIFICO",
+                "de": ""
+            },
+            "infoCardId": "c014"
+        },
+        {
+            "questionId": "q012",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "variation",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué animal es el rey de la selva?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "LEON",
+                "de": ""
+            },
+            "infoCardId": "c012"
+        },
+        {
+            "questionId": "q011",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "variation",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué usas para llamar a alguien?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "TELEFONO",
+                "de": ""
+            },
+            "infoCardId": "c011"
+        },
+        {
+            "questionId": "q019",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "variation",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué gas respiran los humanos?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "OXIGENO",
+                "de": ""
+            },
+            "infoCardId": "c019"
+        },
+        {
+            "questionId": "q008",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "variation",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué figura tiene cuatro lados iguales?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "CUADRADO",
+                "de": ""
+            },
+            "infoCardId": "c008"
+        },
+        {
+            "questionId": "q018",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "pressure",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué planeta es rojo?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "MARTE",
+                "de": ""
+            },
+            "infoCardId": "c018"
+        },
+        {
+            "questionId": "q015",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "pressure",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Quién pintó la Mona Lisa?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "LEONARDO",
+                "de": ""
+            },
+            "infoCardId": "c015"
+        },
+        {
+            "questionId": "q013",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "pressure",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué deporte se juega en Wimbledon?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "TENIS",
+                "de": ""
+            },
+            "infoCardId": "c013"
+        },
+        {
+            "questionId": "q020",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "pressure",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué empresa creó el iPhone?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "APPLE",
+                "de": ""
+            },
+            "infoCardId": "c020"
+        },
+        {
+            "questionId": "q016",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "pressure",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué ciudad es llamada ventosa?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "CHICAGO",
+                "de": ""
+            },
+            "infoCardId": "c016"
+        },
+        {
+            "questionId": "q021",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "showcase",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué palabra se lee igual al revés?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "RADAR",
+                "de": ""
+            },
+            "infoCardId": "c021"
+        },
+        {
+            "questionId": "q022",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "showcase",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué país tiene más lagos?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "CANADA",
+                "de": ""
+            },
+            "infoCardId": "c022"
+        },
+        {
+            "questionId": "q023",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "showcase",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué elemento tiene símbolo Au?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "ORO",
+                "de": ""
+            },
+            "infoCardId": "c023"
+        },
+        {
+            "questionId": "q024",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "showcase",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Quién creó la relatividad?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "EINSTEIN",
+                "de": ""
+            },
+            "infoCardId": "c024"
+        },
+        {
+            "questionId": "q025",
+            "packId": "alpha25_pack",
+            "themeId": "base_default",
+            "difficultyTier": "showcase",
+            "text": {
+                "tr": "",
+                "en": "",
+                "es": "¿Qué lenguaje tiene nombre de café?",
+                "de": ""
+            },
+            "answer": {
+                "tr": "",
+                "en": "",
+                "es": "JAVA",
+                "de": ""
+            },
+            "infoCardId": "c025"
+        }
+    ]
 }

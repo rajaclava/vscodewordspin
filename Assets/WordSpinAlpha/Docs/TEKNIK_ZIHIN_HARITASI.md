@@ -103,6 +103,7 @@ Onemli scriptler:
 JSON modelleri ve locale/content veri tipleri.
 
 - `WordSpinContentModels.cs`
+- `ShapeLayoutGeometry.cs`
 
 #### `Scripts/Editor`
 Editor tooling, scene builder, tuning pencereleri ve Android build yardimcilari.
@@ -114,6 +115,8 @@ Onemli scriptler:
 - `GameplaySceneTunerEditor.cs`
 - `KeyboardLayoutTuningWindow.cs`
 - `EconomyBalanceWindow.cs`
+- `WordSpinAlphaContentEditorWindow.cs`
+- `WordSpinAlphaContentEditorData.cs`
 - `DeveloperTelemetryWindow.cs`
 - `AndroidDeviceBuildTools.cs`
 
@@ -339,6 +342,26 @@ Ana event tipleri:
   -> aktif fiyat kaynagi
   -> su an `PreviewStorePricingProvider`
 
+#### Icerik editoru ve canli apply zinciri
+
+- `WordSpinAlphaContentEditorWindow`
+  -> `WordSpinAlphaContentEditorRepository`
+  -> locale JSON dosyalari
+  -> `GameManager.ReloadCurrentSessionForEditorContent()`
+  -> `MainMenuPresenter.RefreshEditorContent()`
+
+- `WordSpinAlphaContentEditorRepository`
+  -> `ShapeLayoutGeometry`
+  -> `AssetDatabase`
+  -> `ContentService.RefreshEditorContent()` ile dolayli runtime yenileme
+
+- `ShapeLayoutGeometry`
+  -> `SlotManager`
+  -> `RotatorPlaquePresenter`
+  -> `WordSpinAlphaContentEditorWindow`
+
+Bu zincir shape noktasi, referans gorsel, plaque visual layout ve runtime slot yerlesimini ayni veri modeli uzerinden baglar.
+
 - `PreviewStorePricingProvider`
   -> `LevelEconomyManager.Profile.RegionalPricePreviews`
   -> `ContentService.LoadStoreCatalog()`
@@ -491,6 +514,18 @@ Ana event tipleri:
    - aktif session varsa `LevelFlowController.RestoreSession(...)`
    - `GameManager` pending fail/info/result durumlarini restore eder
 
+### Editor -> runtime canli apply akisi
+
+1. `WordSpinAlphaContentEditorWindow` icinde veri degistirilir.
+2. `Tumunu Kaydet` veya play modda `Kaydet ve Canli Uygula` secilir.
+3. Repository ilgili locale/content/shape JSON dosyalarini yeniden yazar.
+4. `ContentService.RefreshEditorContent()` lokal cache'i yeniler.
+5. Gameplay aciksa `GameManager.ReloadCurrentSessionForEditorContent()`:
+   - mevcut snapshot'i alir
+   - cache'leri yeniler
+   - aktif session'i yeni icerikle geri yukler
+6. Main menu aciksa `MainMenuPresenter.RefreshEditorContent()` level listesi ve ilgili menu state'ini yeniler.
+
 ### Store akisi
 
 1. Gameplay veya MainMenu'den `SceneNavigator.OpenStore()`
@@ -566,6 +601,21 @@ Temel veri tipleri `WordSpinContentModels.cs` icinde tanimlidir:
 - `EnergyConfigDefinition`
 - `KeyboardConfigDefinition`
 
+### ShapeLayoutDefinition icindeki kritik yeni alanlar
+
+- `customPoints`
+  - manuel veya referans gorselden uretilmis slot merkezleri
+- `editorReferenceImagePath`
+  - shape referans gorseli
+- `gameplayAutoFit`
+  - runtime'da shape'i okunurluk icin otomatik fit edip etmeyecegi
+- `adaptivePlaqueVisuals`
+  - plaque presentation katmaninin shape'e estetik uyum saglayip saglamayacagi
+- `plaqueVisualAngleOffsets`
+  - slot-basi plaque gorsel aci offset'i
+- `plaqueVisualPadding / min-max width-height scale / outwardOffset / contourFollow`
+  - plaque'in presentation-only gorsel uyum ayarlari
+
 ### Content provider yapisi
 
 - `LocalContentProvider`
@@ -592,6 +642,20 @@ Onemli ScriptableObject'ler:
   - level coin, stars, ad catch-up, theme offer, preview price tuning
 - `TestPlayerModeProfile`
   - default/free/premium test sandbox ayarlari ve snapshot'lari
+
+### Icerik editoru dokuman modeli
+
+Editor, runtime JSON'lari tek noktadan duzenlemek icin kendi ara modelini kullanir:
+
+- `WordSpinContentEditorDocument`
+- `LevelContentEditorEntry`
+- `LevelQuestionEditorEntry`
+
+Bu model:
+
+- 4 dil soru/cevap/bilgi karti verisini tek UI'da birlestirir
+- level metadata ve shape secimini ayni satirda tutar
+- kayit sirasinda tekrar locale JSON kataloglarina ayrisir
 
 ### Pricing veri yapisi
 
@@ -777,7 +841,45 @@ Etkisi:
 
 - bir tarafta duzeltilen layout, diger tarafta farkli kalirsa "editorde bir sey, play'de baska sey" tipi buglar dogar.
 
-### 10. Pricing abstraction hazir ama final billing provider yok
+### 10. Shape editor parity alani hassas
+
+Dosyalar:
+
+- `WordSpinAlphaContentEditorWindow.cs`
+- `WordSpinAlphaContentEditorData.cs`
+- `ShapeLayoutGeometry.cs`
+- `SlotManager.cs`
+- `RotatorPlaquePresenter.cs`
+
+Risk:
+
+- preview, runtime slot merkezi ve runtime plaque presentation ayni mantigi paylasmak zorunda
+- custom point normalize/auto-fit davranisi editor ile runtime arasinda ayrisirse kullanici tek kutuyu tasirken tum shape kaymis gibi hisseder
+
+Etkisi:
+
+- manual shape authoring guvensiz hale gelir
+- preview guvenilmez olursa tasarim iterasyonu yavaslar
+
+### 11. Shape mekanigi ile presentation ayrimi korunmali
+
+Dosyalar:
+
+- `Slot.cs`
+- `SlotManager.cs`
+- `RotatorPlaquePresenter.cs`
+- `Pin.cs`
+
+Risk:
+
+- plaque'in gorsel formunu iyilestirmek icin hit zone veya outward band mantigina dogrudan dokunmak mekanik parity bozar
+
+Etkisi:
+
+- `perfect / good / near miss / wrong slot` sonuclari gorsel tuning yuzunden degismemelidir
+- bu nedenle plaque visual adaptasyonu yalnizca presentation katmaninda tutulmalidir
+
+### 12. Pricing abstraction hazir ama final billing provider yok
 
 Dosyalar:
 

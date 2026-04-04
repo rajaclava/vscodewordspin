@@ -41,6 +41,23 @@ namespace WordSpinAlpha.Services
             _infoCards = null;
         }
 
+        public void RefreshAll()
+        {
+            _levels = null;
+            _questions = null;
+            _themes = null;
+            _infoCards = null;
+            _campaigns = null;
+            _difficulties = null;
+            _difficultyTiers = null;
+            _rhythms = null;
+            _shapeLayouts = null;
+            _energyConfig = null;
+            _keyboardConfig = null;
+            _storeCatalog = null;
+            _membershipProfile = null;
+        }
+
         private static T LoadJson<T>(string resourcePath) where T : class, new()
         {
             TextAsset asset = Resources.Load<TextAsset>(resourcePath);

@@ -3886,6 +3886,9 @@ MonoBehaviour:
   debugAnswerLabel: {fileID: 1334111549}
   scoreLabel: {fileID: 0}
   multiplierLabel: {fileID: 0}
+  coinHookButton: {fileID: 0}
+  coinHookTitleLabel: {fileID: 0}
+  coinHookValueLabel: {fileID: 0}
   targetPulseRefreshInterval: 0.05
 --- !u!114 &721094935
 MonoBehaviour:
@@ -4079,7 +4082,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6.3450003
+  orthographic size: 5.4
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -8925,7 +8928,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
 --- !u!114 &1768874612
 MonoBehaviour:
   m_ObjectHideFlags: 0

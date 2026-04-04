@@ -150,12 +150,20 @@ namespace WordSpinAlpha.Content
     }
 
     [Serializable]
+    public class ShapePointDefinition
+    {
+        public float x;
+        public float y;
+    }
+
+    [Serializable]
     public class ShapeLayoutDefinition
     {
         public string shapeLayoutId;
         public string displayName;
         public string shapeFamily;
         public string visualPrefabResourcePath;
+        public string editorReferenceImagePath;
         public int slotCount;
         public float radiusX = 1f;
         public float radiusY = 1f;
@@ -166,6 +174,17 @@ namespace WordSpinAlpha.Content
         public float perfectHeightScale = 0.45f;
         public float nearMissPadding = 0.08f;
         public bool useTangentialRotation = true;
+        public bool gameplayAutoFit = true;
+        public bool adaptivePlaqueVisuals;
+        public float plaqueVisualPadding = 0.10f;
+        public float plaqueVisualMinWidthScale = 0.58f;
+        public float plaqueVisualMaxWidthScale = 1.00f;
+        public float plaqueVisualMinHeightScale = 0.82f;
+        public float plaqueVisualMaxHeightScale = 1.00f;
+        public float plaqueVisualOutwardOffset = 0.08f;
+        public float plaqueVisualContourFollow = 0.45f;
+        public float[] plaqueVisualAngleOffsets;
+        public ShapePointDefinition[] customPoints;
         public float[] angleOverrides;
         public float[] pointRadiusScales;
     }

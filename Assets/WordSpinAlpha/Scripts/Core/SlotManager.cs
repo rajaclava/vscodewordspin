@@ -1,5 +1,7 @@
 using UnityEngine;
 using WordSpinAlpha.Content;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WordSpinAlpha.Core
 {
@@ -11,10 +13,18 @@ namespace WordSpinAlpha.Core
 
         private int _activeSlotIndex = -1;
         private int _currentTargetSlot = -1;
+        private readonly List<Slot> _slotPool = new List<Slot>();
+        private Transform _slotRoot;
+        private Slot _slotTemplate;
 
         public int ActiveSlotIndex => _activeSlotIndex;
         public int CurrentTargetSlot => _currentTargetSlot;
         public int SlotCount => slots != null ? slots.Length : 0;
+
+        private void Awake()
+        {
+            CacheSlotPool();
+        }
 
         private void Update()
         {
@@ -48,8 +58,19 @@ namespace WordSpinAlpha.Core
         {
             if (slots == null || slots.Length == 0 || layout == null)
             {
+                if (layout != null && layout.slotCount > 0)
+                {
+                    EnsureSlotCount(layout.slotCount);
+                }
+            }
+
+            if (slots == null || slots.Length == 0 || layout == null)
+            {
                 return;
             }
+
+            EnsureSlotCount(Mathf.Max(1, layout.slotCount));
+            ShapePointDefinition[] resolvedPoints = ShapeLayoutGeometry.ResolvePoints(layout);
 
             int count = slots.Length;
             for (int i = 0; i < count; i++)
@@ -60,7 +81,7 @@ namespace WordSpinAlpha.Core
                     continue;
                 }
 
-                Vector2 position = EvaluateShapePoint(layout, i, count);
+                Vector2 position = EvaluateShapePoint(layout, resolvedPoints, i, count);
                 slot.transform.localPosition = new Vector3(position.x, position.y, 0f);
 
                 Vector2 outward = position.sqrMagnitude > 0.0001f ? position.normalized : Vector2.up;
@@ -248,97 +269,119 @@ namespace WordSpinAlpha.Core
             _activeSlotIndex = bestIndex;
         }
 
-        private static Vector2 EvaluateShapePoint(ShapeLayoutDefinition layout, int index, int count)
+        private void EnsureSlotCount(int desiredCount)
         {
-            float angle;
-            if (layout.angleOverrides != null && index < layout.angleOverrides.Length)
+            desiredCount = Mathf.Max(1, desiredCount);
+            CacheSlotPool();
+            if (_slotTemplate == null || _slotRoot == null)
             {
-                angle = layout.angleOverrides[index] * Mathf.Deg2Rad;
-            }
-            else
-            {
-                angle = ((index / (float)count) * Mathf.PI * 2f) + (layout.rotationOffsetDegrees * Mathf.Deg2Rad);
+                return;
             }
 
-            Vector2 point;
-            switch ((layout.shapeFamily ?? "circle").ToLowerInvariant())
+            while (_slotPool.Count < desiredCount)
             {
-                case "oval":
-                case "ellipse":
-                    point = new Vector2(Mathf.Sin(angle) * layout.radiusX, Mathf.Cos(angle) * layout.radiusY);
+                Slot clone = CreateSlotClone(_slotPool.Count);
+                if (clone == null)
+                {
                     break;
+                }
 
-                case "diamond":
-                    point = EvaluateDiamondPoint(index, count, layout.radiusX, layout.radiusY, layout.rotationOffsetDegrees);
-                    break;
-
-                case "hex":
-                    point = EvaluatePolygonPoint(index, count, 6, layout.radiusX, layout.radiusY, layout.rotationOffsetDegrees);
-                    break;
-
-                case "square":
-                    point = EvaluatePolygonPoint(index, count, 4, layout.radiusX, layout.radiusY, layout.rotationOffsetDegrees);
-                    break;
-
-                default:
-                    point = new Vector2(Mathf.Sin(angle) * layout.radiusX, Mathf.Cos(angle) * layout.radiusY);
-                    break;
+                _slotPool.Add(clone);
             }
 
-            if (layout.pointRadiusScales != null && index < layout.pointRadiusScales.Length)
+            List<Slot> activeSlots = new List<Slot>(desiredCount);
+            for (int i = 0; i < _slotPool.Count; i++)
             {
-                point *= Mathf.Max(0.35f, layout.pointRadiusScales[index]);
+                Slot slot = _slotPool[i];
+                if (slot == null)
+                {
+                    continue;
+                }
+
+                bool shouldBeActive = i < desiredCount;
+                if (slot.gameObject.activeSelf != shouldBeActive)
+                {
+                    slot.gameObject.SetActive(shouldBeActive);
+                }
+
+                slot.name = $"Slot_{i}";
+                slot.transform.SetSiblingIndex(i);
+                if (shouldBeActive)
+                {
+                    activeSlots.Add(slot);
+                }
             }
 
-            return point;
+            slots = activeSlots.ToArray();
         }
 
-        private static Vector2 EvaluateDiamondPoint(int index, int count, float radiusX, float radiusY, float rotationOffsetDegrees)
+        private void CacheSlotPool()
         {
-            float t = (index / (float)count);
-            Vector2 point;
-            if (t < 0.25f)
+            _slotPool.Clear();
+
+            if (slots != null && slots.Length > 0)
             {
-                point = Vector2.Lerp(new Vector2(0f, radiusY), new Vector2(radiusX, 0f), t / 0.25f);
-            }
-            else if (t < 0.5f)
-            {
-                point = Vector2.Lerp(new Vector2(radiusX, 0f), new Vector2(0f, -radiusY), (t - 0.25f) / 0.25f);
-            }
-            else if (t < 0.75f)
-            {
-                point = Vector2.Lerp(new Vector2(0f, -radiusY), new Vector2(-radiusX, 0f), (t - 0.5f) / 0.25f);
-            }
-            else
-            {
-                point = Vector2.Lerp(new Vector2(-radiusX, 0f), new Vector2(0f, radiusY), (t - 0.75f) / 0.25f);
+                _slotTemplate = slots.FirstOrDefault(slot => slot != null);
+                _slotRoot = _slotTemplate != null ? _slotTemplate.transform.parent : null;
             }
 
-            return Rotate(point, rotationOffsetDegrees);
+            if (_slotRoot == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _slotRoot.childCount; i++)
+            {
+                Transform child = _slotRoot.GetChild(i);
+                if (child == null)
+                {
+                    continue;
+                }
+
+                Slot slot = child.GetComponent<Slot>();
+                if (slot != null)
+                {
+                    _slotPool.Add(slot);
+                }
+            }
+
+            _slotPool.Sort((a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
+            if (_slotTemplate == null && _slotPool.Count > 0)
+            {
+                _slotTemplate = _slotPool[0];
+            }
         }
 
-        private static Vector2 EvaluatePolygonPoint(int index, int count, int sides, float radiusX, float radiusY, float rotationOffsetDegrees)
+        private Slot CreateSlotClone(int index)
         {
-            float t = index / (float)count;
-            float scaled = t * sides;
-            int side = Mathf.FloorToInt(scaled) % sides;
-            float localT = scaled - Mathf.Floor(scaled);
+            if (_slotTemplate == null || _slotRoot == null)
+            {
+                return null;
+            }
 
-            float startAngle = rotationOffsetDegrees * Mathf.Deg2Rad;
-            float angleA = startAngle + ((side / (float)sides) * Mathf.PI * 2f);
-            float angleB = startAngle + (((side + 1) / (float)sides) * Mathf.PI * 2f);
+            GameObject cloneObject = Object.Instantiate(_slotTemplate.gameObject, _slotRoot);
+            cloneObject.name = $"Slot_{index}";
+            cloneObject.transform.SetSiblingIndex(index);
+            cloneObject.SetActive(true);
 
-            Vector2 a = new Vector2(Mathf.Sin(angleA) * radiusX, Mathf.Cos(angleA) * radiusY);
-            Vector2 b = new Vector2(Mathf.Sin(angleB) * radiusX, Mathf.Cos(angleB) * radiusY);
-            return Vector2.Lerp(a, b, localT);
+            Slot slot = cloneObject.GetComponent<Slot>();
+            if (slot != null)
+            {
+                slot.ClearAttachedPins();
+            }
+
+            return slot;
         }
 
-        private static Vector2 Rotate(Vector2 point, float degrees)
+        private static Vector2 EvaluateShapePoint(ShapeLayoutDefinition layout, ShapePointDefinition[] resolvedPoints, int index, int count)
         {
-            float radians = degrees * Mathf.Deg2Rad;
-            float cos = Mathf.Cos(radians);
-            float sin = Mathf.Sin(radians);
-            return new Vector2(point.x * cos - point.y * sin, point.x * sin + point.y * cos);
+            if (resolvedPoints != null && resolvedPoints.Length > 0)
+            {
+                ShapePointDefinition customPoint = resolvedPoints[index % resolvedPoints.Length];
+                return new Vector2(customPoint.x, customPoint.y);
+            }
+
+            return ShapeLayoutGeometry.EvaluateLayoutPoint(layout, index, count);
         }
     }
 }

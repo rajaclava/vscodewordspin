@@ -204,6 +204,8 @@ namespace WordSpinAlpha.Presentation
                 return;
             }
 
+            bool adaptivePlaqueLayout = ShapeLayoutGeometry.UsesAdaptivePlaqueVisuals(currentLayout);
+
             _generatedDiskRoot = new GameObject("GeneratedRotatorDisk").transform;
             _generatedDiskRoot.SetParent(rotatorVisualRoot, false);
             _generatedDiskRoot.localPosition = Vector3.zero;
@@ -215,19 +217,21 @@ namespace WordSpinAlpha.Presentation
             float plaqueBandBias = ResolveRadiusBias(currentLayout, "plaque");
             float gapBias = ResolveRadiusBias(currentLayout, "gap");
             float centerBias = ResolveRadiusBias(currentLayout, "center");
-            float outerRadius = anchorRadius + 0.86f;
-            float actionRingOuterRadius = anchorRadius + 0.60f + actionRingBias;
-            float plaqueBandRadius = anchorRadius + 0.34f + plaqueBandBias;
+            float outerRadius = anchorRadius + (adaptivePlaqueLayout ? 0.72f : 0.86f);
+            float actionRingOuterRadius = anchorRadius + (adaptivePlaqueLayout ? 0.48f : 0.60f) + actionRingBias;
+            float plaqueBandRadius = anchorRadius + (adaptivePlaqueLayout ? 0.18f : 0.34f) + plaqueBandBias;
             float gapOuterRadius = Mathf.Max(0.85f, anchorRadius - 0.02f + gapBias);
             float gapInnerRadius = Mathf.Max(0.66f, anchorRadius - 0.34f + gapBias);
             float centerOuterRadius = Mathf.Max(0.58f, anchorRadius - 0.48f + centerBias);
             float centerInnerRadius = Mathf.Max(0.42f, anchorRadius - 0.66f + centerBias);
+            Color actionGlowColor = adaptivePlaqueLayout ? new Color(1f, 0.56f, 0.18f, 0.06f) : new Color(1f, 0.56f, 0.18f, 0.10f);
+            Color plaqueBandColor = adaptivePlaqueLayout ? new Color(0.55f, 0.34f, 0.19f, 0.16f) : new Color(0.55f, 0.34f, 0.19f, 0.32f);
 
             CreateDiskLayer("ActionShadow", _generatedDiskRoot, _roundSprite, layoutScale * (outerRadius * 2.44f), new Color(0f, 0f, 0f, 0.40f), 30, new Vector3(0f, -0.06f, 0f));
-            CreateDiskLayer("ActionGlow", _generatedDiskRoot, _roundSprite, layoutScale * (outerRadius * 2.36f), new Color(1f, 0.56f, 0.18f, 0.10f), 31, Vector3.zero);
+            CreateDiskLayer("ActionGlow", _generatedDiskRoot, _roundSprite, layoutScale * (outerRadius * 2.36f), actionGlowColor, 31, Vector3.zero);
             CreateDiskLayer("ActionOuterRim", _generatedDiskRoot, _roundSprite, layoutScale * (outerRadius * 2.24f), new Color(0.15f, 0.09f, 0.07f, 1f), 32, Vector3.zero);
             CreateDiskLayer("ActionRing", _generatedDiskRoot, _roundSprite, layoutScale * (actionRingOuterRadius * 2.22f), new Color(0.30f, 0.18f, 0.14f, 0.98f), 33, Vector3.zero);
-            CreateDiskLayer("PlaqueBand", _generatedDiskRoot, _roundSprite, layoutScale * (plaqueBandRadius * 2.28f), new Color(0.55f, 0.34f, 0.19f, 0.32f), 34, Vector3.zero);
+            CreateDiskLayer("PlaqueBand", _generatedDiskRoot, _roundSprite, layoutScale * (plaqueBandRadius * 2.28f), plaqueBandColor, 34, Vector3.zero);
             CreateDiskLayer("GapRim", _generatedDiskRoot, _roundSprite, layoutScale * (gapOuterRadius * 2.10f), new Color(0.20f, 0.13f, 0.10f, 0.98f), 35, Vector3.zero);
             CreateDiskLayer("GapCutout", _generatedDiskRoot, _roundSprite, layoutScale * (gapInnerRadius * 2.04f), new Color(0.10f, 0.08f, 0.08f, 0.98f), 36, Vector3.zero);
             CreateDiskLayer("CenterShadow", _generatedDiskRoot, _roundSprite, layoutScale * (centerOuterRadius * 2.18f), new Color(0f, 0f, 0f, 0.24f), 37, new Vector3(0f, -0.02f, 0f));
@@ -239,10 +243,12 @@ namespace WordSpinAlpha.Presentation
 
         private void BuildPlaques()
         {
+            ShapeLayoutDefinition currentLayout = ResolveCurrentShapeLayout();
+            ShapePointDefinition[] resolvedPoints = ShapeLayoutGeometry.ResolvePoints(currentLayout);
             foreach (Transform anchor in anchorRoot)
             {
                 Slot slot = anchor != null ? anchor.GetComponent<Slot>() : null;
-                if (slot == null)
+                if (slot == null || !slot.gameObject.activeInHierarchy)
                 {
                     continue;
                 }
@@ -253,21 +259,28 @@ namespace WordSpinAlpha.Presentation
                 plaqueRoot.transform.localRotation = anchor.localRotation;
                 plaqueRoot.transform.localScale = Vector3.one;
 
-                Vector2 plaqueSize = slot.PlaqueSize * 1.55f;
-                Vector2 innerSize = plaqueSize * 0.78f;
-                Vector2 runeSize = new Vector2(innerSize.x * 0.18f, innerSize.y * 0.62f);
-                Vector2 seatSize = plaqueSize + new Vector2(0.16f, 0.14f);
+                ShapePlaqueVisualLayoutInfo visualLayout = ShapeLayoutGeometry.ResolvePlaqueVisualLayout(
+                    currentLayout,
+                    resolvedPoints,
+                    slot.SlotIndex,
+                    resolvedPoints != null ? resolvedPoints.Length : 0);
+                Vector2 plaqueSize = visualLayout.plaqueSize;
+                Vector2 innerSize = visualLayout.innerSize;
+                Vector2 runeSize = visualLayout.runeSize;
+                Vector2 seatSize = visualLayout.seatSize;
 
                 PlaqueVisual plaque = new PlaqueVisual
                 {
                     anchor = anchor,
                     root = plaqueRoot.transform,
+                    outwardOffset = visualLayout.outwardOffset,
+                    localRotationOffsetDegrees = visualLayout.localRotationDegrees,
                     shadow = CreatePlaqueLayer("Shadow", plaqueRoot.transform, seatSize + new Vector2(0.06f, 0.06f), new Color(0f, 0f, 0f, 0.24f), 41, new Vector3(0f, -0.03f, 0f)),
                     seat = CreatePlaqueLayer("Seat", plaqueRoot.transform, seatSize, new Color(0.12f, 0.08f, 0.06f, 0.96f), 42, new Vector3(0f, -0.02f, 0f)),
                     frame = CreatePlaqueLayer("Frame", plaqueRoot.transform, plaqueSize, new Color(0.17f, 0.11f, 0.09f, 0.98f), 43, Vector3.zero),
                     face = CreatePlaqueLayer("Face", plaqueRoot.transform, innerSize, new Color(0.58f, 0.37f, 0.21f, 0.88f), 44, Vector3.zero),
                     rune = CreatePlaqueLayer("Rune", plaqueRoot.transform, runeSize, new Color(0.18f, 0.10f, 0.04f, 0.55f), 45, Vector3.zero),
-                    glow = CreatePlaqueLayer("Glow", plaqueRoot.transform, plaqueSize + new Vector2(0.10f, 0.10f), new Color(1f, 0.60f, 0.22f, 0.58f), 46, Vector3.zero)
+                    glow = CreatePlaqueLayer("Glow", plaqueRoot.transform, visualLayout.glowSize, new Color(1f, 0.60f, 0.22f, 0.58f), 46, Vector3.zero)
                 };
 
                 plaque.baseFrameColor = plaque.frame != null ? plaque.frame.color : Color.white;
@@ -280,6 +293,7 @@ namespace WordSpinAlpha.Presentation
                 }
 
                 _plaques.Add(plaque);
+                ApplyPlaqueAnchorTransform(plaque);
             }
         }
 
@@ -293,10 +307,21 @@ namespace WordSpinAlpha.Presentation
                     continue;
                 }
 
-                plaque.root.localPosition = plaque.anchor.localPosition;
-                plaque.root.localRotation = plaque.anchor.localRotation;
+                ApplyPlaqueAnchorTransform(plaque);
                 plaque.Tick();
             }
+        }
+
+        private static void ApplyPlaqueAnchorTransform(PlaqueVisual plaque)
+        {
+            if (plaque.anchor == null || plaque.root == null)
+            {
+                return;
+            }
+
+            Vector3 outwardOffset = plaque.anchor.localRotation * (Vector3.up * plaque.outwardOffset);
+            plaque.root.localPosition = plaque.anchor.localPosition + outwardOffset;
+            plaque.root.localRotation = plaque.anchor.localRotation * Quaternion.Euler(0f, 0f, plaque.localRotationOffsetDegrees);
         }
 
         private void ApplyIdleState()
@@ -549,6 +574,8 @@ namespace WordSpinAlpha.Presentation
         {
             public Transform anchor;
             public Transform root;
+            public float outwardOffset;
+            public float localRotationOffsetDegrees;
             public SpriteRenderer shadow;
             public SpriteRenderer seat;
             public SpriteRenderer frame;

@@ -164,6 +164,37 @@ namespace WordSpinAlpha.Core
             return true;
         }
 
+        public void ReloadCurrentSessionForEditorContent()
+        {
+            ResolveSceneReferences();
+            EnsureRuntimePresenters();
+
+            if (sessionManager != null)
+            {
+                sessionManager.TakeSnapshot();
+            }
+
+            ContentService.Instance?.RefreshEditorContent();
+            levelFlow?.RefreshContentCaches();
+            InputManager.Instance?.RefreshKeyboardConfig();
+            InfoCardPresenter infoCardPresenter = FindObjectOfType<InfoCardPresenter>();
+            infoCardPresenter?.RefreshContentCache();
+
+            if (CanRestoreActiveSession())
+            {
+                levelFlow.RestoreSession(SaveManager.Instance.Data.session);
+                RestoreContinuationStateFromSession();
+                EnterPendingFailResolutionStateIfNeeded();
+                RestorePendingCompletionUi();
+                return;
+            }
+
+            if (CurrentLevelId > 0)
+            {
+                StartLevel(CurrentLevelId, false);
+            }
+        }
+
         public void ResolvePinHit(Pin pin, Slot slot, Vector3 pinTipWorldPoint)
         {
             HitData hit = hitEvaluator.EvaluateImpact(slot, pin.CarryingLetter, pinTipWorldPoint, levelFlow.CurrentDifficultyProfile, levelFlow.CurrentDifficultyTier);

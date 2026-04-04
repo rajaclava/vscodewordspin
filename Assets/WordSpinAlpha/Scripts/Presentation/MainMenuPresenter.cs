@@ -118,6 +118,16 @@ namespace WordSpinAlpha.Presentation
             }
         }
 
+        public void RefreshEditorContent()
+        {
+            ContentService.Instance?.RefreshEditorContent();
+            _cachedLevels = Array.Empty<LevelDefinition>();
+            BuildLevelButtons();
+            RefreshLocalizedTexts();
+            RefreshHints();
+            RefreshLanguageLabel();
+        }
+
         private void HandleEnergyChanged(int current, int max)
         {
             if (energyLabel != null)

@@ -14,6 +14,7 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] private TextMeshProUGUI bodyLabel;
 
         private InfoCardCatalog _catalog;
+        private string _currentInfoCardId = string.Empty;
 
         private void Awake()
         {
@@ -35,6 +36,7 @@ namespace WordSpinAlpha.Presentation
         public void ShowCard(string infoCardId)
         {
             EnsureCatalog();
+            _currentInfoCardId = infoCardId ?? string.Empty;
 
             if (root != null)
             {
@@ -78,6 +80,18 @@ namespace WordSpinAlpha.Presentation
             }
 
             GameEvents.RaiseInfoCardClosed();
+        }
+
+        public void RefreshContentCache()
+        {
+            _catalog = null;
+            if (root != null && root.activeSelf && !string.IsNullOrWhiteSpace(_currentInfoCardId))
+            {
+                ShowCard(_currentInfoCardId);
+                return;
+            }
+
+            RefreshLocalizedTexts();
         }
 
         private void EnsureCatalog()

@@ -111,6 +111,11 @@ namespace WordSpinAlpha.Core
             }
         }
 
+        public void RefreshContentCaches()
+        {
+            BuildCaches();
+        }
+
         public bool LoadLevel(int levelId)
         {
             if (_levelsById.Count == 0 || _questionsById.Count == 0 || _difficultyById.Count == 0 || _difficultyTierById.Count == 0 || _rhythmById.Count == 0 || _shapeLayoutById.Count == 0)
@@ -459,7 +464,8 @@ namespace WordSpinAlpha.Core
                 }
             }
 
-            _slotSequence.AddRange(BuildFlowSlotSequence(letterCount, seed + 17));
+            int availableSlotCount = Mathf.Max(letterCount, slotManager != null ? slotManager.SlotCount : letterCount);
+            _slotSequence.AddRange(BuildFlowSlotSequence(letterCount, availableSlotCount, seed + 17));
             for (int i = 0; i < Mathf.Min(_revealOrder.Count, _slotSequence.Count); i++)
             {
                 _answerIndexToSlotIndex[_revealOrder[i]] = _slotSequence[i];
@@ -486,17 +492,17 @@ namespace WordSpinAlpha.Core
             return plaqueLetters;
         }
 
-        private IEnumerable<int> BuildFlowSlotSequence(int count, int seed)
+        private IEnumerable<int> BuildFlowSlotSequence(int revealCount, int availableSlotCount, int seed)
         {
-            List<int> remaining = new List<int>(count);
-            for (int i = 0; i < count; i++)
+            List<int> remaining = BuildDistributedSlotSubset(revealCount, availableSlotCount);
+            if (remaining.Count == 0)
             {
-                remaining.Add(i);
+                return Array.Empty<int>();
             }
 
-            List<int> ordered = new List<int>(count);
+            List<int> ordered = new List<int>(remaining.Count);
             System.Random random = new System.Random(seed);
-            int current = random.Next(0, Mathf.Max(1, count));
+            int current = remaining[random.Next(0, remaining.Count)];
 
             while (remaining.Count > 0)
             {
@@ -519,7 +525,7 @@ namespace WordSpinAlpha.Core
                 for (int i = 0; i < remaining.Count; i++)
                 {
                     int candidate = remaining[i];
-                    int distance = CircularDistance(current, candidate, count);
+                    int distance = CircularDistance(current, candidate, availableSlotCount);
                     int score = Mathf.Abs(distance - preferredJump);
                     if (score < bestScore)
                     {
@@ -532,6 +538,78 @@ namespace WordSpinAlpha.Core
             }
 
             return ordered;
+        }
+
+        private static List<int> BuildDistributedSlotSubset(int revealCount, int availableSlotCount)
+        {
+            int desired = Mathf.Clamp(revealCount, 0, Mathf.Max(0, availableSlotCount));
+            List<int> result = new List<int>(desired);
+            if (desired <= 0 || availableSlotCount <= 0)
+            {
+                return result;
+            }
+
+            if (desired >= availableSlotCount)
+            {
+                for (int i = 0; i < availableSlotCount; i++)
+                {
+                    result.Add(i);
+                }
+
+                return result;
+            }
+
+            float step = availableSlotCount / (float)desired;
+            for (int i = 0; i < desired; i++)
+            {
+                int candidate = Mathf.RoundToInt((i * step) + (step * 0.5f)) % availableSlotCount;
+                if (!TryAddUniqueSlot(candidate, availableSlotCount, result))
+                {
+                    break;
+                }
+            }
+
+            result.Sort();
+            return result;
+        }
+
+        private static bool TryAddUniqueSlot(int candidate, int availableSlotCount, List<int> result)
+        {
+            if (availableSlotCount <= 0)
+            {
+                return false;
+            }
+
+            candidate = Mathf.Clamp(candidate, 0, availableSlotCount - 1);
+            if (!result.Contains(candidate))
+            {
+                result.Add(candidate);
+                return true;
+            }
+
+            for (int offset = 1; offset < availableSlotCount; offset++)
+            {
+                int right = (candidate + offset) % availableSlotCount;
+                if (!result.Contains(right))
+                {
+                    result.Add(right);
+                    return true;
+                }
+
+                int left = candidate - offset;
+                while (left < 0)
+                {
+                    left += availableSlotCount;
+                }
+
+                if (!result.Contains(left))
+                {
+                    result.Add(left);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void ApplyRhythmPacing(int slotIndex)

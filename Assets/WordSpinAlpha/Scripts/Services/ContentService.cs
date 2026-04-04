@@ -24,6 +24,7 @@ namespace WordSpinAlpha.Services
         private KeyboardConfigDefinition _keyboardConfig;
         private StoreCatalogDefinition _storeCatalog;
         private MembershipProfileDefinition _membershipProfile;
+        private bool _forceLocalEditorContent;
 
         protected override void Awake()
         {
@@ -41,6 +42,7 @@ namespace WordSpinAlpha.Services
         {
             ResolveProviders();
             remoteProvider?.Refresh();
+            _forceLocalEditorContent = false;
             ClearCaches();
 
             if (SaveManager.Instance == null || remoteProvider == null)
@@ -65,6 +67,15 @@ namespace WordSpinAlpha.Services
             ClearCaches();
         }
 
+        public void RefreshEditorContent()
+        {
+            ResolveProviders();
+            _forceLocalEditorContent = true;
+            localProvider?.RefreshAll();
+            remoteProvider?.Refresh();
+            ClearCaches();
+        }
+
         public LevelCatalog LoadLevels() => _levels ?? (_levels = MergeLevels(localProvider?.LoadLevels(), ShouldUseRemote() ? remoteProvider?.LoadLevels() : null));
         public QuestionCatalog LoadQuestions() => _questions ?? (_questions = MergeQuestions(localProvider?.LoadQuestions(), ShouldUseRemote() ? remoteProvider?.LoadQuestions() : null));
         public ThemeCatalog LoadThemes() => _themes ?? (_themes = MergeThemes(localProvider?.LoadThemes(), ShouldUseRemote() ? remoteProvider?.LoadThemes() : null));
@@ -81,6 +92,11 @@ namespace WordSpinAlpha.Services
 
         private bool ShouldUseRemote()
         {
+            if (_forceLocalEditorContent)
+            {
+                return false;
+            }
+
             return SaveManager.Instance == null || SaveManager.Instance.Data.remoteContent.remoteContentEnabled;
         }
 

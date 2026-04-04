@@ -1,29 +1,429 @@
 {
-  "cards": [
-    { "infoCardId": "c001", "themeId": "base_default", "title": { "es": "AZUL" }, "body": { "es": "El cielo parece azul por cómo la luz se dispersa en la atmósfera." }, "imageResourcePath": "Cards/Base/c001" },
-    { "infoCardId": "c005", "themeId": "base_default", "title": { "es": "PERRO" }, "body": { "es": "El perro es uno de los primeros animales domesticados." }, "imageResourcePath": "Cards/Base/c005" },
-    { "infoCardId": "c002", "themeId": "base_default", "title": { "es": "AGUA" }, "body": { "es": "El cuerpo humano es mayormente agua." }, "imageResourcePath": "Cards/Base/c002" },
-    { "infoCardId": "c010", "themeId": "base_default", "title": { "es": "MIEL" }, "body": { "es": "La miel puede durar miles de años sin estropearse." }, "imageResourcePath": "Cards/Base/c010" },
-    { "infoCardId": "c004", "themeId": "base_default", "title": { "es": "PLUMA" }, "body": { "es": "Las plumas modernas reemplazaron las antiguas de ave." }, "imageResourcePath": "Cards/Base/c004" },
-    { "infoCardId": "c003", "themeId": "base_default", "title": { "es": "TIERRA" }, "body": { "es": "La Tierra es el único planeta conocido con vida." }, "imageResourcePath": "Cards/Base/c003" },
-    { "infoCardId": "c009", "themeId": "base_default", "title": { "es": "HIELO" }, "body": { "es": "El agua se expande al congelarse." }, "imageResourcePath": "Cards/Base/c009" },
-    { "infoCardId": "c007", "themeId": "base_default", "title": { "es": "CUATRO" }, "body": { "es": "El cerebro resuelve operaciones simples casi al instante." }, "imageResourcePath": "Cards/Base/c007" },
-    { "infoCardId": "c006", "themeId": "base_default", "title": { "es": "SOL" }, "body": { "es": "El Sol es esencial para la vida en la Tierra." }, "imageResourcePath": "Cards/Base/c006" },
-    { "infoCardId": "c017", "themeId": "base_default", "title": { "es": "AGUA" }, "body": { "es": "El agua es vital para todas las funciones del cuerpo." }, "imageResourcePath": "Cards/Base/c017" },
-    { "infoCardId": "c014", "themeId": "base_default", "title": { "es": "PACIFICO" }, "body": { "es": "El Pacífico cubre más de un tercio del planeta." }, "imageResourcePath": "Cards/Base/c014" },
-    { "infoCardId": "c012", "themeId": "base_default", "title": { "es": "LEON" }, "body": { "es": "El león realmente vive en sabanas, no selvas." }, "imageResourcePath": "Cards/Base/c012" },
-    { "infoCardId": "c011", "themeId": "base_default", "title": { "es": "TELEFONO" }, "body": { "es": "Hoy los teléfonos son mini computadoras." }, "imageResourcePath": "Cards/Base/c011" },
-    { "infoCardId": "c019", "themeId": "base_default", "title": { "es": "OXIGENO" }, "body": { "es": "El oxígeno es clave para producir energía." }, "imageResourcePath": "Cards/Base/c019" },
-    { "infoCardId": "c008", "themeId": "base_default", "title": { "es": "CUADRADO" }, "body": { "es": "El cuadrado tiene cuatro lados iguales." }, "imageResourcePath": "Cards/Base/c008" },
-    { "infoCardId": "c018", "themeId": "base_default", "title": { "es": "MARTE" }, "body": { "es": "Marte es rojo por el óxido de hierro." }, "imageResourcePath": "Cards/Base/c018" },
-    { "infoCardId": "c015", "themeId": "base_default", "title": { "es": "LEONARDO" }, "body": { "es": "Da Vinci fue también inventor y científico." }, "imageResourcePath": "Cards/Base/c015" },
-    { "infoCardId": "c013", "themeId": "base_default", "title": { "es": "TENIS" }, "body": { "es": "Es el torneo más antiguo de tenis." }, "imageResourcePath": "Cards/Base/c013" },
-    { "infoCardId": "c020", "themeId": "base_default", "title": { "es": "APPLE" }, "body": { "es": "El iPhone cambió la industria móvil." }, "imageResourcePath": "Cards/Base/c020" },
-    { "infoCardId": "c016", "themeId": "base_default", "title": { "es": "CHICAGO" }, "body": { "es": "El apodo viene de la política, no del clima." }, "imageResourcePath": "Cards/Base/c016" },
-    { "infoCardId": "c021", "themeId": "base_default", "title": { "es": "RADAR" }, "body": { "es": "Radar es un ejemplo clásico de palíndromo." }, "imageResourcePath": "Cards/Base/c021" },
-    { "infoCardId": "c022", "themeId": "base_default", "title": { "es": "CANADA" }, "body": { "es": "Tiene la mayoría de los lagos del mundo." }, "imageResourcePath": "Cards/Base/c022" },
-    { "infoCardId": "c023", "themeId": "base_default", "title": { "es": "ORO" }, "body": { "es": "El oro es valioso desde la antigüedad." }, "imageResourcePath": "Cards/Base/c023" },
-    { "infoCardId": "c024", "themeId": "base_default", "title": { "es": "EINSTEIN" }, "body": { "es": "Cambió la física moderna." }, "imageResourcePath": "Cards/Base/c024" },
-    { "infoCardId": "c025", "themeId": "base_default", "title": { "es": "JAVA" }, "body": { "es": "Java es uno de los lenguajes más usados." }, "imageResourcePath": "Cards/Base/c025" }
-  ]
+    "cards": [
+        {
+            "infoCardId": "c001",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "AZUL",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El cielo parece azul por cómo la luz se dispersa en la atmósfera.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c001"
+        },
+        {
+            "infoCardId": "c005",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "PERRO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El perro es uno de los primeros animales domesticados.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c005"
+        },
+        {
+            "infoCardId": "c002",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "AGUA",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El cuerpo humano es mayormente agua.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c002"
+        },
+        {
+            "infoCardId": "c010",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "MIEL",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "La miel puede durar miles de años sin estropearse.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c010"
+        },
+        {
+            "infoCardId": "c004",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "PLUMA",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Las plumas modernas reemplazaron las antiguas de ave.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c004"
+        },
+        {
+            "infoCardId": "c003",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "TIERRA",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "La Tierra es el único planeta conocido con vida.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c003"
+        },
+        {
+            "infoCardId": "c009",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "HIELO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El agua se expande al congelarse.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c009"
+        },
+        {
+            "infoCardId": "c007",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "CUATRO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El cerebro resuelve operaciones simples casi al instante.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c007"
+        },
+        {
+            "infoCardId": "c006",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "SOL",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El Sol es esencial para la vida en la Tierra.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c006"
+        },
+        {
+            "infoCardId": "c017",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "AGUA",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El agua es vital para todas las funciones del cuerpo.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c017"
+        },
+        {
+            "infoCardId": "c014",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "PACIFICO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El Pacífico cubre más de un tercio del planeta.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c014"
+        },
+        {
+            "infoCardId": "c012",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "LEON",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El león realmente vive en sabanas, no selvas.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c012"
+        },
+        {
+            "infoCardId": "c011",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "TELEFONO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Hoy los teléfonos son mini computadoras.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c011"
+        },
+        {
+            "infoCardId": "c019",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "OXIGENO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El oxígeno es clave para producir energía.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c019"
+        },
+        {
+            "infoCardId": "c008",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "CUADRADO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El cuadrado tiene cuatro lados iguales.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c008"
+        },
+        {
+            "infoCardId": "c018",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "MARTE",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Marte es rojo por el óxido de hierro.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c018"
+        },
+        {
+            "infoCardId": "c015",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "LEONARDO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Da Vinci fue también inventor y científico.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c015"
+        },
+        {
+            "infoCardId": "c013",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "TENIS",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Es el torneo más antiguo de tenis.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c013"
+        },
+        {
+            "infoCardId": "c020",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "APPLE",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El iPhone cambió la industria móvil.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c020"
+        },
+        {
+            "infoCardId": "c016",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "CHICAGO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El apodo viene de la política, no del clima.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c016"
+        },
+        {
+            "infoCardId": "c021",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "RADAR",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Radar es un ejemplo clásico de palíndromo.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c021"
+        },
+        {
+            "infoCardId": "c022",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "CANADA",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Tiene la mayoría de los lagos del mundo.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c022"
+        },
+        {
+            "infoCardId": "c023",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "ORO",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "El oro es valioso desde la antigüedad.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c023"
+        },
+        {
+            "infoCardId": "c024",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "EINSTEIN",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Cambió la física moderna.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c024"
+        },
+        {
+            "infoCardId": "c025",
+            "themeId": "base_default",
+            "title": {
+                "tr": "",
+                "en": "",
+                "es": "JAVA",
+                "de": ""
+            },
+            "body": {
+                "tr": "",
+                "en": "",
+                "es": "Java es uno de los lenguajes más usados.",
+                "de": ""
+            },
+            "imageResourcePath": "Cards/Base/c025"
+        }
+    ]
 }

@@ -17,6 +17,7 @@ Guncel kararlar:
 - Ilk gercek dogrulama ortami bilgisayar preview degil, aktif Android cihaz.
 - Proje `mobil-first`, `safe-area aware`, `cok dilli` ve `data-driven` ilerliyor.
 - Ekonomi tarafinda `Default` gercek gelistirme/runtime modudur; `FreePlayer` ve `PremiumPlayer` yalnizca test sandbox modlaridir.
+- Birlesik editor, telemetry, hotfix ve web panel gecisi icin detayli risk ve sira plani ayri olarak `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md` icinde tutulur. Alpha demo suresince buyume riskleri bu yardimci plan dikkate alinarak yonetilecektir.
 
 ---
 
@@ -173,6 +174,66 @@ Nasil kuruldu:
 - `EconomyBalanceWindow`
 - ilgili `ScriptableObject` profilleri ile asset tabanli tuning modeli kuruldu.
 
+### Icerik ve Level Editoru - `YAPILDI`
+
+- Kod veya JSON acmadan 4 dil icerik duzenlenebiliyor:
+  - soru
+  - cevap
+  - bilgi karti baslik/govde
+  - level metadata
+- Yeni level ekleme, level kopyalama, soru blogu ekleme/silme destekleniyor.
+- Level satirlari ve dil panelleri varsayilan kapali geliyor.
+- Shape kutuphanesi ayni editor icinde yonetiliyor.
+- Play modda `Kaydet ve Canli Uygula` ile aktif icerik sahneye tekrar yuklenebiliyor.
+
+Nasil kuruldu:
+
+- `WordSpinAlphaContentEditorWindow`
+- `WordSpinAlphaContentEditorRepository`
+- `ContentService.RefreshEditorContent()`
+- `GameManager.ReloadCurrentSessionForEditorContent()`
+- `MainMenuPresenter.RefreshEditorContent()`
+
+bu zincir ile lokal JSON icerik editor icinde tek model olarak aciliyor, kayit sirasinda tekrar ilgili locale dosyalarina yaziliyor ve play modda canli apply ediliyor.
+
+### Referans Gorselden Shape Uretimi ve Manuel Shape Authoring - `AKTIF`
+
+- Shape kutuphanesinde referans gorselden otomatik nokta uretimi var.
+- Kutu sayisi artinca veya azalinca custom pointler yeniden ornekleniyor.
+- Manuel duzenleme icin:
+  - turuncu handle ile slot merkezi tasinabiliyor
+  - mavi handle ile slot gorsel acisi tek tek dondurulebiliyor
+- `Bagimsiz Manuel Duzenleme` ile preview'da komsu plaque etkisi kapatilabiliyor.
+- `Otomatik Gameplay Fit` ile runtime auto-fit acilip kapatilabiliyor.
+
+Nasil kuruldu:
+
+- `ShapeLayoutGeometry`
+- `ShapeLayoutDefinition.customPoints`
+- `ShapeLayoutDefinition.editorReferenceImagePath`
+- `ShapeLayoutDefinition.plaqueVisualAngleOffsets`
+- `WordSpinAlphaContentEditorWindow`
+- `WordSpinAlphaContentEditorRepository`
+
+bu katman shape'i veri odakli saklar; referans gorsel, manuel point duzenleme ve slot-basi angle offset ayni JSON uzerinden yasar.
+
+### Plaque Gorsel Adaptasyon Katmani - `AKTIF`
+
+- Core hit mantigi korunur.
+- Buna karsin plaque'in yalnizca gorsel katmani shape'e daha estetik uyum saglayabilir:
+  - genislik/yukseklik varyasyonu
+  - disa itme
+  - konturu takip eden hafif aci offset
+- Custom/reference shape'lerde arka disk/plaque band baskisi azaltildi.
+
+Nasil kuruldu:
+
+- `ShapeLayoutGeometry.ResolvePlaqueVisualLayout(...)`
+- `RotatorPlaquePresenter`
+- shape layout icindeki yeni plaque visual tuning alanlari
+
+Presentation katmani mekanikten ayrildi; `perfect/good/near miss/wrong slot` siniflandirmasi ayni kalirken plaque gorseli ayarlanabilir hale getirildi.
+
 ### Local + Remote Content / Telemetry Omurgasi - `YAPILDI`
 
 - `ContentService`
@@ -320,6 +381,13 @@ Nasil kuruldu:
 - Nihai surumde fiyat dil bazli olmayacak.
 - Fiyat Google Play storefront bolgesinden ve Billing product details sonucundan alinacaktir.
 
+### Shape Authoring Karari
+
+- Custom/reference shape authoring veri odakli kalacak.
+- Shape noktalari ile plaque gorsel davranisi ayri ama baglantili yuzeyler olarak tutulacak.
+- `Otomatik Gameplay Fit` acik oldugunda runtime okunurlugu korunacak.
+- `Otomatik Gameplay Fit` kapali oldugunda manuel duzenlenen point set runtime'da birebir korunacak.
+
 ---
 
 ## 3. Sonraki Uygulama Sirasi
@@ -359,6 +427,10 @@ Nasil kuruldu:
   - localization
   - mobile safe area
   - keyboard docking
+  - content editor -> JSON -> runtime parity
+  - shape kutuphanesi -> preview -> gameplay parity
+  - manuel shape duzenleme persistence
+  - referans gorselden shape uretimi
   - default/free/premium sandbox izolasyonu
   - economy/store/coin senkronizasyonu
   - pricing preview davranisi
@@ -369,6 +441,7 @@ Nasil kuruldu:
   - saf hesaplama ve karar kurallari icin unit test
   - save/restore, sandbox mode switch, level completion flow gibi alanlar icin integration test
 - Bu faz tamamlanmadan gameplay juicy/visual polish baslatilmayacak.
+- Bu fazla birlikte, `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md` icindeki buyume riskleri ve alpha sureci calisma disiplini de fiilen uygulanmaya baslanacak.
 
 Neden eklendi:
 
@@ -441,6 +514,12 @@ akislari calistirilacak.
 - `shape_layouts.json`, `difficulty_profiles.json`, `rhythm_profiles.json`
 - `store_catalog.json`
 - `membership_profile.json`
+- `ShapeLayoutDefinition`
+  - `customPoints`
+  - `editorReferenceImagePath`
+  - `gameplayAutoFit`
+  - `plaqueVisualAngleOffsets`
+  - plaque visual tuning alanlari
 
 ### Yeni Editor Yuzeyleri
 
@@ -458,6 +537,13 @@ akislari calistirilacak.
   - bolgesel fiyat taslagi
   - simulasyon
   - reset araclari
+- `WordSpinAlphaContentEditorWindow`
+  - level olusturma / kopyalama / silme
+  - 4 dil soru/cevap/info karti duzenleme
+  - shape kutuphanesi
+  - referans gorsel atama
+  - canli kaydet ve uygula
+  - manuel point ve plaque aci duzenleme
 
 ### Yeni Runtime Katmanlari
 
@@ -465,6 +551,7 @@ akislari calistirilacak.
 - `DebugRewardedAdPresenter`
 - `StorePricingManager`
 - `PreviewStorePricingProvider`
+- `ShapeLayoutGeometry`
 
 ### Runtime Baglantilari
 
@@ -473,8 +560,11 @@ akislari calistirilacak.
 - `MobileRuntimeController` safe area ve mobil runtime davranisini uygular
 - `SceneBootstrap` uzerinden singleton'lar garanti edilir
 - `GameManager` completion UI restore'ini yonetir
+- `GameManager` editor canli apply sirasinda aktif session'i yeni content ile yeniden yukleyebilir
 - `ResultPresenter` pending result state'i save ile geri acabilir
 - `StorePresenter` fiyat ve ekonomi bilgisini provider + economy manager uzerinden gunceller
+- `ContentService` editor kaydi sonrasinda lokal icerik cache'ini yenileyebilir
+- `RotatorPlaquePresenter` shape'e gore adaptif plaque visual layout hesaplayabilir
 
 ---
 
@@ -498,6 +588,9 @@ akislari calistirilacak.
 - Gameplay HUD localization
 - Store preview price abstraction katmani
 - Ekonomi sandbox snapshot izolasyonu
+- Icerik editorunden 4 dil soru/cevap/info karti duzenleme
+- Shape kutuphanesi ve referans gorsel baglama
+- Play modda `Kaydet ve Canli Uygula`
 
 ### Alpha Oncesi Zorunlu Kabul Testleri
 
@@ -538,6 +631,16 @@ akislari calistirilacak.
   - preview fiyat dil eslemesine gore degisiyor
   - farkli economy profile seciminde store preview fiyati da degisiyor
   - coin fiyati ve preview para fiyatlari ayni anda tutarli gorunuyor
+- `Content Editor`:
+  - yeni level ekleme JSON'a dogru yaziliyor
+  - 4 dil soru/cevap/info karti kaydi dogru dosyalara gidiyor
+  - `Kaydet ve Canli Uygula` gameplay ve main menu tarafinda yeni icerigi aciyor
+- `Shape Editor`:
+  - referans gorselden shape uretimi calisiyor
+  - manuel point tasima persistence bozmaz
+  - slot-basi plaque aci duzenleme persistence bozmaz
+  - `Otomatik Gameplay Fit` acik/kapali davranisi beklendigi gibi ayrisir
+  - preview ile runtime gorsel sonucu ayni mantigi izler
 
 ---
 
