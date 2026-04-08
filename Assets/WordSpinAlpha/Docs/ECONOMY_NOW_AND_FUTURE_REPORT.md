@@ -9,6 +9,35 @@ Bu dokumanin amaci iki seyi ayni anda sabitlemektir:
 
 Bu dosya hem bugunku referans raporu, hem de gelecekte baska bir modelin veya yeni bir oturumun projeyi hizli anlamasi icin teknik yol haritasidir.
 
+## Tarihce ve 06.04.2026 Durumu
+
+Bu raporun ana ekonomi kilometre taslari su sekildedir:
+
+### 03.04.2026
+
+- ekonomi sandbox sistemi kuruldu
+- `Default / FreePlayer / PremiumPlayer` ayrimi netlestirildi
+- save snapshot izolasyonu baglandi
+- fake rewarded ad testi ve store pricing abstraction kuruldu
+- bu raporun cekirdegi olan ekonomi mimarisi bu tarihte dokumante edildi
+
+### 04.04.2026
+
+- ekonomi sistemi degismedi, ancak content/shape/editor katmani buyudugu icin ekonomi editorunun diger editorlerle birlikte calisma ihtiyaci netlesti
+
+### 06.04.2026
+
+- ekonomi editoru tek shell editor icinde host edilmeye baslandi
+- editorler arasi commit-sonrasi sync katmani kuruldu
+- ekonomi tuning verisinin diger editorler ve ortak shell ile stale kalmadan calismasi icin altyapi sabitlendi
+
+### 06.04.2026 itibariyla bu raporun anlattigi sistemin durumu
+
+- ekonomi sandbox mimarisi aktif ve korunuyor
+- ekonomi editoru halen asli veri kaynagidir
+- tek shell editor, ekonomi editorunu host eden ust kabuk haline gelmistir
+- nihai Play Store bolgesel fiyat gecisi henuz uygulanmamis, ancak buna hazir abstraction katmani mevcuttur
+
 ---
 
 ## Temel Karar

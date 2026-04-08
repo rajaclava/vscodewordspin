@@ -44,6 +44,7 @@ namespace WordSpinAlpha.Editor
         private int _rotatePointIndex = -1;
         private bool _showShapeGuideLines = true;
         private bool _independentManualPreview;
+        private WordSpinAlphaEditorSyncStamp _syncStamp;
 
         [MenuItem("Tools/WordSpin Alpha/Icerik ve Level Editoru")]
         public static void Open()
@@ -54,10 +55,13 @@ namespace WordSpinAlpha.Editor
         private void OnEnable()
         {
             ReloadDocument();
+            _syncStamp = WordSpinAlphaEditorSyncUtility.CaptureCurrentStamp();
         }
 
         private void OnGUI()
         {
+            TryAutoRefresh();
+
             if (_document == null)
             {
                 ReloadDocument();
@@ -728,6 +732,17 @@ namespace WordSpinAlpha.Editor
             }
         }
 
+        private void TryAutoRefresh()
+        {
+            if (!WordSpinAlphaEditorSyncUtility.ConsumeChanges(WordSpinAlphaEditorSyncKind.Content | WordSpinAlphaEditorSyncKind.RuntimeConfig, ref _syncStamp))
+            {
+                return;
+            }
+
+            ReloadDocument();
+            Repaint();
+        }
+
         private void SaveDocument()
         {
             _issues = WordSpinAlphaContentEditorRepository.Validate(_document);
@@ -740,6 +755,7 @@ namespace WordSpinAlpha.Editor
             }
 
             WordSpinAlphaContentEditorRepository.SaveDocument(_document);
+            WordSpinAlphaEditorSyncUtility.NotifyChanged(WordSpinAlphaEditorSyncKind.Content | WordSpinAlphaEditorSyncKind.RuntimeConfig);
             ApplyRuntimeChangesIfNeeded();
             if (EditorApplication.isPlaying)
             {

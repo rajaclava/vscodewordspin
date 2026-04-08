@@ -20,14 +20,14 @@ namespace WordSpinAlpha.Presentation
         {
             ResolveReferences();
             RebuildVisuals();
-            ApplyIdleState();
+            RestoreActiveState();
         }
 
         public void RebuildLayout()
         {
             ResolveReferences();
             RebuildVisuals();
-            ApplyIdleState();
+            RestoreActiveState();
         }
 
         private void LateUpdate()
@@ -65,21 +65,21 @@ namespace WordSpinAlpha.Presentation
             {
                 if (hit.resultType == HitResultType.Perfect)
                 {
-                    _plaques[hit.expectedSlotIndex].Flash(new Color(1f, 0.95f, 0.68f), 1.15f);
+                    _plaques[hit.expectedSlotIndex].Flash(_plaques[hit.expectedSlotIndex].perfectFlashColor, 1.15f);
                 }
                 else if (hit.resultType == HitResultType.Tolerated)
                 {
-                    _plaques[hit.expectedSlotIndex].Flash(new Color(1f, 0.74f, 0.32f), 1.10f);
+                    _plaques[hit.expectedSlotIndex].Flash(_plaques[hit.expectedSlotIndex].toleratedFlashColor, 1.10f);
                 }
                 else if (hit.resultType == HitResultType.NearMiss)
                 {
-                    _plaques[hit.expectedSlotIndex].Flash(new Color(1f, 0.47f, 0.30f), 1.05f);
+                    _plaques[hit.expectedSlotIndex].Flash(_plaques[hit.expectedSlotIndex].failFlashColor, 1.05f);
                 }
             }
 
             if (hit.resultType == HitResultType.WrongSlot && hit.slotIndex >= 0 && hit.slotIndex < _plaques.Count)
             {
-                _plaques[hit.slotIndex].Flash(new Color(0.95f, 0.34f, 0.27f), 1.08f);
+                _plaques[hit.slotIndex].Flash(_plaques[hit.slotIndex].failFlashColor, 1.08f);
             }
         }
 
@@ -264,6 +264,7 @@ namespace WordSpinAlpha.Presentation
                     resolvedPoints,
                     slot.SlotIndex,
                     resolvedPoints != null ? resolvedPoints.Length : 0);
+                ApplyLiveSlotVisualOverride(currentLayout, slot, ref visualLayout);
                 Vector2 plaqueSize = visualLayout.plaqueSize;
                 Vector2 innerSize = visualLayout.innerSize;
                 Vector2 runeSize = visualLayout.runeSize;
@@ -286,6 +287,17 @@ namespace WordSpinAlpha.Presentation
                 plaque.baseFrameColor = plaque.frame != null ? plaque.frame.color : Color.white;
                 plaque.baseFaceColor = plaque.face != null ? plaque.face.color : Color.white;
                 plaque.baseGlowColor = plaque.glow != null ? plaque.glow.color : Color.white;
+                plaque.inactiveFrameColor = Color.Lerp(slot.InactiveColor, new Color(0.14f, 0.09f, 0.07f, slot.InactiveColor.a), 0.42f);
+                plaque.inactiveFaceColor = slot.InactiveColor;
+                plaque.inactiveSeatColor = Color.Lerp(slot.InactiveColor, new Color(0.10f, 0.07f, 0.05f, slot.InactiveColor.a), 0.65f);
+                plaque.activeFrameColor = slot.ActiveColor;
+                plaque.activeFaceColor = Color.Lerp(slot.ActiveColor, Color.white, 0.22f);
+                plaque.activeSeatColor = Color.Lerp(slot.ActiveColor, new Color(0.14f, 0.09f, 0.07f, 1f), 0.45f);
+                plaque.activeGlowColor = WithAlpha(slot.ActiveColor, Mathf.Clamp01(Mathf.Max(0.20f, slot.ActiveColor.a)));
+                plaque.activeScaleMultiplier = Mathf.Max(1f, slot.ActiveScaleMultiplier);
+                plaque.perfectFlashColor = slot.PerfectFeedbackColor;
+                plaque.toleratedFlashColor = slot.ToleratedFeedbackColor;
+                plaque.failFlashColor = slot.FailFeedbackColor;
 
                 if (plaque.glow != null)
                 {
@@ -329,6 +341,21 @@ namespace WordSpinAlpha.Presentation
             for (int i = 0; i < _plaques.Count; i++)
             {
                 _plaques[i].SetActive(false);
+            }
+        }
+
+        private void RestoreActiveState()
+        {
+            SlotManager manager = FindObjectOfType<SlotManager>();
+            if (manager == null || manager.CurrentTargetSlot < 0)
+            {
+                ApplyIdleState();
+                return;
+            }
+
+            for (int i = 0; i < _plaques.Count; i++)
+            {
+                _plaques[i].SetActive(i == manager.CurrentTargetSlot);
             }
         }
 
@@ -494,6 +521,41 @@ namespace WordSpinAlpha.Presentation
             }
         }
 
+        private static void ApplyLiveSlotVisualOverride(ShapeLayoutDefinition layout, Slot slot, ref ShapePlaqueVisualLayoutInfo info)
+        {
+            if (slot == null)
+            {
+                return;
+            }
+
+            Vector2 basePlaqueSize = new Vector2(
+                Mathf.Max(0.14f, layout != null ? layout.plaqueWidth : 0.30f),
+                Mathf.Max(0.10f, layout != null ? layout.plaqueHeight : 0.18f)) * 1.55f;
+            Vector2 livePlaqueSize = slot.PlaqueSize * 1.55f;
+            Vector2 scale = new Vector2(
+                Mathf.Clamp(livePlaqueSize.x / Mathf.Max(0.0001f, basePlaqueSize.x), 0.55f, 2.4f),
+                Mathf.Clamp(livePlaqueSize.y / Mathf.Max(0.0001f, basePlaqueSize.y), 0.55f, 2.4f));
+
+            info.plaqueSize = ScaleVector(info.plaqueSize, scale, 0.10f, 0.08f);
+            info.innerSize = ScaleVector(info.innerSize, scale, 0.08f, 0.06f);
+            info.runeSize = ScaleVector(info.runeSize, scale, 0.05f, 0.07f);
+            info.seatSize = ScaleVector(info.seatSize, scale, 0.10f, 0.08f);
+            info.glowSize = ScaleVector(info.glowSize, scale, 0.10f, 0.08f);
+        }
+
+        private static Vector2 ScaleVector(Vector2 source, Vector2 scale, float minX, float minY)
+        {
+            return new Vector2(
+                Mathf.Max(minX, source.x * scale.x),
+                Mathf.Max(minY, source.y * scale.y));
+        }
+
+        private static Color WithAlpha(Color color, float alpha)
+        {
+            color.a = alpha;
+            return color;
+        }
+
         private void AddSquareLockAccents(float anchorRadius, Vector2 layoutScale)
         {
             Vector3[] corners =
@@ -585,6 +647,17 @@ namespace WordSpinAlpha.Presentation
             public Color baseFrameColor;
             public Color baseFaceColor;
             public Color baseGlowColor;
+            public Color inactiveFrameColor;
+            public Color inactiveFaceColor;
+            public Color inactiveSeatColor;
+            public Color activeFrameColor;
+            public Color activeFaceColor;
+            public Color activeSeatColor;
+            public Color activeGlowColor;
+            public float activeScaleMultiplier = 1.04f;
+            public Color perfectFlashColor;
+            public Color toleratedFlashColor;
+            public Color failFlashColor;
 
             private bool _active;
             private float _flashEndsAt;
@@ -623,17 +696,17 @@ namespace WordSpinAlpha.Presentation
             {
                 if (frame != null)
                 {
-                    frame.color = _active ? Color.Lerp(baseFrameColor, new Color(1f, 0.68f, 0.24f), 0.55f) : baseFrameColor;
+                    frame.color = _active ? activeFrameColor : inactiveFrameColor;
                 }
 
                 if (seat != null)
                 {
-                    seat.color = _active ? new Color(0.30f, 0.18f, 0.11f, 0.98f) : new Color(0.14f, 0.09f, 0.07f, 0.92f);
+                    seat.color = _active ? activeSeatColor : inactiveSeatColor;
                 }
 
                 if (face != null)
                 {
-                    face.color = _active ? Color.Lerp(baseFaceColor, new Color(1f, 0.84f, 0.52f), 0.35f) : baseFaceColor;
+                    face.color = _active ? activeFaceColor : inactiveFaceColor;
                 }
 
                 if (glow != null)
@@ -641,13 +714,13 @@ namespace WordSpinAlpha.Presentation
                     glow.enabled = _active;
                     if (_active)
                     {
-                        glow.color = new Color(1f, 0.60f, 0.22f, 0.45f);
+                        glow.color = activeGlowColor;
                     }
                 }
 
                 if (root != null)
                 {
-                    root.localScale = _active ? Vector3.one * 1.04f : Vector3.one;
+                    root.localScale = _active ? Vector3.one * activeScaleMultiplier : Vector3.one;
                 }
             }
 

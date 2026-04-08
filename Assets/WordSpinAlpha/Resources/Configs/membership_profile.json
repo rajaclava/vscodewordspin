@@ -1,6 +1,6 @@
 {
-  "membershipId": "premium_membership",
-  "removeAds": true,
-  "unlimitedEntryEnergy": true,
-  "unlockFutureThemes": true
+    "membershipId": "premium_membership",
+    "removeAds": true,
+    "unlimitedEntryEnergy": true,
+    "unlockFutureThemes": true
 }

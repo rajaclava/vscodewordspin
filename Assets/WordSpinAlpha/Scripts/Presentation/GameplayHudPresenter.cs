@@ -19,6 +19,12 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] private TextMeshProUGUI coinHookTitleLabel;
         [SerializeField] private TextMeshProUGUI coinHookValueLabel;
         [SerializeField] private float targetPulseRefreshInterval = 0.05f;
+        [SerializeField] private Color unrevealedAnswerTextColor = new Color(0.79f, 0.63f, 0.45f, 1f);
+        [SerializeField] private Color unrevealedAnswerBoxColor = new Color(0.17f, 0.14f, 0.12f, 0.80f);
+        [SerializeField] private Color targetPulseTextStartColor = new Color(1f, 0.70f, 0.36f, 1f);
+        [SerializeField] private Color targetPulseTextEndColor = new Color(1f, 0.92f, 0.68f, 1f);
+        [SerializeField] private Color targetPulseBoxStartColor = new Color(0.42f, 0.23f, 0.10f, 0.72f);
+        [SerializeField] private Color targetPulseBoxEndColor = new Color(0.92f, 0.56f, 0.20f, 0.92f);
 
         private char[] _revealedChars = new char[0];
         private int _currentTargetAnswerIndex = -1;
@@ -264,15 +270,17 @@ namespace WordSpinAlpha.Presentation
                 if (isCurrentTarget)
                 {
                     float pulse = 0.5f + (Mathf.Sin(Time.time * 6.4f) * 0.5f);
-                    Color pulseColor = Color.Lerp(new Color(1f, 0.70f, 0.36f), new Color(1f, 0.92f, 0.68f), pulse);
-                    Color boxColor = Color.Lerp(new Color(0.42f, 0.23f, 0.10f, 0.72f), new Color(0.92f, 0.56f, 0.20f, 0.92f), pulse);
+                    Color pulseColor = Color.Lerp(targetPulseTextStartColor, targetPulseTextEndColor, pulse);
+                    Color boxColor = Color.Lerp(targetPulseBoxStartColor, targetPulseBoxEndColor, pulse);
                     string colorHex = ColorUtility.ToHtmlStringRGB(pulseColor);
                     string markHex = ColorUtility.ToHtmlStringRGBA(boxColor);
                     _answerBuilder.Append($"<mark=#{markHex}><color=#{colorHex}><b>");
                 }
                 else if (isUnrevealed)
                 {
-                    _answerBuilder.Append("<mark=#2B231FCC><color=#C9A073>");
+                    string colorHex = ColorUtility.ToHtmlStringRGB(unrevealedAnswerTextColor);
+                    string markHex = ColorUtility.ToHtmlStringRGBA(unrevealedAnswerBoxColor);
+                    _answerBuilder.Append($"<mark=#{markHex}><color=#{colorHex}>");
                 }
 
                 _answerBuilder.Append(_revealedChars[i]);
@@ -374,9 +382,6 @@ namespace WordSpinAlpha.Presentation
             else
             {
                 scoreLabel.text = $"{GetLocalized("score")}: 0";
-                scoreLabel.alignment = TextAlignmentOptions.Center;
-                scoreLabel.fontSize = 28f;
-                scoreLabel.color = new Color(0.96f, 0.95f, 0.88f);
             }
 
             if (multiplierLabel == null)
@@ -519,6 +524,24 @@ namespace WordSpinAlpha.Presentation
         private static void OpenStoreFromCoinHook()
         {
             SceneNavigator.Instance?.OpenStore();
+        }
+
+        public void RefreshForEditor()
+        {
+            EnsureScoreUi();
+            EnsureCoinHookUi();
+            if (QuestionLifeManager.Instance != null)
+            {
+                HandleHeartsChanged(QuestionLifeManager.Instance.CurrentHearts);
+            }
+
+            if (scoreLabel != null)
+            {
+                scoreLabel.text = $"{GetLocalized("score")}: {(_hasScoreState ? _lastScoreTotal : 0)}";
+            }
+
+            RefreshAnswerLabel();
+            RefreshCoinHook();
         }
 
         private static string GetLocalized(string key)

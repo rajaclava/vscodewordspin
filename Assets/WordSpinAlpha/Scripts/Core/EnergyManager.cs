@@ -130,6 +130,19 @@ namespace WordSpinAlpha.Core
             GameEvents.RaiseEntryEnergyChanged(CurrentEnergy, MaxEnergy);
         }
 
+        public void RefreshConfigForEditor()
+        {
+            _config = ContentService.Instance != null ? ContentService.Instance.LoadEnergyConfig() : _config;
+            if (SaveManager.Instance == null)
+            {
+                return;
+            }
+
+            SaveManager.Instance.Data.energy.currentEnergy = Mathf.Clamp(SaveManager.Instance.Data.energy.currentEnergy, 0, MaxEnergy);
+            SaveManager.Instance.Save();
+            GameEvents.RaiseEntryEnergyChanged(CurrentEnergy, MaxEnergy);
+        }
+
         private void ResolveEffectiveRules(out int maxEnergy, out int refillMinutes, out bool bypassEntryEnergy)
         {
             if (TestPlayerModeManager.Instance != null &&

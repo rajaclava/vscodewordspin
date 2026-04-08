@@ -251,6 +251,19 @@ namespace WordSpinAlpha.Core
             EnsureEconomyBalanceProfile();
         }
 
+        public void RefreshRuntimeCatalogsForEditor()
+        {
+            if (ContentService.Instance != null)
+            {
+                _storeCatalog = ContentService.Instance.LoadStoreCatalog();
+                _membershipProfile = ContentService.Instance.LoadMembershipProfile();
+            }
+
+            RefreshEconomyProfile();
+            GameEvents.RaiseMembershipChanged(PremiumMembershipActive);
+            GameEvents.RaiseSoftCurrencyChanged(SoftCurrency, 0);
+        }
+
         private int ResolveThemeSoftCurrencyPrice(string themeId, int fallbackPrice)
         {
             EnsureEconomyBalanceProfile();

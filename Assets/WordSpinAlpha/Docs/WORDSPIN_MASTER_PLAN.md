@@ -18,6 +18,54 @@ Guncel kararlar:
 - Proje `mobil-first`, `safe-area aware`, `cok dilli` ve `data-driven` ilerliyor.
 - Ekonomi tarafinda `Default` gercek gelistirme/runtime modudur; `FreePlayer` ve `PremiumPlayer` yalnizca test sandbox modlaridir.
 - Birlesik editor, telemetry, hotfix ve web panel gecisi icin detayli risk ve sira plani ayri olarak `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md` icinde tutulur. Alpha demo suresince buyume riskleri bu yardimci plan dikkate alinarak yonetilecektir.
+- Market cikisina production-safe gecis, promo/gift omurgasi, billing/rewarded/pricing production provider gecisleri ve final release testi icin detayli plan ayri olarak `MARKET_RELEASE_READINESS_PLAN.md` icinde tutulur.
+
+## Tarih Bazli Ozet ve 06.04.2026 Konumu
+
+Bu plan dosyasinda iki farkli tarih katmani vardir:
+
+- `03.04.2026 oncesi kurulu temel omurga`
+- `03.04.2026`, `04.04.2026` ve `06.04.2026` oturumlarinda acikca izlenen ve dokumante edilen isler
+
+Onemli not:
+
+- Bu dosyadaki eski `YAPILDI` maddeler, 03.04.2026 oncesinde repoda zaten kurulu ve dogrulanmis temel sistemleri de icerir.
+- 03.04.2026 oncesi her alt sistem icin tek tek kesin gun bilgisi repoda tutulmadigi icin burada yapay tarih uydurulmaz.
+- Gun gun kesin izlenebilen buyuk kilometre taslari asagida ayrica yazilir.
+
+### 03.04.2026
+
+- ekonomi sandbox katmani netlestirildi
+- `Default / FreePlayer / PremiumPlayer` davranis ayrimi sabitlendi
+- save snapshot izolasyonu kuruldu
+- fake rewarded ad test katmani eklendi
+- store pricing abstraction ve preview fiyat katmani kuruldu
+- ekonomi ve gelecekteki Play Store bolgesel fiyat gecisi icin teknik raporlar yazildi
+
+### 04.04.2026
+
+- 4 dilli icerik ve level editoru kuruldu
+- referans gorselden shape uretimi ve manuel shape authoring kuruldu
+- content tarafinda `Kaydet ve Canli Uygula` akisi baglandi
+- shape preview/runtime parity icin birden fazla duzeltme yapildi
+- editor ve shape tarafindaki yeni sistemler plan ve teknik dokumanlara islendi
+
+### 06.04.2026
+
+- eksik kalan tuning editorleri tamamlandi
+- tum editorler tek shell altinda `Toplu Tek Editor` icine toplandi
+- editorler arasi commit-sonrasi sync katmani kuruldu
+- live config ve web panel gecisine yonelik detayli mimari kılavuzu yazildi
+- plan dosyalari ile teknik kılavuzlar capraz referansli hale getirildi
+
+### 06.04.2026 itibariyla tam olarak neredeyiz
+
+- `Faz 1-3` teknik olarak kuruldu
+- tum ana tuning yuzeyleri editorlestirilmis durumda
+- tek shell editor mevcut, fakat tekli editorler parity icin halen saklaniyor
+- editorler arasi veri uyumu ve apply zinciri icin stabilizasyon yapildi
+- `Faz C` giris kontrolu aktif; parity dogrulamasi ve bug sweep'e resmi gecis asamasindayiz
+- dolayisiyla proje, `editor kilidi tamamlanmis / bug sweep girisi acilmis` noktasindadir
 
 ---
 
@@ -189,7 +237,7 @@ Nasil kuruldu:
 Nasil kuruldu:
 
 - `WordSpinAlphaContentEditorWindow`
-- `WordSpinAlphaContentEditorRepository`
+- `WordSpinAlphaContentEditorData`
 - `ContentService.RefreshEditorContent()`
 - `GameManager.ReloadCurrentSessionForEditorContent()`
 - `MainMenuPresenter.RefreshEditorContent()`
@@ -213,7 +261,7 @@ Nasil kuruldu:
 - `ShapeLayoutDefinition.editorReferenceImagePath`
 - `ShapeLayoutDefinition.plaqueVisualAngleOffsets`
 - `WordSpinAlphaContentEditorWindow`
-- `WordSpinAlphaContentEditorRepository`
+- `WordSpinAlphaContentEditorData`
 
 bu katman shape'i veri odakli saklar; referans gorsel, manuel point duzenleme ve slot-basi angle offset ayni JSON uzerinden yasar.
 
@@ -417,7 +465,7 @@ Nasil kuruldu:
 - `safe area` pozisyon + boyut + ic margin birlikte ele alinacak.
 - Alt keyboard dock tum telefon oranlari icin hem sigan hem estetik hale getirilecek.
 
-### Faz C - Pre-Polish Sistem Taramasi ve Bug Kilidi - `SIRADA`
+### Faz C - Pre-Polish Sistem Taramasi ve Bug Kilidi - `AKTIF`
 
 - Gorsellik tasarimi ve juicy hissiyat pass'ine gecmeden once, son ufak iterasyonlar tamamlanacak.
 - Ardindan tum yeni katmanlar uzerinde kapsamli bir sistem taramasi yapilacak:
@@ -442,6 +490,8 @@ Nasil kuruldu:
   - save/restore, sandbox mode switch, level completion flow gibi alanlar icin integration test
 - Bu faz tamamlanmadan gameplay juicy/visual polish baslatilmayacak.
 - Bu fazla birlikte, `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md` icindeki buyume riskleri ve alpha sureci calisma disiplini de fiilen uygulanmaya baslanacak.
+- 06.04.2026 itibariyla editor yazim fazi ve tek shell editor kurulumu tamamlandigi icin, proje bu fazin giris noktasina gelmistir.
+- Hemen sonraki somut is: parity dogrulamasi ve bug sweep'tir.
 
 Neden eklendi:
 
@@ -525,6 +575,11 @@ akislari calistirilacak.
 
 - `DeveloperTelemetryWindow`
 - `AndroidDeviceBuildTools`
+- `WordSpinAlphaUnifiedEditorWindow`
+  - tum editor yuzeylerini tek shell icinde toplar
+  - mevcut alt editorleri host ederek parity bozmadan gecis saglar
+  - `GameplaySceneTuner` custom inspectorunu ayni kabukta cizdirir
+  - build/generate/android yardimci komutlarini ayni panelde toplar
 - `KeyboardLayoutTuningWindow`
   - dil bazli tuning
   - onizleme oran secimi
@@ -544,14 +599,68 @@ akislari calistirilacak.
   - referans gorsel atama
   - canli kaydet ve uygula
   - manuel point ve plaque aci duzenleme
+- `SlotHitTuningWindow`
+  - slot/plaque boyutu
+  - active/passive renkler
+  - perfect/good/hata feedback renkleri
+  - hit toleranslari
+- `PinInputTuningWindow`
+  - pin boyutu
+  - pin/input pacing
+  - swipe ve cooldown ayarlari
+- `RotatorRhythmTuningWindow`
+  - rhythm profile
+  - difficulty profile/tier
+  - baz donus ve pacing tuning'i
+- `QuestionFailFlowTuningWindow`
+  - soru cani
+  - fail akis ve CTA tuning'i
+- `UiSurfaceTuningWindow`
+  - gameplay HUD
+  - fail/result/info/store/membership/menu yuzeyleri
+- `FeelVisualTuningWindow`
+  - score
+  - impact
+  - tema runtime pressure tuning'i
+- `ThemeStoreConfigWindow`
+  - theme/store/membership/energy runtime config
+- `ThemePackagePreviewWindow`
+  - tema paket preview ve saglik kontrolu
+- `MobileRuntimeTuningWindow`
+  - safe area ve cihaz runtime tuning'i
+- `AmbientPulseTuningWindow`
+  - glow/ambiyans/pulse mikro gorsel tuning'i
+- `TelemetryPolicyWindow`
+  - telemetry queue/flush/trim policy tuning'i
+- `RemoteContentHotfixWindow`
+  - remote manifest/hotfix publish ve refresh
+- `ValidationAuditWindow`
+  - global validation ve referans taramasi
+- `SaveSessionDebugWindow`
+  - save/session inspect ve reset araci
 
-### Yeni Runtime Katmanlari
+Not:
+
+- tekli editorler bu asamada silinmedi
+- once `WordSpinAlphaUnifiedEditorWindow` uzerinden davranis parity'si dogrulanacak
+- sonra kullanilmayan tekli menuler kademeli olarak kaldirilacak
+
+### Yeni Runtime ve Editor Baglanti Katmanlari
 
 - `TestPlayerModeManager`
 - `DebugRewardedAdPresenter`
 - `StorePricingManager`
 - `PreviewStorePricingProvider`
 - `ShapeLayoutGeometry`
+- `WordSpinAlphaEditorRuntimeRefreshUtility`
+- `WordSpinAlphaRuntimeConfigRepository`
+- `WordSpinAlphaEditorSyncUtility`
+- `WordSpinAlphaEditorUiTuningUtility`
+
+Not:
+
+- ilk bes madde runtime veya runtime'a baglanan veri/servis katmanlaridir
+- son dort madde editorlerin guvenli apply, veri erisimi ve editorler arasi senkronu icin eklenmis editor destek katmanlaridir
 
 ### Runtime Baglantilari
 

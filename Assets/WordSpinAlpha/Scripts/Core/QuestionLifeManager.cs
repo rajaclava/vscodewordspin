@@ -7,6 +7,7 @@ namespace WordSpinAlpha.Core
         [SerializeField] private int defaultHearts = GameConstants.DefaultQuestionHearts;
 
         public int CurrentHearts { get; private set; }
+        public int DefaultHearts => defaultHearts;
 
         protected override bool PersistAcrossScenes => true;
 
@@ -49,6 +50,19 @@ namespace WordSpinAlpha.Core
         public void RefreshForTesting(bool resetToMax)
         {
             if (resetToMax)
+            {
+                ResetQuestionHearts();
+                return;
+            }
+
+            CurrentHearts = Mathf.Clamp(CurrentHearts, 0, ResolveMaxHearts());
+            GameEvents.RaiseQuestionHeartsChanged(CurrentHearts);
+        }
+
+        public void ApplyEditorTuning(int hearts, bool resetCurrentHearts)
+        {
+            defaultHearts = Mathf.Max(1, hearts);
+            if (resetCurrentHearts)
             {
                 ResetQuestionHearts();
                 return;

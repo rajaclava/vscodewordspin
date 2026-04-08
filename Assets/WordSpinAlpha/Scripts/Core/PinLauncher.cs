@@ -16,6 +16,7 @@ namespace WordSpinAlpha.Core
 
         public float LoadTweenDuration => loadTweenDuration;
         public float PinVisualScale => pinVisualScale;
+        public Pin PinTemplate => pinPrefab;
 
         private Pin _loadedPin;
         private Coroutine _loadRoutine;

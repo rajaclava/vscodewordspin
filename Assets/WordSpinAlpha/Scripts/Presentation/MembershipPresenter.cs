@@ -42,6 +42,11 @@ namespace WordSpinAlpha.Presentation
             HandleMembershipChanged(EconomyManager.Instance != null && EconomyManager.Instance.PremiumMembershipActive);
         }
 
+        public void RefreshForEditor()
+        {
+            HandleMembershipChanged(EconomyManager.Instance != null && EconomyManager.Instance.PremiumMembershipActive);
+        }
+
         private static string GetLocalized(string key)
         {
             string language = SaveManager.Instance != null ? GameConstants.NormalizeLanguageCode(SaveManager.Instance.Data.languageCode) : GameConstants.DefaultLanguageCode;

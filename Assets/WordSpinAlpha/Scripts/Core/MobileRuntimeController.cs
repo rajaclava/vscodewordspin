@@ -10,11 +10,25 @@ namespace WordSpinAlpha.Core
         [SerializeField] private float extraHorizontalSafeMargin = 18f;
         [SerializeField] private float extraBottomSafeMargin = 12f;
         [SerializeField] private float extraTopSafeMargin = 8f;
+        [SerializeField] private Vector2 referenceResolution = new Vector2(1080f, 1920f);
+        [SerializeField] private float canvasMatchWidthOrHeight = 1f;
+        [SerializeField] private int targetFrameRate = 60;
+        [SerializeField] private bool forcePortrait = true;
+        [SerializeField] private bool forceFullscreen = true;
 
         private readonly System.Collections.Generic.Dictionary<int, Vector2> _baseAnchoredPositions = new System.Collections.Generic.Dictionary<int, Vector2>();
         private readonly System.Collections.Generic.Dictionary<int, Vector2> _baseSizes = new System.Collections.Generic.Dictionary<int, Vector2>();
         private Rect _lastSafeArea;
         private Vector2Int _lastScreenSize;
+
+        public float ExtraHorizontalSafeMargin => extraHorizontalSafeMargin;
+        public float ExtraBottomSafeMargin => extraBottomSafeMargin;
+        public float ExtraTopSafeMargin => extraTopSafeMargin;
+        public Vector2 ReferenceResolution => referenceResolution;
+        public float CanvasMatchWidthOrHeight => canvasMatchWidthOrHeight;
+        public int TargetFrameRate => targetFrameRate;
+        public bool ForcePortrait => forcePortrait;
+        public bool ForceFullscreen => forceFullscreen;
 
         private void Awake()
         {
@@ -70,19 +84,51 @@ namespace WordSpinAlpha.Core
             }
         }
 
-        private static void ApplyGlobalMobileSettings()
+        public void ApplyEditorTuning(
+            float horizontalMargin,
+            float bottomMargin,
+            float topMargin,
+            Vector2 newReferenceResolution,
+            float newCanvasMatch,
+            int newTargetFrameRate,
+            bool newForcePortrait,
+            bool newForceFullscreen)
         {
-            Screen.orientation = ScreenOrientation.Portrait;
-            Screen.autorotateToPortrait = true;
-            Screen.autorotateToPortraitUpsideDown = false;
-            Screen.autorotateToLandscapeLeft = false;
-            Screen.autorotateToLandscapeRight = false;
-            Screen.fullScreen = true;
-            Application.targetFrameRate = 60;
+            extraHorizontalSafeMargin = Mathf.Max(0f, horizontalMargin);
+            extraBottomSafeMargin = Mathf.Max(0f, bottomMargin);
+            extraTopSafeMargin = Mathf.Max(0f, topMargin);
+            referenceResolution = new Vector2(
+                Mathf.Max(320f, newReferenceResolution.x),
+                Mathf.Max(480f, newReferenceResolution.y));
+            canvasMatchWidthOrHeight = Mathf.Clamp01(newCanvasMatch);
+            targetFrameRate = Mathf.Clamp(newTargetFrameRate, 30, 240);
+            forcePortrait = newForcePortrait;
+            forceFullscreen = newForceFullscreen;
+            ApplyCurrentSceneLayout();
+        }
+
+        public void RefreshForEditor()
+        {
+            ApplyCurrentSceneLayout();
+        }
+
+        private void ApplyGlobalMobileSettings()
+        {
+            if (forcePortrait)
+            {
+                Screen.orientation = ScreenOrientation.Portrait;
+                Screen.autorotateToPortrait = true;
+                Screen.autorotateToPortraitUpsideDown = false;
+                Screen.autorotateToLandscapeLeft = false;
+                Screen.autorotateToLandscapeRight = false;
+            }
+
+            Screen.fullScreen = forceFullscreen;
+            Application.targetFrameRate = targetFrameRate;
             QualitySettings.vSyncCount = 0;
         }
 
-        private static void ApplyCanvasScaling(Canvas canvas)
+        private void ApplyCanvasScaling(Canvas canvas)
         {
             CanvasScaler scaler = canvas.GetComponent<CanvasScaler>();
             if (scaler == null)
@@ -91,8 +137,8 @@ namespace WordSpinAlpha.Core
             }
 
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1080f, 1920f);
-            scaler.matchWidthOrHeight = 1f;
+            scaler.referenceResolution = referenceResolution;
+            scaler.matchWidthOrHeight = canvasMatchWidthOrHeight;
         }
 
         private void ApplySafeAreaOffsets(Canvas canvas)

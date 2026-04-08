@@ -2,6 +2,34 @@
 
 Bu dokuman, Unity projesinin teknik yapisini baska bir AI modeliyle tartismak, planlamak veya yeni is cikarmak icin hazirlandi. Kodun tamami burada verilmez; ana klasorler, siniflar, veri kaynaklari ve sistemler arasi baglanti mantigi ozetlenir.
 
+## Snapshot ve Tarih Notu
+
+Bu teknik haritanin ana snapshot tarihi:
+
+- `06.04.2026`
+
+Tarih bazli ozet:
+
+### 03.04.2026
+
+- ekonomi sandbox, pricing abstraction ve test mode katmanlari sisteme girdi
+
+### 04.04.2026
+
+- icerik editoru, shape authoring ve content canli apply zinciri teknik mimariye eklendi
+
+### 06.04.2026
+
+- eksik tuning editorleri tamamlandi
+- tek shell editor ve editorler arasi sync katmani sisteme eklendi
+- bu nedenle bu harita, hem tekli editorleri hem de toplu editor kabugunu birlikte anlatan bir mimari snapshot’tir
+
+Onemli not:
+
+- Bu dokuman zamanlama plani degildir.
+- 06.04.2026 itibariyla projedeki mevcut teknik durumun haritasidir.
+- Bu snapshot'a gore hemen sonraki is, yeni editor kurmak degil mevcut editor/runtime parity'sini dogrulamak ve bug sweep fazina girmektir.
+
 ---
 
 ## 1. Dosya Mimarisi
@@ -113,10 +141,29 @@ Onemli scriptler:
 - `WordSpinAlphaSceneBuilder.cs`
 - `WordSpinAlphaLevelGenerator.cs`
 - `GameplaySceneTunerEditor.cs`
+- `WordSpinAlphaUnifiedEditorWindow.cs`
+- `WordSpinAlphaEditorRuntimeRefreshUtility.cs`
+- `WordSpinAlphaRuntimeConfigRepository.cs`
+- `WordSpinAlphaEditorSyncUtility.cs`
+- `WordSpinAlphaEditorUiTuningUtility.cs`
 - `KeyboardLayoutTuningWindow.cs`
 - `EconomyBalanceWindow.cs`
 - `WordSpinAlphaContentEditorWindow.cs`
 - `WordSpinAlphaContentEditorData.cs`
+- `SlotHitTuningWindow.cs`
+- `PinInputTuningWindow.cs`
+- `RotatorRhythmTuningWindow.cs`
+- `QuestionFailFlowTuningWindow.cs`
+- `UiSurfaceTuningWindow.cs`
+- `FeelVisualTuningWindow.cs`
+- `ThemeStoreConfigWindow.cs`
+- `ThemePackagePreviewWindow.cs`
+- `MobileRuntimeTuningWindow.cs`
+- `AmbientPulseTuningWindow.cs`
+- `TelemetryPolicyWindow.cs`
+- `RemoteContentHotfixWindow.cs`
+- `ValidationAuditWindow.cs`
+- `SaveSessionDebugWindow.cs`
 - `DeveloperTelemetryWindow.cs`
 - `AndroidDeviceBuildTools.cs`
 
@@ -344,16 +391,47 @@ Ana event tipleri:
 
 #### Icerik editoru ve canli apply zinciri
 
+- `WordSpinAlphaUnifiedEditorWindow`
+  -> mevcut tum tuning editorlerini tek shell icinde host eder
+  -> dogrudan veri sahibi degildir
+  -> tekli editor parity'sini bozmadan merkezi erisim yuzeyi saglar
+
 - `WordSpinAlphaContentEditorWindow`
-  -> `WordSpinAlphaContentEditorRepository`
+  -> `WordSpinAlphaContentEditorData`
   -> locale JSON dosyalari
+  -> `WordSpinAlphaEditorSyncUtility`
   -> `GameManager.ReloadCurrentSessionForEditorContent()`
   -> `MainMenuPresenter.RefreshEditorContent()`
 
-- `WordSpinAlphaContentEditorRepository`
+- `WordSpinAlphaContentEditorData`
   -> `ShapeLayoutGeometry`
   -> `AssetDatabase`
   -> `ContentService.RefreshEditorContent()` ile dolayli runtime yenileme
+
+- `WordSpinAlphaRuntimeConfigRepository`
+  -> `themes.json`
+  -> `store_catalog.json`
+  -> `membership_profile.json`
+  -> `energy_config.json`
+  -> `difficulty_profiles.json`
+  -> `difficulty_tiers.json`
+  -> `rhythm_profiles.json`
+  -> `shape_layouts.json`
+
+- `WordSpinAlphaEditorRuntimeRefreshUtility`
+  -> `ContentService.RefreshEditorContent()`
+  -> `RefreshRotatorPresentation()`
+  -> `RefreshThemePresentation()`
+  -> `RefreshCurrentTargetState()`
+  -> play mode icinde editor apply zincirini merkezilesir
+
+- `WordSpinAlphaEditorSyncUtility`
+  -> `Scene`
+  -> `RuntimeConfig`
+  -> `Content`
+  -> `ScriptableAssets`
+  -> `Telemetry`
+  -> commit-sonrasi editorler arasi stale state'i temizler
 
 - `ShapeLayoutGeometry`
   -> `SlotManager`

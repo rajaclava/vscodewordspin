@@ -401,6 +401,83 @@
             "customPoints": [],
             "angleOverrides": [],
             "pointRadiusScales": []
+        },
+        {
+            "shapeLayoutId": "shape_001",
+            "displayName": "Yeni Sekil",
+            "shapeFamily": "custom",
+            "visualPrefabResourcePath": "",
+            "editorReferenceImagePath": "Assets/WordSpinAlpha/Art/ShapeRefs/KALP.png",
+            "slotCount": 9,
+            "radiusX": 1.100000023841858,
+            "radiusY": 1.100000023841858,
+            "rotationOffsetDegrees": 0.0,
+            "plaqueWidth": 0.30000001192092898,
+            "plaqueHeight": 0.18000000715255738,
+            "perfectWidthScale": 0.44999998807907107,
+            "perfectHeightScale": 0.44999998807907107,
+            "nearMissPadding": 0.07999999821186066,
+            "useTangentialRotation": true,
+            "gameplayAutoFit": true,
+            "adaptivePlaqueVisuals": false,
+            "plaqueVisualPadding": 0.10000000149011612,
+            "plaqueVisualMinWidthScale": 0.5799999833106995,
+            "plaqueVisualMaxWidthScale": 1.0,
+            "plaqueVisualMinHeightScale": 0.8199999928474426,
+            "plaqueVisualMaxHeightScale": 1.0,
+            "plaqueVisualOutwardOffset": 0.07999999821186066,
+            "plaqueVisualContourFollow": 0.44999998807907107,
+            "plaqueVisualAngleOffsets": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "customPoints": [
+                {
+                    "x": -0.0006636580801568925,
+                    "y": 0.43026775121688845
+                },
+                {
+                    "x": 0.5928043723106384,
+                    "y": 0.8003929853439331
+                },
+                {
+                    "x": 1.0888744592666627,
+                    "y": 0.32376742362976076
+                },
+                {
+                    "x": 0.8308359384536743,
+                    "y": -0.3508705496788025
+                },
+                {
+                    "x": 0.27726131677627566,
+                    "y": -0.8490272760391235
+                },
+                {
+                    "x": -0.2736898958683014,
+                    "y": -0.8492106199264526
+                },
+                {
+                    "x": -0.8274114727973938,
+                    "y": -0.35154157876968386
+                },
+                {
+                    "x": -1.0899111032485963,
+                    "y": 0.3228853642940521
+                },
+                {
+                    "x": -0.5970608592033386,
+                    "y": 0.8017030358314514
+                }
+            ],
+            "angleOverrides": [],
+            "pointRadiusScales": []
         }
     ]
 }

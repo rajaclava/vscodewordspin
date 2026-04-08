@@ -14,6 +14,15 @@ namespace WordSpinAlpha.Core
         [SerializeField] private SpriteRenderer coreRenderer;
         [SerializeField] private SpriteRenderer sheenRenderer;
         [SerializeField] private SpriteRenderer shaftRenderer;
+        [SerializeField] private Vector3 shaftLocalPosition = new Vector3(0f, -0.38f, 0f);
+        [SerializeField] private Vector3 shaftLocalScale = new Vector3(0.11f, 0.74f, 1f);
+        [SerializeField] private Vector3 letterLocalPosition = new Vector3(0f, -0.80f, -0.1f);
+        [SerializeField] private float letterCharacterSize = 0.10f;
+        [SerializeField] private int letterFontSize = 52;
+        [SerializeField] private Vector3 ringLocalScale = new Vector3(0.28f, 0.28f, 1f);
+        [SerializeField] private Vector3 coreLocalScale = new Vector3(0.20f, 0.20f, 1f);
+        [SerializeField] private Vector3 sheenLocalPosition = new Vector3(-0.02f, 0.04f, 0f);
+        [SerializeField] private Vector3 sheenLocalScale = new Vector3(0.08f, 0.08f, 1f);
 
         private Rigidbody2D _rigidbody;
         private Collider2D _collider;
@@ -215,6 +224,46 @@ namespace WordSpinAlpha.Core
             }
         }
 
+        public void ApplyEditorFlightTuning(float newSpeed, float newTipOffset, float newMaxTravelDistance)
+        {
+            speed = Mathf.Clamp(newSpeed, 1f, 40f);
+            tipOffset = Mathf.Clamp(newTipOffset, 0.18f, 1.2f);
+            maxTravelDistance = Mathf.Clamp(newMaxTravelDistance, 1f, 24f);
+            _previousTipWorldPosition = TipWorldPosition;
+        }
+
+        public void ApplyEditorVisualTuning(
+            Vector3 newShaftLocalPosition,
+            Vector3 newShaftLocalScale,
+            Vector3 newLetterLocalPosition,
+            float newLetterCharacterSize,
+            int newLetterFontSize,
+            Vector3 newRingLocalScale,
+            Vector3 newCoreLocalScale,
+            Vector3 newSheenLocalPosition,
+            Vector3 newSheenLocalScale)
+        {
+            shaftLocalPosition = newShaftLocalPosition;
+            shaftLocalScale = new Vector3(
+                Mathf.Max(0.02f, newShaftLocalScale.x),
+                Mathf.Max(0.10f, newShaftLocalScale.y),
+                1f);
+            letterLocalPosition = newLetterLocalPosition;
+            letterCharacterSize = Mathf.Clamp(newLetterCharacterSize, 0.02f, 0.40f);
+            letterFontSize = Mathf.Clamp(newLetterFontSize, 8, 128);
+            ringLocalScale = ClampScale(newRingLocalScale, 0.04f);
+            coreLocalScale = ClampScale(newCoreLocalScale, 0.04f);
+            sheenLocalPosition = newSheenLocalPosition;
+            sheenLocalScale = ClampScale(newSheenLocalScale, 0.02f);
+            RefreshVisualStructureForEditor();
+        }
+
+        public void RefreshVisualStructureForEditor()
+        {
+            ResolveVisualReferences();
+            EnsureRuntimeVisualStructure();
+        }
+
         private void ResolveVisualReferences()
         {
             if (ringRenderer == null)
@@ -277,36 +326,44 @@ namespace WordSpinAlpha.Core
             {
                 shaftRenderer.sprite = coreRenderer != null ? coreRenderer.sprite : null;
                 shaftRenderer.color = ringRenderer != null ? ringRenderer.color : new Color(0.24f, 0.18f, 0.12f, 0.96f);
-                shaftRenderer.transform.localPosition = new Vector3(0f, -0.38f, 0f);
-                shaftRenderer.transform.localScale = new Vector3(0.11f, 0.74f, 1f);
+                shaftRenderer.transform.localPosition = shaftLocalPosition;
+                shaftRenderer.transform.localScale = shaftLocalScale;
             }
 
             if (letterLabel != null)
             {
-                letterLabel.transform.localPosition = new Vector3(0f, -0.80f, -0.1f);
-                letterLabel.characterSize = 0.10f;
-                letterLabel.fontSize = 52;
+                letterLabel.transform.localPosition = letterLocalPosition;
+                letterLabel.characterSize = letterCharacterSize;
+                letterLabel.fontSize = letterFontSize;
             }
 
             if (sheenRenderer != null)
             {
-                sheenRenderer.transform.localPosition = new Vector3(-0.02f, 0.04f, 0f);
+                sheenRenderer.transform.localPosition = sheenLocalPosition;
             }
 
             if (ringRenderer != null)
             {
-                ringRenderer.transform.localScale = new Vector3(0.28f, 0.28f, 1f);
+                ringRenderer.transform.localScale = ringLocalScale;
             }
 
             if (coreRenderer != null)
             {
-                coreRenderer.transform.localScale = new Vector3(0.20f, 0.20f, 1f);
+                coreRenderer.transform.localScale = coreLocalScale;
             }
 
             if (sheenRenderer != null)
             {
-                sheenRenderer.transform.localScale = new Vector3(0.08f, 0.08f, 1f);
+                sheenRenderer.transform.localScale = sheenLocalScale;
             }
+        }
+
+        private static Vector3 ClampScale(Vector3 scale, float min)
+        {
+            return new Vector3(
+                Mathf.Max(min, scale.x),
+                Mathf.Max(min, scale.y),
+                1f);
         }
 
         private bool TryResolveImpactAlongPath(Vector3 segmentStart, Vector3 segmentEnd)

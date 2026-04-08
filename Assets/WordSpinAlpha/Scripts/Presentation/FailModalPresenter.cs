@@ -105,6 +105,12 @@ namespace WordSpinAlpha.Presentation
             SceneNavigator.Instance?.OpenStore();
         }
 
+        public void RefreshForEditor()
+        {
+            EnsureRuntimeUi();
+            RefreshText();
+        }
+
         private void HandleFailModalRequested(FailModalContext context)
         {
             EnsureRuntimeUi();

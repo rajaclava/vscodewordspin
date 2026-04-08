@@ -29,6 +29,7 @@ namespace WordSpinAlpha.Editor
         private bool _simulatedMembership;
         private int _simulatedLevelsPerDay = 8;
         private readonly Dictionary<int, bool> _levelFoldouts = new Dictionary<int, bool>();
+        private WordSpinAlphaEditorSyncStamp _syncStamp;
 
         [MenuItem("Tools/WordSpin Alpha/Ekonomi Denge Editoru")]
         public static void Open()
@@ -43,10 +44,13 @@ namespace WordSpinAlpha.Editor
             _serializedProfile = new SerializedObject(_profile);
             _testModeProfile = EnsureTestModeProfileAsset();
             _serializedTestModeProfile = new SerializedObject(_testModeProfile);
+            _syncStamp = WordSpinAlphaEditorSyncUtility.CaptureCurrentStamp();
         }
 
         private void OnGUI()
         {
+            TryAutoRefresh();
+
             _testModeProfile = EnsureTestModeProfileAsset();
             _profile = EnsureProfileAsset(_editingEconomyMode);
             if (_profile == null || _testModeProfile == null)
@@ -149,6 +153,19 @@ namespace WordSpinAlpha.Editor
                 AssetDatabase.SaveAssets();
                 RefreshRuntimeEconomyBindings();
             }
+        }
+
+        private void TryAutoRefresh()
+        {
+            if (!WordSpinAlphaEditorSyncUtility.ConsumeChanges(WordSpinAlphaEditorSyncKind.Content, ref _syncStamp))
+            {
+                return;
+            }
+
+            _profile = EnsureProfileAsset(_editingEconomyMode);
+            SyncLevelEntries();
+            _serializedProfile = new SerializedObject(_profile);
+            Repaint();
         }
 
         private void DrawGeneralRewardSection()

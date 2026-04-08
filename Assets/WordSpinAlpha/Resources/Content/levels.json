@@ -9,7 +9,7 @@
             "rhythmProfileId": "hook",
             "shape": "circle",
             "shapeLayoutId": "circle_classic",
-            "rotationSpeed": 40.0,
+            "rotationSpeed": 45.0,
             "clockwise": true,
             "randomSlots": false,
             "skipAllowed": false,

@@ -186,6 +186,19 @@ namespace WordSpinAlpha.Presentation
             Refresh();
         }
 
+        public void RefreshContentCache()
+        {
+            _catalog = null;
+            Refresh();
+        }
+
+        public void RefreshForEditor()
+        {
+            EnsureCatalog();
+            EnsureRuntimeLabels();
+            Refresh();
+        }
+
         private void RefreshLocalizedTexts()
         {
             SetText("Title", GetLocalized("title"));

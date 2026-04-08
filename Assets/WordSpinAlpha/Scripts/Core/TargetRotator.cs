@@ -13,6 +13,10 @@ namespace WordSpinAlpha.Core
 
         public float RotationSpeed => rotationSpeed;
         public bool Clockwise => clockwise;
+        public float BaseRotationSpeed => _baseRotationSpeed;
+        public bool BaseClockwise => _baseClockwise;
+        public float RhythmAssistSpeedMultiplier => rhythmAssistSpeedMultiplier;
+        public float RhythmAssistRemainingSeconds => Mathf.Max(0f, rhythmAssistUntil - Time.time);
 
         public void ApplyLevelSettings(float speed, bool rotateClockwise)
         {
@@ -20,6 +24,11 @@ namespace WordSpinAlpha.Core
             _baseClockwise = rotateClockwise;
             rotationSpeed = speed;
             clockwise = rotateClockwise;
+        }
+
+        public void ApplyEditorBaseTuning(float speed, bool rotateClockwise)
+        {
+            ApplyLevelSettings(speed, rotateClockwise);
         }
 
         public void ApplyRhythmAssist(bool rotateClockwise, float speedMultiplier, float durationSeconds)

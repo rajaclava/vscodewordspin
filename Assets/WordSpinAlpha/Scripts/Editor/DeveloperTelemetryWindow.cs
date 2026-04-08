@@ -10,6 +10,7 @@ namespace WordSpinAlpha.Editor
     {
         private Vector2 _scroll;
         private TelemetrySnapshotData _snapshot;
+        private WordSpinAlphaEditorSyncStamp _syncStamp;
 
         [MenuItem("Tools/WordSpin Alpha/Gelistirici Telemetry Paneli")]
         public static void Open()
@@ -20,10 +21,13 @@ namespace WordSpinAlpha.Editor
         private void OnEnable()
         {
             RefreshSnapshot();
+            _syncStamp = WordSpinAlphaEditorSyncUtility.CaptureCurrentStamp();
         }
 
         private void OnGUI()
         {
+            TryAutoRefresh();
+
             EditorGUILayout.LabelField("WordSpin Gelistirici Telemetry Paneli", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("Bu panel yerel telemetry snapshot dosyasini okur. AI hotfix ve cloud yayin akisina gidecek verinin editor tarafindaki ilk gorunumudur.", MessageType.Info);
 
@@ -94,6 +98,16 @@ namespace WordSpinAlpha.Editor
             EditorGUILayout.Space(4f);
             EditorGUILayout.HelpBox(summary.recommendation ?? "Oneri yok.", MessageType.None);
             EditorGUILayout.EndVertical();
+        }
+
+        private void TryAutoRefresh()
+        {
+            if (!WordSpinAlphaEditorSyncUtility.ConsumeChanges(WordSpinAlphaEditorSyncKind.Telemetry | WordSpinAlphaEditorSyncKind.RuntimeConfig, ref _syncStamp))
+            {
+                return;
+            }
+
+            RefreshSnapshot();
         }
 
         private void RefreshSnapshot()

@@ -33,6 +33,12 @@ namespace WordSpinAlpha.Core
         public Vector2 PlaqueSize => plaqueSize;
         public Vector2 PerfectZoneSize => perfectZoneSize;
         public float NearMissPadding => nearMissPadding;
+        public Color InactiveColor => inactiveColor;
+        public Color ActiveColor => activeColor;
+        public float ActiveScaleMultiplier => activeScaleMultiplier;
+        public Color PerfectFeedbackColor => perfectFeedbackColor;
+        public Color ToleratedFeedbackColor => toleratedFeedbackColor;
+        public Color FailFeedbackColor => failFeedbackColor;
 
         private void Awake()
         {
@@ -89,6 +95,45 @@ namespace WordSpinAlpha.Core
             {
                 circle.radius = Mathf.Max(0.09f, Mathf.Max(plaqueSize.x, plaqueSize.y) * 0.42f);
             }
+        }
+
+        public void ApplyEditorTuning(
+            Vector2 newPlaqueSize,
+            Vector2 newPerfectZoneSize,
+            float newNearMissPadding,
+            float newHitBandDepth,
+            float newHitBandInset,
+            Color newInactiveColor,
+            Color newActiveColor,
+            float newActiveScaleMultiplier,
+            Color newPerfectFeedbackColor,
+            Color newToleratedFeedbackColor,
+            Color newFailFeedbackColor,
+            float newFeedbackDuration)
+        {
+            plaqueSize = new Vector2(Mathf.Max(0.08f, newPlaqueSize.x), Mathf.Max(0.06f, newPlaqueSize.y));
+            perfectZoneSize = new Vector2(
+                Mathf.Clamp(newPerfectZoneSize.x, 0.03f, plaqueSize.x),
+                Mathf.Clamp(newPerfectZoneSize.y, 0.02f, plaqueSize.y));
+            nearMissPadding = Mathf.Max(0f, newNearMissPadding);
+            hitBandDepth = Mathf.Clamp(newHitBandDepth, 0.02f, 0.50f);
+            hitBandInset = Mathf.Clamp(newHitBandInset, 0f, 0.20f);
+            inactiveColor = newInactiveColor;
+            activeColor = newActiveColor;
+            activeScaleMultiplier = Mathf.Clamp(newActiveScaleMultiplier, 1f, 1.6f);
+            perfectFeedbackColor = newPerfectFeedbackColor;
+            toleratedFeedbackColor = newToleratedFeedbackColor;
+            failFeedbackColor = newFailFeedbackColor;
+            feedbackDuration = Mathf.Clamp(newFeedbackDuration, 0.02f, 1.2f);
+
+            CircleCollider2D circle = GetComponent<CircleCollider2D>();
+            if (circle != null)
+            {
+                circle.radius = Mathf.Max(0.09f, Mathf.Max(plaqueSize.x, plaqueSize.y) * 0.42f);
+            }
+
+            ResolveAnchorVisuals();
+            ApplyVisualState(IsActiveTarget);
         }
 
         public void ClearAttachedPins()

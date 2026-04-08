@@ -105,6 +105,12 @@ namespace WordSpinAlpha.Presentation
             SceneNavigator.Instance?.OpenMainMenu();
         }
 
+        public void RefreshForEditor()
+        {
+            RefreshResultText();
+            RefreshButtonTexts();
+        }
+
         private void HandleLanguageChanged(string _)
         {
             EnsureLayout();

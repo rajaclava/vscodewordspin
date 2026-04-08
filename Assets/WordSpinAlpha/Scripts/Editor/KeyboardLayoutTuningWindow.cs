@@ -37,6 +37,7 @@ namespace WordSpinAlpha.Editor
         private int _selectedPreviewDevice;
         private int _copyTargetTab;
         private KeyboardConfigData _keyboardConfig;
+        private WordSpinAlphaEditorSyncStamp _syncStamp;
 
         [MenuItem("Tools/WordSpin Alpha/Klavye Yerlesim Editoru")]
         public static void Open()
@@ -62,10 +63,13 @@ namespace WordSpinAlpha.Editor
         {
             _profile = EnsureProfileAsset();
             _keyboardConfig = LoadKeyboardConfig();
+            _syncStamp = WordSpinAlphaEditorSyncUtility.CaptureCurrentStamp();
         }
 
         private void OnGUI()
         {
+            TryAutoRefresh();
+
             _profile = EnsureProfileAsset();
             if (_profile == null)
             {
@@ -95,6 +99,7 @@ namespace WordSpinAlpha.Editor
                     _profile.ResetToDefaults();
                     EditorUtility.SetDirty(_profile);
                     AssetDatabase.SaveAssets();
+                    WordSpinAlphaEditorSyncUtility.NotifyChanged(WordSpinAlphaEditorSyncKind.ScriptableAssets);
                 }
             }
 
@@ -141,7 +146,20 @@ namespace WordSpinAlpha.Editor
                 Undo.RecordObject(_profile, "Klavye Yerlesimi Degisti");
                 EditorUtility.SetDirty(_profile);
                 AssetDatabase.SaveAssets();
+                WordSpinAlphaEditorSyncUtility.NotifyChanged(WordSpinAlphaEditorSyncKind.ScriptableAssets);
             }
+        }
+
+        private void TryAutoRefresh()
+        {
+            if (!WordSpinAlphaEditorSyncUtility.ConsumeChanges(WordSpinAlphaEditorSyncKind.ScriptableAssets | WordSpinAlphaEditorSyncKind.RuntimeConfig, ref _syncStamp))
+            {
+                return;
+            }
+
+            _profile = EnsureProfileAsset();
+            _keyboardConfig = LoadKeyboardConfig();
+            Repaint();
         }
 
         private void DrawPreviewSection(KeyboardLayoutTuningProfile.LanguageTuning tuning, string languageCode)
@@ -232,6 +250,7 @@ namespace WordSpinAlpha.Editor
 
             EditorUtility.SetDirty(_profile);
             AssetDatabase.SaveAssets();
+            WordSpinAlphaEditorSyncUtility.NotifyChanged(WordSpinAlphaEditorSyncKind.ScriptableAssets);
             Repaint();
         }
 
@@ -270,6 +289,7 @@ namespace WordSpinAlpha.Editor
             if (appliedAny)
             {
                 AssetDatabase.SaveAssets();
+                WordSpinAlphaEditorSyncUtility.NotifyChanged(WordSpinAlphaEditorSyncKind.Scene);
             }
         }
 

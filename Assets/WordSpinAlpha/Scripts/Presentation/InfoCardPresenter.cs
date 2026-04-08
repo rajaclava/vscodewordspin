@@ -94,6 +94,18 @@ namespace WordSpinAlpha.Presentation
             RefreshLocalizedTexts();
         }
 
+        public void RefreshForEditor()
+        {
+            EnsureCatalog();
+            if (root != null && root.activeSelf && !string.IsNullOrWhiteSpace(_currentInfoCardId))
+            {
+                ShowCard(_currentInfoCardId);
+                return;
+            }
+
+            RefreshLocalizedTexts();
+        }
+
         private void EnsureCatalog()
         {
             if (_catalog == null && ContentService.Instance != null)

@@ -1,18 +1,43 @@
 # WordSpin Post-Launch Developer Platform
 
 ## Hedef
-Oyun istemcisinden ayrı ama onunla uyumlu çalışan bir geliştirici platformu kurulur:
+Oyun istemcisinden ayrik ama onunla uyumlu calisan bir gelistirici platformu kurulur:
 
-- canlı telemetry toplar
-- AI destekli içgörü üretir
-- hotfix config yayınlar
-- yeni theme/content paketlerini cloud üstünden oyuna dağıtır
-- rollout ve rollback yönetir
+- canli telemetry toplar
+- AI destekli icgoru uretir
+- hotfix config yayinlar
+- yeni theme/content paketlerini cloud ustunden oyuna dagitir
+- rollout ve rollback yonetir
 
-## Temel Bileşenler
+## Tarih Notu ve 06.04.2026 Durumu
+
+Bu dokuman post-alpha / post-launch hedef mimarisini anlatir.
+
+Tarih bazli durum:
+
+### 03.04.2026
+
+- telemetry, cloud, pricing ve sandbox ihtiyaclari belirgin hale geldi
+
+### 04.04.2026
+
+- icerik ve shape tarafinda editorlesme buyudugu icin, ileride bunlarin web tabanli bir authoring/publish paneline tasinmasi ihtiyaci netlesti
+
+### 06.04.2026
+
+- tek shell editor ve live-config kılavuzu yazildi
+- fakat bu dokumanda anlatilan post-launch developer platformu henuz aktif bir runtime/backend sistemi olarak kurulmus degildir
+
+06.04.2026 itibariyla durum:
+
+- bu belge bir `hedef platform` dokumanidir
+- mevcut aktif sistem degildir
+- teknik uygulama on kosullari ve editor/live-config mimarisi artik `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md` ve `UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md` icinde daha net tanimlidir
+
+## Temel Bilesenler
 - `Unity Client`
-  - local fallback içerik
-  - remote override içerik
+  - local fallback icerik
+  - remote override icerik
   - telemetry queue
   - snapshot export
 - `Backend`
@@ -22,15 +47,15 @@ Oyun istemcisinden ayrı ama onunla uyumlu çalışan bir geliştirici platformu
   - content registry
   - rollout / rollback service
 - `Web Developer Panel`
-  - canlı telemetry ekranları
-  - AI öneri merkezi
-  - theme/content yayınlama
-  - hotfix yönetimi
+  - canli telemetry ekranlari
+  - AI oneri merkezi
+  - theme/content yayinlama
+  - hotfix yonetimi
 
-## Remote Content Kuralları
-- Remote yayın sadece veri ve asset paketleri içindir.
-- Kod değiştiren tüm güncellemeler market release gerektirir.
-- İstemci şu katalogları remote override edebilir:
+## Remote Content Kurallari
+- Remote yayin sadece veri ve asset paketleri icindir.
+- Kod degistiren tum guncellemeler market release gerektirir.
+- Istemci su kataloglari remote override edebilir:
   - levels
   - questions
   - themes
@@ -41,15 +66,15 @@ Oyun istemcisinden ayrı ama onunla uyumlu çalışan bir geliştirici platformu
   - store config
   - membership / energy config
 
-## AI İçgörü Akışı
-1. İstemci event üretir.
+## AI Icgoru Akisi
+1. Istemci event uretir.
 2. Event normalize edilir.
-3. Aggregate snapshot oluşur.
-4. AI bu snapshot üstünden öneri üretir.
-5. Geliştirici öneriyi panelden onaylar veya düzenler.
-6. Hotfix manifest yayınlanır.
+3. Aggregate snapshot olusur.
+4. AI bu snapshot ustunden oneri uretir.
+5. Gelistirici oneriyi panelden onaylar veya duzenler.
+6. Hotfix manifest yayinlanir.
 
-## Güvenlik ve Uyumluluk
-- Manifest sürümlü ve imzalı olmalıdır.
-- Uyumsuz paketler local fallback'e düşmelidir.
-- İnsan onayı olmadan production değişikliği uygulanmaz.
+## Guvenlik ve Uyumluluk
+- Manifest surumlu ve imzali olmalidir.
+- Uyumsuz paketler local fallback'e dusmelidir.
+- Insan onayi olmadan production degisikligi uygulanmaz.

@@ -8,7 +8,7 @@ namespace WordSpinAlpha.Services
 {
     public class TelemetryService : Singleton<TelemetryService>
     {
-        private const float TelemetryWriteThrottleSeconds = 0.35f;
+        private const float DefaultTelemetryWriteThrottleSeconds = 0.35f;
 
         private readonly TelemetryQueueData _queue = new TelemetryQueueData();
         private readonly Dictionary<int, LevelTelemetrySummary> _levelSummaries = new Dictionary<int, LevelTelemetrySummary>();
@@ -20,6 +20,7 @@ namespace WordSpinAlpha.Services
         private bool _queueSavePending;
         private bool _snapshotSavePending;
         private float _nextWriteAllowedAt;
+        private TelemetryPolicyProfile _policy;
 
         private string QueuePath => Path.Combine(Application.persistentDataPath, GameConstants.TelemetryQueueFileName);
         private string SnapshotPath => Path.Combine(Application.persistentDataPath, GameConstants.TelemetrySnapshotFileName);
@@ -33,6 +34,7 @@ namespace WordSpinAlpha.Services
             }
 
             EnsureSessionId();
+            RefreshPolicyForEditor();
             LoadQueue();
         }
 
@@ -66,7 +68,7 @@ namespace WordSpinAlpha.Services
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (pauseStatus)
+            if (pauseStatus && ShouldFlushOnApplicationPause())
             {
                 FlushPendingPersistence(true);
             }
@@ -178,6 +180,11 @@ namespace WordSpinAlpha.Services
 
         private void TrackEvent(string eventType, string resultType, string payload, int comboBefore, int comboAfter)
         {
+            if (!IsTelemetryEnabled())
+            {
+                return;
+            }
+
             int hearts = QuestionLifeManager.Instance != null ? QuestionLifeManager.Instance.CurrentHearts : 0;
             int energy = EnergyManager.Instance != null ? EnergyManager.Instance.CurrentEnergy : 0;
 
@@ -209,9 +216,13 @@ namespace WordSpinAlpha.Services
             if (SaveManager.Instance != null)
             {
                 SaveManager.Instance.Data.telemetry.pendingTelemetryEventCount = _queue.events.Count;
-                SaveManager.Instance.Save();
+                if (ShouldPersistPendingEventCount())
+                {
+                    SaveManager.Instance.Save();
+                }
             }
 
+            TrimQueueToPolicyLimit();
             MarkQueueDirty();
         }
 
@@ -249,6 +260,11 @@ namespace WordSpinAlpha.Services
             {
                 _queue.events.Clear();
             }
+
+            if (ShouldTrimQueueOnLoad())
+            {
+                TrimQueueToPolicyLimit();
+            }
         }
 
         private void SaveQueue()
@@ -265,7 +281,15 @@ namespace WordSpinAlpha.Services
                 pendingEventCount = _queue.events.Count
             };
 
-            foreach (LevelTelemetrySummary summary in _levelSummaries.Values)
+            int summaryLimit = GetMaxSnapshotLevelSummaries();
+            List<LevelTelemetrySummary> summaries = new List<LevelTelemetrySummary>(_levelSummaries.Values);
+            summaries.Sort((left, right) => left.levelId.CompareTo(right.levelId));
+            if (summaryLimit > 0 && summaries.Count > summaryLimit)
+            {
+                summaries.RemoveRange(0, summaries.Count - summaryLimit);
+            }
+
+            foreach (LevelTelemetrySummary summary in summaries)
             {
                 summary.recommendation = BuildRecommendation(summary);
                 snapshot.levelSummaries.Add(summary);
@@ -290,7 +314,7 @@ namespace WordSpinAlpha.Services
         {
             if (_nextWriteAllowedAt <= 0f)
             {
-                _nextWriteAllowedAt = Time.unscaledTime + TelemetryWriteThrottleSeconds;
+                _nextWriteAllowedAt = Time.unscaledTime + GetWriteThrottleSeconds();
             }
         }
 
@@ -318,7 +342,7 @@ namespace WordSpinAlpha.Services
                 _snapshotSavePending = false;
             }
 
-            _nextWriteAllowedAt = Time.unscaledTime + TelemetryWriteThrottleSeconds;
+            _nextWriteAllowedAt = Time.unscaledTime + GetWriteThrottleSeconds();
         }
 
         private LevelTelemetrySummary GetOrCreateLevelSummary(LevelContext? context)
@@ -383,6 +407,67 @@ namespace WordSpinAlpha.Services
             }
 
             return "Seviye dengesi kabul edilebilir gorunuyor.";
+        }
+
+        public void RefreshPolicyForEditor()
+        {
+            _policy = Resources.Load<TelemetryPolicyProfile>(TelemetryPolicyProfile.DefaultResourcePath);
+            if (_policy != null)
+            {
+                _policy.ClampToSafeDefaults();
+            }
+
+            TrimQueueToPolicyLimit();
+        }
+
+        private bool IsTelemetryEnabled()
+        {
+            return _policy == null || _policy.TelemetryEnabled;
+        }
+
+        private bool ShouldTrimQueueOnLoad()
+        {
+            return _policy == null || _policy.TrimQueueOnLoad;
+        }
+
+        private bool ShouldPersistPendingEventCount()
+        {
+            return _policy != null && _policy.SavePendingEventCountToSaveData;
+        }
+
+        private bool ShouldFlushOnApplicationPause()
+        {
+            return _policy == null || _policy.FlushOnApplicationPause;
+        }
+
+        private float GetWriteThrottleSeconds()
+        {
+            return _policy != null ? _policy.WriteThrottleSeconds : DefaultTelemetryWriteThrottleSeconds;
+        }
+
+        private int GetMaxSnapshotLevelSummaries()
+        {
+            return _policy != null ? _policy.MaxSnapshotLevelSummaries : 120;
+        }
+
+        private void TrimQueueToPolicyLimit()
+        {
+            int maxQueuedEvents = _policy != null ? _policy.MaxQueuedEvents : 4000;
+            if (_queue.events.Count <= maxQueuedEvents)
+            {
+                return;
+            }
+
+            int removeCount = _queue.events.Count - maxQueuedEvents;
+            _queue.events.RemoveRange(0, removeCount);
+
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.Data.telemetry.pendingTelemetryEventCount = _queue.events.Count;
+            }
+
+            _queueSavePending = true;
+            SchedulePersistence();
         }
     }
 }

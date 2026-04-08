@@ -1,5 +1,84 @@
 # WordSpin Alpha - Unified Editor To LiveOps Plan
 
+## Dokuman Rolu ve Iliskili Referanslar
+
+Bu dosya bir `teknik implementasyon listesi` degil, bir `fazlama ve uygulama sirasi` dokumanidir.
+
+Bu dosyanin gorevi:
+
+- neyi once yapacagimizi siralamak
+- alpha demo oncesi ve sonrasi riskleri dogru faza oturtmak
+- editor, bug sweep, visual lock, telemetry, hotfix ve web panel gecisinin zamanlamasini sabitlemek
+
+Bu planin teknik karsiligi icin su dokuman birlikte kullanilmalidir:
+
+- `Assets/WordSpinAlpha/Docs/UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md`
+- `Assets/WordSpinAlpha/Docs/MARKET_RELEASE_READINESS_PLAN.md`
+
+Iki dokumanin rol ayrimi:
+
+- `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md`
+  - yol haritasi
+  - is sirasi
+  - fazlar
+  - risklerin ne zaman ele alinacagi
+- `UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md`
+  - mevcut editor mimarisi
+  - veri kaynaklari
+  - moduller arasi uyumluluk
+  - her editorun kullanim kilavuzu
+  - cloud/live-config tasima prensipleri
+- `MARKET_RELEASE_READINESS_PLAN.md`
+  - production release'e gecis
+  - promo/gift omurgasi
+  - billing/pricing/rewarded production provider gecisleri
+  - final market testi ve release-safe kurallar
+
+Okuma sirasi:
+
+1. once bu plan dosyasi ile hedef faz okunur
+2. sonra ilgili uygulama ayrintisi icin teknik kılavuz acilir
+
+## Tarih Bazli Kilometre Taslari ve 06.04.2026 Durumu
+
+Bu planin tarih bazli okunusu su sekildedir:
+
+### 03.04.2026
+
+- ekonomi sandbox ve test-player mode mimarisi kuruldu
+- store pricing abstraction ve preview fiyat katmani eklendi
+- ekonomi tarafi icin `Default` ana runtime, `Free/Premium` test sandbox karari netlestirildi
+- bu planin ilk buyuk liveops/editor genisleme ihtiyaci bu tarihte belirgin hale geldi
+
+### 04.04.2026
+
+- icerik, level ve shape authoring tarafinda editorlesme hizlandi
+- canli apply zinciri content tarafinda baglandi
+- shape authoring, referans gorsel ve manuel duzenleme ihtiyaci netleserek tek editor hedefini buyuttu
+- bu plan, sadece ekonomi/liveops plani olmaktan cikti; butun tuning yuzeylerini kapsayan bir yol haritasina donustu
+
+### 06.04.2026
+
+- eksik tuning editorleri tamamlandi
+- tek shell editor kuruldu
+- editorler arasi commit-sonrasi sync katmani eklendi
+- teknik uygulama karsiligi icin `UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md` olusturuldu
+
+### 06.04.2026 itibariyla bu planda neredeyiz
+
+- `Faz 1`: tamamlandi
+- `Faz 2`: tamamlandi
+- `Faz 3`: teknik olarak kuruldu, parity ve stabilizasyon asamasinda
+- `Faz 4`: henuz resmi olarak baslamadi
+- `Faz 5+`: planli ama uygulanmamis
+
+Kisa durum:
+
+- yeni editor yazma fazindan
+- editor parity, stabilizasyon ve bug sweep oncesi hazirlik fazina
+
+gecilmis durumdadir.
+
 ## Ozet
 
 Bu dokumanin amaci, mevcut alpha demo planini bozmeden su hedefe giden en guvenli sirayi sabitlemektir:
@@ -18,6 +97,13 @@ Bu planin ana prensibi:
 - ileride oyuna yeni tema paketleri ses/animasyon/UI dahil rahatlikla eklenebilecek
 
 Bu plana ek olarak, mevcut kod ve belgeler uzerinden gorulen olasi buyume riskleri de artik resmi olarak bu planin parcasi kabul edilir. Yani alpha demo suresince yalnizca yeni sistem kurmak degil, o sistemlerin ileride kirilma ihtimalini dusuk tutacak sekilde calismak da hedefin kendisidir.
+
+Guncel durum notu:
+
+- tek shell editor kurulmus durumdadir
+- tekli editorler parity icin halen korunmaktadir
+- editorler arasi commit-sonrasi sync katmani kurulmustur
+- bundan sonraki adimlar, yeni editor yazmaktan cok parity dogrulama, stabilizasyon ve sonra gereksiz tekli girisleri temizleme yonundedir
 
 ---
 
@@ -177,9 +263,41 @@ Bu fazda eksik olmasi muhtemel moduller:
 - validation ve diff/export modulu
 - build smoke araclari
 
+06.04.2026 itibariyla durum:
+
+- bu faz teknik olarak tamamlanmistir
+- eksik kalan ana tuning editorleri kurulmustur
+- bundan sonraki ihtiyaclar yeni editor yazmaktan cok mevcut editorleri parity ve davranis acisindan stabil tutma tarafindadir
+
 ### Faz 3 - Tek Bir Toplu Editor Icinde Birlestirme
 
 Tum moduller tek shell editor icinde toplanacak.
+
+Mevcut durum:
+
+- ilk birlesik shell kuruldu
+- `Tools > WordSpin Alpha > Toplu Tek Editor` altinda aciliyor
+- mevcut alt editorler kirilmadan host ediliyor
+- `GameplaySceneTuner` ise custom inspector olarak ayni shell icinde cizdiriliyor
+- build/generate/android yardimci komutlari ayni shell icinde `Sistem Araclari` panelinde toplandi
+
+Bu gecis modeli bilincli secildi:
+
+- mevcut editorlerin ic mantigi tekrar yazilmadi
+- once ayni editorleri tek shell icinde parity ile topladik
+- Unity icinde davranis dogrulamasi tamamlaninca eski tekli girisler `deprecated` edilecek
+- en son kullanilmayan tekli editor menuleri ve gecici gecis kodlari temizlenecek
+
+Bu fazin teknik kurallari ve sinirlari icin su dokuman referans alinmalidir:
+
+- `Assets/WordSpinAlpha/Docs/UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md`
+
+Ozellikle su basliklar bu fazin kabul kriteridir:
+
+- `Temel Mimari Prensip`
+- `Ortak Destek Katmanlari`
+- `Editorler Arasi Uyumluluk Kurali`
+- `Gelecekte Yeni Ayar Ekleme Calisma Prensibi`
 
 Hedef pencere:
 
@@ -213,6 +331,14 @@ Tekli editorler bu noktada hemen silinmeyecek. Once:
 
 Bu sira teknik borcu azaltir.
 
+Faz 3 cikis kriteri:
+
+1. ayni veriyi kullanan tekli editor ve toplu editor ayni sonucu gosteriyor olmali
+2. `Kaydet/Uygula` sonrasi stale kalan modul bulunmamali
+3. play mode apply zinciri, sahne geometri veya aktif target state kaybetmemeli
+4. tek shell editor icinde tum moduller acilip kapanabiliyor olmali
+5. parity dogrulanmadan eski tekli editor menuleri kaldirilmamali
+
 ### Faz 4 - Happy Path / Edge Case Tarama ve Bug Kilidi
 
 Editor kilitlendikten sonra sistemsel tarama yapilacak.
@@ -234,6 +360,15 @@ Kural:
 
 - testler silinmeyecek
 - ama runtime performansini etkilemeyecek sekilde editor/test assembly'lerinde pasif tutulacak
+
+Bu faza girerken su teknik kontroller tamam olmalidir:
+
+1. editor sync davranisi stabil olmalidir
+2. veri sahipligi cakismasi kalmamis olmalidir
+3. sahne tabanli tuning editorleri ayni degeri tekrar tekrar uygulayabiliyor olmalidir
+4. JSON tabanli tuning editorleri birbirini stale birakmamalidir
+
+Bu kontrollerin detayli teknik aciklamasi `UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md` icindedir.
 
 ### Faz 5 - Gorsel Tasarim ve Sayfa Tasarimlari
 
@@ -1028,12 +1163,17 @@ Bu sira en saglikli yol cunku:
 
 Bu dokumana gore simdi yapilmasi gerekenler:
 
-1. tum tuning yuzeylerinin tam taramasini cikar
-2. eksik editor modullerini yaz
-3. tek toplu editor shell'ine topla
-4. authoring asset / runtime asset ayrimini netlestir
-5. editor-only klasor ve asmdef temizligini yap
-6. sonra bug taramasi ve hedefli testlere gec
+1. tek shell editor ile tekli editorler arasinda parity kontrolu yap
+2. ayni veriyi kullanan pencerelerde stale state kalmadigini dogrula
+3. `happy path / edge case` bug sweep fazini resmi olarak baslat
+4. once manuel yeniden uretilebilir buglari ayikla
+5. sonra yalnizca hedefe yonelik unit/integration testleri yaz
+6. bug sweep bitmeden visual/juicy lock fazina gecme
+
+06.04.2026 itibariyla bu listenin anlami:
+
+- editor kurulum fazi tamamlandi
+- editor stabilizasyonu ve bug sweep giris fazindayiz
 
 Yani telemetry ve web panel bugunden dusunulmeli, ama kodlama olarak editor birlesimi ve bug kilidinden once ana odak olmamali.
 

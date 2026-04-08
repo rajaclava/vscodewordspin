@@ -10,6 +10,18 @@ namespace WordSpinAlpha.Presentation
 {
     public class ThemeRuntimeController : MonoBehaviour
     {
+        [System.Serializable]
+        private class PulseBandTuning
+        {
+            public float baseSpeed = 1.7f;
+            public float flowSpeed = 1.6f;
+            public float momentumSpeedStep = 0.45f;
+            public float baseScaleAmplitude = 0.06f;
+            public float flowScaleAmplitude = 0.04f;
+            public float baseAlphaAmplitude = 0.12f;
+            public float flowAlphaAmplitude = 0.08f;
+        }
+
         [SerializeField] private Image topBar;
         [SerializeField] private Image questionPanel;
         [SerializeField] private Image bottomBar;
@@ -32,6 +44,47 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] private float mobileGlowAlphaScale = 0.52f;
         [SerializeField] private float mobileAmbientScale = 0.62f;
         [SerializeField] private float cameraContrastBias = 0.36f;
+        [SerializeField] private Vector3 backgroundGlowPosition = new Vector3(0f, -1.15f, 6f);
+        [SerializeField] private Vector3 ambienceLeftPosition = new Vector3(-4.20f, 0.10f, 2f);
+        [SerializeField] private Vector3 ambienceRightPosition = new Vector3(4.20f, 0.10f, 2f);
+        [SerializeField] private float backgroundGlowBaseScaleMultiplier = 1.02f;
+        [SerializeField] private float ambienceBaseScaleMultiplierMin = 1.25f;
+        [SerializeField] private float ambienceBaseScaleMultiplierMax = 1.45f;
+        [SerializeField] private float backgroundGlowBreathScale = 0.08f;
+        [SerializeField] private float backgroundGlowFlowScaleBoost = 0.04f;
+        [SerializeField] private float ambienceWaveScale = 0.08f;
+        [SerializeField] private float ambienceFlowScaleBoost = 0.03f;
+        [SerializeField] private PulseBandTuning orbitPulseTuning = new PulseBandTuning();
+        [SerializeField] private PulseBandTuning glowPulseTuning = new PulseBandTuning
+        {
+            baseSpeed = 1.5f,
+            flowSpeed = 1.2f,
+            momentumSpeedStep = 0.30f,
+            baseScaleAmplitude = 0.08f,
+            flowScaleAmplitude = 0.04f,
+            baseAlphaAmplitude = 0.18f,
+            flowAlphaAmplitude = 0.07f
+        };
+        [SerializeField] private PulseBandTuning leftAmbientPulseTuning = new PulseBandTuning
+        {
+            baseSpeed = 1.35f,
+            flowSpeed = 1.0f,
+            momentumSpeedStep = 0.18f,
+            baseScaleAmplitude = 0.06f,
+            flowScaleAmplitude = 0.03f,
+            baseAlphaAmplitude = 0.12f,
+            flowAlphaAmplitude = 0.06f
+        };
+        [SerializeField] private PulseBandTuning rightAmbientPulseTuning = new PulseBandTuning
+        {
+            baseSpeed = 1.28f,
+            flowSpeed = 0.95f,
+            momentumSpeedStep = 0.16f,
+            baseScaleAmplitude = 0.06f,
+            flowScaleAmplitude = 0.03f,
+            baseAlphaAmplitude = 0.12f,
+            flowAlphaAmplitude = 0.06f
+        };
 
         private ThemeCatalog _themeCatalog;
         private ThemePackDefinition _currentTheme;
@@ -81,15 +134,10 @@ namespace WordSpinAlpha.Presentation
 
             float ambientBreath = 0.5f + (Mathf.Sin(Time.time * 1.45f) * 0.5f);
 
-            float orbitPulseSpeed = 1.7f + (_rhythmFlowIntensity * 1.6f) + (_rhythmMomentumLevel * 0.45f);
-            float orbitScaleAmplitude = 0.06f + (_rhythmFlowIntensity * 0.04f);
-            float orbitAlphaAmplitude = 0.12f + (_rhythmFlowIntensity * 0.08f);
-            ApplyPulse(orbitRing, orbitPulseSpeed, orbitScaleAmplitude, orbitAlphaAmplitude);
-
-            float glowPulseSpeed = 1.5f + (_rhythmFlowIntensity * 1.2f) + (_rhythmMomentumLevel * 0.30f);
-            ApplyPulse(backgroundGlow, glowPulseSpeed, 0.08f + (_rhythmFlowIntensity * 0.04f), 0.18f + (_rhythmFlowIntensity * 0.07f));
-            ApplyPulse(ambienceLeft, 1.35f + (_rhythmFlowIntensity * 1.0f), 0.06f + (_rhythmFlowIntensity * 0.03f), 0.12f + (_rhythmFlowIntensity * 0.06f));
-            ApplyPulse(ambienceRight, 1.28f + (_rhythmFlowIntensity * 0.95f), 0.06f + (_rhythmFlowIntensity * 0.03f), 0.12f + (_rhythmFlowIntensity * 0.06f));
+            ApplyPulse(orbitRing, orbitPulseTuning);
+            ApplyPulse(backgroundGlow, glowPulseTuning);
+            ApplyPulse(ambienceLeft, leftAmbientPulseTuning);
+            ApplyPulse(ambienceRight, rightAmbientPulseTuning);
 
             UpdateAmbientLighting(ambientBreath);
             UpdateAmbientTransforms(ambientBreath);
@@ -166,6 +214,22 @@ namespace WordSpinAlpha.Presentation
             LoadThemeAssets(theme);
             CacheAmbientBaseState();
             ApplyWorldPalette(theme, context);
+        }
+
+        public void RefreshForEditor()
+        {
+            _themeCatalog = null;
+            EnsureCatalog();
+            EnsureAudioSources();
+            EnsurePlaceholderClips();
+            CacheAmbientBaseState();
+
+            if (_currentTheme != null)
+            {
+                ApplyTheme(_currentTheme.themeId, null);
+            }
+
+            RefreshLevelLabel();
         }
 
         private ThemePackDefinition FindTheme(string themeId)
@@ -382,27 +446,27 @@ namespace WordSpinAlpha.Presentation
                 Color vividAccent = BoostSaturation(accent, 1.12f, 1.06f);
                 _baseBackgroundGlowColor = WithAlpha(Color.Lerp(vividAccent, primary, 0.30f), 0.18f * glowBoost * mobileGlowAlphaScale);
                 ApplySpriteColor(backgroundGlow, _baseBackgroundGlowColor);
-                ApplyPulse(backgroundGlow, dopamineSpike ? 2.0f : breathLevel ? 0.95f : 1.35f, dopamineSpike ? 0.07f : 0.05f, dopamineSpike ? 0.12f : 0.08f);
+                ApplyPulse(backgroundGlow, glowPulseTuning);
             }
 
             if (ambienceLeft != null)
             {
                 _baseAmbienceLeftColor = WithAlpha(BoostSaturation(accent, 1.08f, 1.02f), 0.22f * ambientBoost * mobileGlowAlphaScale);
                 ApplySpriteColor(ambienceLeft, _baseAmbienceLeftColor);
-                ApplyPulse(ambienceLeft, dopamineSpike ? 1.6f : breathLevel ? 0.82f : 1.15f, 0.03f, 0.06f);
+                ApplyPulse(ambienceLeft, leftAmbientPulseTuning);
             }
 
             if (ambienceRight != null)
             {
                 _baseAmbienceRightColor = WithAlpha(BoostSaturation(accent, 1.08f, 1.02f), 0.18f * ambientBoost * mobileGlowAlphaScale);
                 ApplySpriteColor(ambienceRight, _baseAmbienceRightColor);
-                ApplyPulse(ambienceRight, dopamineSpike ? 1.55f : breathLevel ? 0.80f : 1.10f, 0.03f, 0.06f);
+                ApplyPulse(ambienceRight, rightAmbientPulseTuning);
             }
 
             if (orbitRing != null)
             {
                 ApplySpriteColor(orbitRing, WithAlpha(BoostSaturation(accent, 1.10f, 1.05f), 0.14f * orbitBoost));
-                ApplyPulse(orbitRing, dopamineSpike ? 2.45f : breathLevel ? 0.92f : 1.55f, dopamineSpike ? 0.08f : 0.05f, dopamineSpike ? 0.14f : 0.08f);
+                ApplyPulse(orbitRing, orbitPulseTuning);
             }
 
             if (rotatorCore != null)
@@ -564,6 +628,20 @@ namespace WordSpinAlpha.Presentation
             }
         }
 
+        private void ApplyPulse(SpriteRenderer renderer, PulseBandTuning tuning)
+        {
+            if (tuning == null)
+            {
+                return;
+            }
+
+            ApplyPulse(
+                renderer,
+                tuning.baseSpeed + (_rhythmFlowIntensity * tuning.flowSpeed) + (_rhythmMomentumLevel * tuning.momentumSpeedStep),
+                tuning.baseScaleAmplitude + (_rhythmFlowIntensity * tuning.flowScaleAmplitude),
+                tuning.baseAlphaAmplitude + (_rhythmFlowIntensity * tuning.flowAlphaAmplitude));
+        }
+
         private Color GetAccentColor()
         {
             if (_currentTheme != null && ColorUtility.TryParseHtmlString(_currentTheme.uiAccentHex, out Color accent))
@@ -693,17 +771,17 @@ namespace WordSpinAlpha.Presentation
         {
             if (backgroundGlow != null)
             {
-                _baseBackgroundGlowScale = backgroundGlow.transform.localScale * 1.02f;
+                _baseBackgroundGlowScale = backgroundGlow.transform.localScale * Mathf.Max(0.1f, backgroundGlowBaseScaleMultiplier);
             }
 
             if (ambienceLeft != null)
             {
-                _baseAmbienceLeftScale = ambienceLeft.transform.localScale * Mathf.Lerp(1.25f, 1.45f, Mathf.Clamp01(mobileAmbientScale));
+                _baseAmbienceLeftScale = ambienceLeft.transform.localScale * Mathf.Lerp(ambienceBaseScaleMultiplierMin, ambienceBaseScaleMultiplierMax, Mathf.Clamp01(mobileAmbientScale));
             }
 
             if (ambienceRight != null)
             {
-                _baseAmbienceRightScale = ambienceRight.transform.localScale * Mathf.Lerp(1.25f, 1.45f, Mathf.Clamp01(mobileAmbientScale));
+                _baseAmbienceRightScale = ambienceRight.transform.localScale * Mathf.Lerp(ambienceBaseScaleMultiplierMin, ambienceBaseScaleMultiplierMax, Mathf.Clamp01(mobileAmbientScale));
             }
 
             PositionAmbientSurfaces();
@@ -715,20 +793,20 @@ namespace WordSpinAlpha.Presentation
 
             if (backgroundGlow != null)
             {
-                float glowScale = 1f + (ambientBreath * 0.08f) + (_rhythmFlowIntensity * 0.04f);
+                float glowScale = 1f + (ambientBreath * backgroundGlowBreathScale) + (_rhythmFlowIntensity * backgroundGlowFlowScaleBoost);
                 backgroundGlow.transform.localScale = _baseBackgroundGlowScale * glowScale * flowScaleBoost;
             }
 
             if (ambienceLeft != null)
             {
                 float leftWave = 0.5f + (Mathf.Sin(Time.time * 1.18f + 0.45f) * 0.5f);
-                ambienceLeft.transform.localScale = _baseAmbienceLeftScale * (1f + leftWave * 0.08f + _rhythmFlowIntensity * 0.03f);
+                ambienceLeft.transform.localScale = _baseAmbienceLeftScale * (1f + leftWave * ambienceWaveScale + _rhythmFlowIntensity * ambienceFlowScaleBoost);
             }
 
             if (ambienceRight != null)
             {
                 float rightWave = 0.5f + (Mathf.Sin(Time.time * 1.08f + 1.25f) * 0.5f);
-                ambienceRight.transform.localScale = _baseAmbienceRightScale * (1f + rightWave * 0.08f + _rhythmFlowIntensity * 0.03f);
+                ambienceRight.transform.localScale = _baseAmbienceRightScale * (1f + rightWave * ambienceWaveScale + _rhythmFlowIntensity * ambienceFlowScaleBoost);
             }
         }
 
@@ -736,17 +814,17 @@ namespace WordSpinAlpha.Presentation
         {
             if (backgroundGlow != null)
             {
-                backgroundGlow.transform.position = new Vector3(0f, -1.15f, 6f);
+                backgroundGlow.transform.position = backgroundGlowPosition;
             }
 
             if (ambienceLeft != null)
             {
-                ambienceLeft.transform.position = new Vector3(-4.20f, 0.10f, 2f);
+                ambienceLeft.transform.position = ambienceLeftPosition;
             }
 
             if (ambienceRight != null)
             {
-                ambienceRight.transform.position = new Vector3(4.20f, 0.10f, 2f);
+                ambienceRight.transform.position = ambienceRightPosition;
             }
         }
 
