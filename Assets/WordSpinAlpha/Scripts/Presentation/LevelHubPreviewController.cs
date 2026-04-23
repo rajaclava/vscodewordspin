@@ -1,12 +1,24 @@
+using System;
 using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using WordSpinAlpha.Content;
 using WordSpinAlpha.Core;
+using WordSpinAlpha.Services;
 
 namespace WordSpinAlpha.Presentation
 {
+    public enum HubPreviewTab
+    {
+        Journey,
+        Missions,
+        Profile,
+        Store
+    }
+
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public sealed class LevelHubPreviewController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -46,6 +58,12 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] internal RectTransform[] levelNodes;
         [SerializeField] internal TextMeshProUGUI[] levelNumberLabels;
         [SerializeField] internal TextMeshProUGUI oynaSubtitleLabel;
+        [SerializeField] internal GameObject alttasRoot;
+        [SerializeField] internal GameObject pathContainerRoot;
+        [SerializeField] internal GameObject oynaBgRoot;
+        [SerializeField] internal GameObject missionsPlaceholder;
+        [SerializeField] internal GameObject profilePlaceholder;
+        [SerializeField] internal GameObject storePlaceholder;
         [SerializeField] private RailPoint[] railPoints = CloneDefaultRailPoints();
         [SerializeField, Min(1)] private int totalLevels = DefaultTotalLevels;
         [SerializeField, Min(20f)] private float dragPixelsPerLevel = 160f;
@@ -55,13 +73,84 @@ namespace WordSpinAlpha.Presentation
         private float dragStartY;
         private float scrollAtDragStart;
         private Coroutine snapRoutine;
+        private LevelDefinition[] cachedLevels = Array.Empty<LevelDefinition>();
+        private GameObject resumePromptRoot;
+        private Button resumePromptContinueButton;
+        private Button resumePromptRestartButton;
+        private Button resumePromptCancelButton;
+        private HubPreviewTab activeTab = HubPreviewTab.Journey;
 
-        private int ActiveLevel => Mathf.Clamp(Mathf.RoundToInt(scrollOffset) + 1, 1, Mathf.Max(1, totalLevels));
+        private static int pendingScrollToLevel = -1;
+
+        private int SelectedLevelId
+        {
+            get
+            {
+                int catalogIndex = Mathf.Clamp(Mathf.RoundToInt(scrollOffset), 0, Mathf.Max(0, totalLevels - 1));
+                return ResolveLevelIdAtCatalogIndex(catalogIndex);
+            }
+        }
+
         public int RailPointCount => railPoints != null ? railPoints.Length : 0;
+
+        private LevelDefinition ResolveLevelAtIndex(int index)
+        {
+            if (cachedLevels == null || index < 0 || index >= cachedLevels.Length)
+                return null;
+            return cachedLevels[index];
+        }
+
+        private int ResolveLevelIdAtCatalogIndex(int catalogIndex)
+        {
+            if (cachedLevels != null && cachedLevels.Length > 0)
+            {
+                catalogIndex = Mathf.Clamp(catalogIndex, 0, cachedLevels.Length - 1);
+                return cachedLevels[catalogIndex].levelId;
+            }
+            return catalogIndex + 1;
+        }
+
+        private int ResolveVisibleLevelIdAtPoolIndex(int poolIndex)
+        {
+            int catalogIndex = Mathf.FloorToInt(scrollOffset) + poolIndex;
+            return ResolveLevelIdAtCatalogIndex(catalogIndex);
+        }
+
+        private int ResolveSelectedLevelId()
+        {
+            return SelectedLevelId;
+        }
+
+        private int FindCatalogIndexForLevelId(int levelId)
+        {
+            if (cachedLevels != null && cachedLevels.Length > 0)
+            {
+                for (int i = 0; i < cachedLevels.Length; i++)
+                {
+                    if (cachedLevels[i].levelId == levelId)
+                        return i;
+                }
+                int nearest = 0;
+                int minDist = Mathf.Abs(cachedLevels[0].levelId - levelId);
+                for (int i = 1; i < cachedLevels.Length; i++)
+                {
+                    int dist = Mathf.Abs(cachedLevels[i].levelId - levelId);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        nearest = i;
+                    }
+                }
+                return nearest;
+            }
+            return Mathf.Max(0, levelId - 1);
+        }
 
         private void Start()
         {
             EnsureRuntimeDefaults();
+            LoadCachedLevels();
+            EnsureResumePrompt();
 
             if (!Application.isPlaying)
             {
@@ -86,7 +175,21 @@ namespace WordSpinAlpha.Presentation
                 button.onClick.AddListener(() => OnNodeTapped(captured));
             }
 
+            RestoreScrollFromGameplay();
             Refresh();
+        }
+
+        private void RestoreScrollFromGameplay()
+        {
+            if (pendingScrollToLevel < 1)
+            {
+                return;
+            }
+
+            int targetLevelId = pendingScrollToLevel;
+            pendingScrollToLevel = -1;
+            int catalogIndex = FindCatalogIndexForLevelId(targetLevelId);
+            scrollOffset = Mathf.Clamp(catalogIndex, 0f, Mathf.Max(0f, totalLevels - 1f));
         }
 
         private void OnValidate()
@@ -129,7 +232,7 @@ namespace WordSpinAlpha.Presentation
 
         public void OnOynaPressed()
         {
-            int selectedLevel = ActiveLevel;
+            int selectedLevel = SelectedLevelId;
             int highestUnlockedLevel = GetHighestUnlockedLevel();
             if (selectedLevel > highestUnlockedLevel)
             {
@@ -143,9 +246,19 @@ namespace WordSpinAlpha.Presentation
                 return;
             }
 
-            bool started = CanResumeSelectedLevel()
-                ? SceneNavigator.Instance.OpenGameplayForProgress()
-                : SceneNavigator.Instance.OpenGameplayLevel(selectedLevel, true);
+            if (CanResumeSelectedLevel())
+            {
+                ShowResumePrompt();
+                return;
+            }
+
+            bool started = SceneNavigator.Instance.OpenGameplayLevel(selectedLevel, true);
+
+            if (started)
+            {
+                SetReturnScene();
+                SetReturnLevel(selectedLevel);
+            }
 
             if (!started)
             {
@@ -191,8 +304,8 @@ namespace WordSpinAlpha.Presentation
 
         private void OnNodeTapped(int poolIndex)
         {
-            int level = Mathf.FloorToInt(scrollOffset) + poolIndex + 1;
-            if (level < 1 || level > totalLevels)
+            int catalogIndex = Mathf.FloorToInt(scrollOffset) + poolIndex;
+            if (catalogIndex < 0 || catalogIndex >= totalLevels)
             {
                 return;
             }
@@ -203,7 +316,7 @@ namespace WordSpinAlpha.Presentation
                 snapRoutine = null;
             }
 
-            snapRoutine = StartCoroutine(LerpScrollTo(level - 1f));
+            snapRoutine = StartCoroutine(LerpScrollTo(catalogIndex));
         }
 
         private static int GetHighestUnlockedLevel()
@@ -226,7 +339,7 @@ namespace WordSpinAlpha.Presentation
             SessionSnapshot session = SaveManager.Instance.Data.session;
             return session != null &&
                    session.hasActiveSession &&
-                   session.levelId == ActiveLevel &&
+                   session.levelId == SelectedLevelId &&
                    string.Equals(
                        GameConstants.NormalizeLanguageCode(session.languageCode),
                        CurrentLanguageCode(),
@@ -267,8 +380,9 @@ namespace WordSpinAlpha.Presentation
                 }
 
                 float slotT = i - fraction;
-                int levelNumber = baseLevelIndex + i + 1;
-                bool visible = levelNumber >= 1 && levelNumber <= totalLevels && slotT >= -0.6f && slotT < poolSize - 0.4f;
+                int catalogIndex = baseLevelIndex + i;
+                int levelId = ResolveLevelIdAtCatalogIndex(catalogIndex);
+                bool visible = catalogIndex >= 0 && catalogIndex < totalLevels && slotT >= -0.6f && slotT < poolSize - 0.4f;
 
                 node.gameObject.SetActive(visible);
                 if (!visible)
@@ -281,17 +395,43 @@ namespace WordSpinAlpha.Presentation
                 node.localScale = new Vector3(scale, scale, 1f);
                 node.localRotation = Quaternion.Euler(0f, 0f, EvalRotation(slotT));
                 TextMeshProUGUI label = levelNumberLabels != null && i < levelNumberLabels.Length ? levelNumberLabels[i] : null;
-                SetNodeAlpha(node, label, EvalAlpha(slotT));
+                float lockDim = 1f;
+                if (Application.isPlaying)
+                {
+                    int highestUnlocked = GetHighestUnlockedLevel();
+                    lockDim = (levelId > highestUnlocked) ? 0.35f : 1f;
+                }
+                SetNodeAlpha(node, label, EvalAlpha(slotT) * lockDim);
 
                 if (label != null)
                 {
-                    label.text = levelNumber.ToString();
+                    label.text = levelId.ToString();
                 }
             }
 
             if (oynaSubtitleLabel != null)
             {
-                oynaSubtitleLabel.text = $"Seviye {ActiveLevel}'den basla";
+                int selectedId = SelectedLevelId;
+                if (Application.isPlaying)
+                {
+                    int highestForSubtitle = GetHighestUnlockedLevel();
+                    if (selectedId > highestForSubtitle)
+                    {
+                        oynaSubtitleLabel.text = "Kilitli";
+                    }
+                    else if (CanResumeSelectedLevel())
+                    {
+                        oynaSubtitleLabel.text = "Devam Et / Bastan";
+                    }
+                    else
+                    {
+                        oynaSubtitleLabel.text = $"Seviye {selectedId}'den basla";
+                    }
+                }
+                else
+                {
+                    oynaSubtitleLabel.text = $"Seviye {selectedId}'den basla";
+                }
             }
         }
 
@@ -394,7 +534,6 @@ namespace WordSpinAlpha.Presentation
             {
                 snapSharpness = 12f;
             }
-
         }
 
         private static RailPoint[] CloneDefaultRailPoints()
@@ -452,113 +591,21 @@ namespace WordSpinAlpha.Presentation
                 color.a = alpha;
                 graphic.color = color;
             }
-        }
-    }
-}
-
-            if (dragPixelsPerLevel < 20f)
-            {
-                dragPixelsPerLevel = 160f;
-            }
-
-            if (snapSharpness < 1f)
-            {
-                snapSharpness = 12f;
-            }
-
-        }
-
-        private static RailPoint[] CloneDefaultRailPoints()
-        {
-            var clone = new RailPoint[DefaultRailPoints.Length];
-            for (int i = 0; i < DefaultRailPoints.Length; i++)
-            {
-                clone[i] = DefaultRailPoints[i];
-            }
-
-            return clone;
-        }
-
-        private static void SetNodeAlpha(RectTransform node, TextMeshProUGUI label, float alpha)
-        {
-            if (node == null)
-            {
-                return;
-            }
-
-            Image hostImage = node.GetComponent<Image>();
-            if (hostImage != null)
-            {
-                if (hostImage.sprite != null)
-                {
-                    hostImage.sprite = null;
-                }
-
-                if (hostImage.color != HiddenNodeHostColor)
-                {
-                    hostImage.color = HiddenNodeHostColor;
-                }
-
-                if (!hostImage.raycastTarget)
-                {
-                    hostImage.raycastTarget = true;
-                }
-            }
-
-            Button button = node.GetComponent<Button>();
-            SetGraphicAlpha(button != null ? button.targetGraphic : null, alpha);
-            SetGraphicAlpha(label, alpha);
-        }
-
-        private static void SetGraphicAlpha(Graphic graphic, float alpha)
-        {
-            if (graphic == null)
-            {
-                return;
-            }
-
-            Color color = graphic.color;
-            if (!Mathf.Approximately(color.a, alpha))
-            {
-                color.a = alpha;
-                graphic.color = color;
-            }
-        }
-
-        public void OpenJourneyTab() => SwitchTab(HubPreviewTab.Journey);
-        public void OpenMissionsTab() => SwitchTab(HubPreviewTab.Missions);
-        public void OpenProfileTab() => SwitchTab(HubPreviewTab.Profile);
-        public void OpenStoreTab() => SwitchTab(HubPreviewTab.Store);
-
-        private void SwitchTab(HubPreviewTab target)
-        {
-            if (activeTab == target) return;
-            activeTab = target;
-            EnsureTabVisibility(activeTab);
-        }
-
-        private void EnsureTabVisibility(HubPreviewTab tab)
-        {
-            bool isJourney = tab == HubPreviewTab.Journey;
-            
-            if (alttasRoot != null) alttasRoot.SetActive(isJourney);
-            if (pathContainerRoot != null) pathContainerRoot.SetActive(isJourney);
-            if (oynaBgRoot != null) oynaBgRoot.SetActive(isJourney);
-
-            if (missionsPlaceholder != null) missionsPlaceholder.SetActive(tab == HubPreviewTab.Missions);
-            if (profilePlaceholder != null) profilePlaceholder.SetActive(tab == HubPreviewTab.Profile);
-            if (storePlaceholder != null) storePlaceholder.SetActive(tab == HubPreviewTab.Store);
         }
 
         private void LoadCachedLevels()
         {
-            if (ContentService.Instance != null && Application.isPlaying)
+            if (!Application.isPlaying || ContentService.Instance == null)
             {
-                cachedLevels = (ContentService.Instance.LoadLevels().levels ?? Array.Empty<LevelDefinition>()).OrderBy(level => level.levelId).ToArray();
-                if (cachedLevels.Length > 0)
-                {
-                    totalLevels = cachedLevels.Length;
-                }
+                return;
+            }
+
+            LevelCatalog catalog = ContentService.Instance.LoadLevels();
+            LevelDefinition[] levels = catalog != null ? catalog.levels : null;
+            if (levels != null && levels.Length > 0)
+            {
+                cachedLevels = levels.OrderBy(l => l.levelId).ToArray();
+                totalLevels = cachedLevels.Length;
             }
         }
 
@@ -566,24 +613,28 @@ namespace WordSpinAlpha.Presentation
         {
             if (resumePromptRoot != null)
             {
-                WireResumePromptButtons();
                 resumePromptRoot.SetActive(false);
                 return;
             }
 
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
             Canvas parentCanvas = GetComponentInParent<Canvas>();
-            Transform parent = parentCanvas != null ? parentCanvas.transform : transform;
+            Transform promptParent = parentCanvas != null ? parentCanvas.transform : transform;
 
             resumePromptRoot = new GameObject("ResumePromptOverlay", typeof(RectTransform), typeof(Image));
-            resumePromptRoot.transform.SetParent(parent, false);
+            resumePromptRoot.transform.SetParent(promptParent, false);
             resumePromptRoot.transform.SetAsLastSibling();
-            RectTransform rootRect = resumePromptRoot.GetComponent<RectTransform>();
-            rootRect.anchorMin = Vector2.zero;
-            rootRect.anchorMax = Vector2.one;
-            rootRect.offsetMin = Vector2.zero;
-            rootRect.offsetMax = Vector2.zero;
-            Image rootImage = resumePromptRoot.GetComponent<Image>();
-            rootImage.color = new Color(0.03f, 0.06f, 0.10f, 0.78f);
+            RectTransform overlayRect = resumePromptRoot.GetComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            Image overlayImage = resumePromptRoot.GetComponent<Image>();
+            overlayImage.color = new Color(0.03f, 0.06f, 0.10f, 0.78f);
 
             GameObject panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
             panel.transform.SetParent(resumePromptRoot.transform, false);
@@ -596,110 +647,99 @@ namespace WordSpinAlpha.Presentation
             panelImage.type = Image.Type.Simple;
             panelImage.color = new Color(0.16f, 0.28f, 0.44f, 0.98f);
 
-            resumePromptTitleLabel = CreateLabel("Title", panel.transform, new Vector2(0.5f, 0.76f), new Vector2(560f, 54f), 34f, FontStyles.Bold, Color.white);
-            resumePromptBodyLabel = CreateLabel("Body", panel.transform, new Vector2(0.5f, 0.56f), new Vector2(580f, 120f), 24f, FontStyles.Normal, new Color(0.94f, 0.97f, 1f));
-            resumePromptBodyLabel.enableWordWrapping = true;
-            resumePromptTitleLabel.text = "Kayitli Ilerleme Bulundu";
-            resumePromptBodyLabel.text = "Bu seviyede kayitli ilerlemen var. Devam et dersen can harcanmaz. Bastan baslatirsan yeni giris maliyeti uygulanir.";
+            PromptLabel("Title", panel.transform, new Vector2(0f, 100f), new Vector2(560f, 54f), 34f, FontStyles.Bold, Color.white, "Kayitli Ilerleme Bulundu");
+            TextMeshProUGUI body = PromptLabel("Body", panel.transform, new Vector2(0f, 30f), new Vector2(580f, 120f), 24f, FontStyles.Normal, new Color(0.94f, 0.97f, 1f),
+                "Bu seviyede kayitli ilerlemen var.\nDevam et dersen can harcanmaz.\nBastan baslatirsan yeni giris maliyeti uygulanir.");
+            body.enableWordWrapping = true;
 
-            resumePromptContinueButton = CreateButton("ContinueButton", panel.transform, new Vector2(0.5f, 0.28f), new Vector2(360f, 68f), new Color(0.26f, 0.55f, 0.89f, 1f), "Devam Et");
-            resumePromptRestartButton = CreateButton("RestartButton", panel.transform, new Vector2(0.5f, 0.14f), new Vector2(360f, 68f), new Color(0.84f, 0.43f, 0.22f, 1f), "Bastan Basla");
-            resumePromptCancelButton = CreateButton("CancelButton", panel.transform, new Vector2(0.5f, 0.06f), new Vector2(280f, 54f), new Color(0.18f, 0.24f, 0.31f, 1f), "Vazgec");
+            resumePromptContinueButton = PromptButton("ContinueButton", panel.transform, new Vector2(0f, -60f), new Vector2(360f, 68f), new Color(0.26f, 0.55f, 0.89f, 1f), "Devam Et");
+            resumePromptRestartButton = PromptButton("RestartButton", panel.transform, new Vector2(0f, -140f), new Vector2(360f, 68f), new Color(0.84f, 0.43f, 0.22f, 1f), "Bastan Basla");
+            resumePromptCancelButton = PromptButton("CancelButton", panel.transform, new Vector2(0f, -200f), new Vector2(280f, 54f), new Color(0.18f, 0.24f, 0.31f, 1f), "Vazgec");
 
-            WireResumePromptButtons();
+            resumePromptContinueButton.onClick.AddListener(OnResumeContinue);
+            resumePromptRestartButton.onClick.AddListener(OnResumeRestart);
+            resumePromptCancelButton.onClick.AddListener(OnResumeCancel);
+
             resumePromptRoot.SetActive(false);
-        }
-
-        private void WireResumePromptButtons()
-        {
-            if (resumePromptContinueButton != null)
-            {
-                resumePromptContinueButton.onClick.RemoveAllListeners();
-                resumePromptContinueButton.onClick.AddListener(ContinueSelectedLevel);
-            }
-
-            if (resumePromptRestartButton != null)
-            {
-                resumePromptRestartButton.onClick.RemoveAllListeners();
-                resumePromptRestartButton.onClick.AddListener(RestartSelectedLevel);
-            }
-
-            if (resumePromptCancelButton != null)
-            {
-                resumePromptCancelButton.onClick.RemoveAllListeners();
-                resumePromptCancelButton.onClick.AddListener(CancelResumePrompt);
-            }
         }
 
         private void ShowResumePrompt()
         {
             EnsureResumePrompt();
-            if (resumePromptRoot != null) resumePromptRoot.SetActive(true);
+            if (resumePromptRoot != null)
+            {
+                resumePromptRoot.SetActive(true);
+            }
         }
 
         private void HideResumePrompt()
         {
-            if (resumePromptRoot != null) resumePromptRoot.SetActive(false);
-        }
-
-        public void ContinueSelectedLevel()
-        {
-            HideResumePrompt();
-            if (CanResumeSelectedLevel())
+            if (resumePromptRoot != null)
             {
-                SceneNavigator.Instance?.OpenGameplayForProgress();
-                return;
-            }
-
-            if (SceneNavigator.Instance == null || !SceneNavigator.Instance.OpenGameplayLevel(ActiveLevel, true))
-            {
-                Debug.LogWarning("[HubPreview] Kayitli ilerleme bulunamadi. Seviye acilamadi.");
+                resumePromptRoot.SetActive(false);
             }
         }
 
-        public void RestartSelectedLevel()
+        private void OnResumeContinue()
         {
             HideResumePrompt();
-            if (SceneNavigator.Instance == null || !SceneNavigator.Instance.OpenGameplayLevel(ActiveLevel, true))
+            if (SceneNavigator.Instance != null && CanResumeSelectedLevel())
             {
-                Debug.LogWarning("[HubPreview] Bastan baslatmak icin yeterli can yok.");
+                SetReturnScene();
+                SetReturnLevel(SelectedLevelId);
+                SceneNavigator.Instance.OpenGameplayForProgress();
             }
         }
 
-        public void CancelResumePrompt()
+        private void OnResumeRestart()
+        {
+            HideResumePrompt();
+            if (SceneNavigator.Instance != null)
+            {
+                SetReturnScene();
+                SetReturnLevel(SelectedLevelId);
+                SceneNavigator.Instance.OpenGameplayLevel(SelectedLevelId, true);
+            }
+        }
+
+        private void OnResumeCancel()
         {
             HideResumePrompt();
         }
 
-        private static TextMeshProUGUI CreateLabel(string name, Transform parent, Vector2 anchor, Vector2 size, float fontSize, FontStyles style, Color color)
+        private static TextMeshProUGUI PromptLabel(string name, Transform parent, Vector2 pos, Vector2 size, float fontSize, FontStyles style, Color color, string text)
         {
             GameObject go = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
             RectTransform rect = go.GetComponent<RectTransform>();
             rect.SetParent(parent, false);
-            rect.anchorMin = anchor;
-            rect.anchorMax = anchor;
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = pos;
             rect.sizeDelta = size;
             TextMeshProUGUI label = go.GetComponent<TextMeshProUGUI>();
+            label.text = text;
             label.fontSize = fontSize;
             label.fontStyle = style;
             label.alignment = TextAlignmentOptions.Center;
             label.color = color;
+            label.raycastTarget = false;
             return label;
         }
 
-        private static Button CreateButton(string name, Transform parent, Vector2 anchor, Vector2 size, Color color, string text)
+        private static Button PromptButton(string name, Transform parent, Vector2 pos, Vector2 size, Color bgColor, string text)
         {
             GameObject go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
             RectTransform rect = go.GetComponent<RectTransform>();
             rect.SetParent(parent, false);
-            rect.anchorMin = anchor;
-            rect.anchorMax = anchor;
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = pos;
             rect.sizeDelta = size;
             Image image = go.GetComponent<Image>();
             image.type = Image.Type.Simple;
-            image.color = color;
+            image.color = bgColor;
             Button button = go.GetComponent<Button>();
             button.targetGraphic = image;
 
@@ -711,13 +751,79 @@ namespace WordSpinAlpha.Presentation
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
             TextMeshProUGUI label = labelGo.GetComponent<TextMeshProUGUI>();
+            label.text = text;
             label.fontSize = 24f;
             label.fontStyle = FontStyles.Bold;
             label.alignment = TextAlignmentOptions.Center;
             label.color = Color.white;
-            label.text = text;
+            label.raycastTarget = false;
 
             return button;
+        }
+
+        public void OpenJourneyTab() { SwitchTab(HubPreviewTab.Journey); }
+        public void OpenMissionsTab() { SwitchTab(HubPreviewTab.Missions); }
+        public void OpenProfileTab() { SwitchTab(HubPreviewTab.Profile); }
+        public void OpenStoreTab() { SwitchTab(HubPreviewTab.Store); }
+
+        private void SwitchTab(HubPreviewTab target)
+        {
+            if (activeTab == target)
+            {
+                return;
+            }
+
+            activeTab = target;
+            EnsureTabVisibility(activeTab);
+        }
+
+        private void EnsureTabVisibility(HubPreviewTab tab)
+        {
+            bool isJourney = tab == HubPreviewTab.Journey;
+
+            if (alttasRoot != null) alttasRoot.SetActive(isJourney);
+            if (pathContainerRoot != null) pathContainerRoot.SetActive(isJourney);
+            if (oynaBgRoot != null) oynaBgRoot.SetActive(isJourney);
+
+            if (missionsPlaceholder != null)
+            {
+                missionsPlaceholder.SetActive(tab == HubPreviewTab.Missions);
+                if (tab == HubPreviewTab.Missions) EnsureBackButton(missionsPlaceholder);
+            }
+            if (profilePlaceholder != null)
+            {
+                profilePlaceholder.SetActive(tab == HubPreviewTab.Profile);
+                if (tab == HubPreviewTab.Profile) EnsureBackButton(profilePlaceholder);
+            }
+            if (storePlaceholder != null)
+            {
+                storePlaceholder.SetActive(tab == HubPreviewTab.Store);
+                if (tab == HubPreviewTab.Store) EnsureBackButton(storePlaceholder);
+            }
+        }
+
+        private void EnsureBackButton(GameObject placeholder)
+        {
+            if (placeholder == null) return;
+
+            Transform existing = placeholder.transform.Find("BackButton");
+            if (existing != null) return;
+
+            Button backBtn = PromptButton("BackButton", placeholder.transform,
+                new Vector2(0f, -220f), new Vector2(280f, 64f),
+                new Color(0.26f, 0.55f, 0.89f, 1f), "< Geri");
+            backBtn.onClick.AddListener(() => SwitchTab(HubPreviewTab.Journey));
+        }
+
+        private static void SetReturnScene()
+        {
+            if (SceneNavigator.Instance == null) return;
+            SceneNavigator.Instance.SetReturnSceneOverride(GameConstants.SceneHubPreview);
+        }
+
+        private static void SetReturnLevel(int levelId)
+        {
+            pendingScrollToLevel = levelId;
         }
     }
 }

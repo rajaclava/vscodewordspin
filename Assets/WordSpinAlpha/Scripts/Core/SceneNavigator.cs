@@ -20,8 +20,9 @@ namespace WordSpinAlpha.Core
 
         public bool OpenMainMenu()
         {
+            string target = string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHub : _returnSceneName;
             _returnSceneName = GameConstants.SceneHub;
-            return LoadScene(GameConstants.SceneHub, false);
+            return LoadScene(target, false);
         }
 
         public bool OpenStore()
@@ -90,6 +91,14 @@ namespace WordSpinAlpha.Core
             }
 
             return LoadScene(string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHub : _returnSceneName, false);
+        }
+
+        public void SetReturnSceneOverride(string sceneName)
+        {
+            if (!string.IsNullOrEmpty(sceneName))
+            {
+                _returnSceneName = sceneName;
+            }
         }
 
         private static bool LoadScene(string sceneName, bool forceReloadCurrent)

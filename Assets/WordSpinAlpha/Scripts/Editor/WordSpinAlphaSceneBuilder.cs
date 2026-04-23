@@ -936,7 +936,12 @@ namespace WordSpinAlpha.Editor
             pathContainer.transform.SetSiblingIndex(2);
 
             HubPreviewLayoutTuningProfile.LayoutElementTuning bottomPageNavLayout = HubPreviewLayoutTuningProfile.ResolveBottomPageNav();
-            GameObject bottomPageNav = BuildBottomPageNav(rootRect, bottomPageNavLayout);
+            GameObject bottomPageNav = BuildBottomPageNav(rootRect, bottomPageNavLayout, controller);
+
+            // Placeholder sayfaları (Görevler, Profil, Mağaza)
+            GameObject missionsPlaceholder = BuildTabPlaceholder(rootRect, "MissionsPlaceholder", "Gorevler\nHazirlaniyor...");
+            GameObject profilePlaceholder = BuildTabPlaceholder(rootRect, "ProfilePlaceholder", "Profil\nHazirlaniyor...");
+            GameObject storePlaceholder = BuildTabPlaceholder(rootRect, "StorePlaceholder", "Magaza\nHazirlaniyor...");
 
             // 7 level node (pool)
             Sprite nodeSprite = AssetDatabase.LoadAssetAtPath<Sprite>(LevelHubNodeSpritePath);
@@ -1076,6 +1081,12 @@ namespace WordSpinAlpha.Editor
             Refs(controller, "levelNodes", nodeRectObjs);
             Refs(controller, "levelNumberLabels", numLabelObjs);
             Ref(controller, "oynaSubtitleLabel", oynaSubtitle);
+            Ref(controller, "alttasRoot", alttasGo);
+            Ref(controller, "pathContainerRoot", pathContainer);
+            Ref(controller, "oynaBgRoot", oynaGo);
+            Ref(controller, "missionsPlaceholder", missionsPlaceholder);
+            Ref(controller, "profilePlaceholder", profilePlaceholder);
+            Ref(controller, "storePlaceholder", storePlaceholder);
             UnityEventTools.AddPersistentListener(oynaButton.onClick, controller.OnOynaPressed);
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
@@ -1083,7 +1094,28 @@ namespace WordSpinAlpha.Editor
             return prefab;
         }
 
-        private static GameObject BuildBottomPageNav(Transform parent, HubPreviewLayoutTuningProfile.LayoutElementTuning tuning)
+        private static GameObject BuildTabPlaceholder(RectTransform parent, string name, string displayText)
+        {
+            GameObject placeholder = new GameObject(name, typeof(RectTransform), typeof(Image));
+            RectTransform phRect = placeholder.GetComponent<RectTransform>();
+            phRect.SetParent(parent, false);
+            phRect.anchorMin = Vector2.zero;
+            phRect.anchorMax = Vector2.one;
+            phRect.offsetMin = Vector2.zero;
+            phRect.offsetMax = Vector2.zero;
+            phRect.localScale = Vector3.one;
+            Image phImage = placeholder.GetComponent<Image>();
+            phImage.color = new Color(0.04f, 0.06f, 0.08f, 0.96f);
+            phImage.raycastTarget = true;
+
+            TextMeshProUGUI label = LayeredText(name + "_Text", phRect, displayText, Vector2.zero, new Vector2(800f, 150f), 48f, Color.white, FontStyles.Bold);
+            label.enableWordWrapping = true;
+
+            placeholder.SetActive(false);
+            return placeholder;
+        }
+
+        private static GameObject BuildBottomPageNav(Transform parent, HubPreviewLayoutTuningProfile.LayoutElementTuning tuning, LevelHubPreviewController controller = null)
         {
             GameObject root = new GameObject("BottomPageNav", typeof(RectTransform), typeof(CanvasGroup));
             RectTransform rootRect = root.GetComponent<RectTransform>();
@@ -1095,8 +1127,8 @@ namespace WordSpinAlpha.Editor
 
             CanvasGroup group = root.GetComponent<CanvasGroup>();
             group.alpha = 1f;
-            group.interactable = false;
-            group.blocksRaycasts = false;
+            group.interactable = true;
+            group.blocksRaycasts = true;
 
             GameObject frameGo = new GameObject("FrameImage", typeof(RectTransform), typeof(Image));
             RectTransform frameRect = frameGo.GetComponent<RectTransform>();
@@ -1127,6 +1159,41 @@ namespace WordSpinAlpha.Editor
             }
 
             frameGo.transform.SetSiblingIndex(0);
+
+            // Hitbox butonları — her biri nav bar'ın 1/4'ünü kaplar
+            GameObject hitboxes = new GameObject("Hitboxes", typeof(RectTransform));
+            RectTransform hrt = hitboxes.GetComponent<RectTransform>();
+            hrt.SetParent(rootRect, false);
+            hrt.anchorMin = Vector2.zero;
+            hrt.anchorMax = Vector2.one;
+            hrt.offsetMin = Vector2.zero;
+            hrt.offsetMax = Vector2.zero;
+            hrt.localScale = Vector3.one;
+
+            string[] tabNames = { "Journey", "Missions", "Profile", "Store" };
+            for (int i = 0; i < 4; i++)
+            {
+                GameObject btnObj = new GameObject($"Btn_{tabNames[i]}", typeof(RectTransform), typeof(Image), typeof(Button));
+                RectTransform brt = btnObj.GetComponent<RectTransform>();
+                brt.SetParent(hrt, false);
+                brt.anchorMin = new Vector2(i * 0.25f, 0f);
+                brt.anchorMax = new Vector2((i + 1) * 0.25f, 1f);
+                brt.offsetMin = Vector2.zero;
+                brt.offsetMax = Vector2.zero;
+                Image bImg = btnObj.GetComponent<Image>();
+                bImg.color = new Color(0f, 0f, 0f, 0f);
+                bImg.raycastTarget = true;
+
+                if (controller != null)
+                {
+                    Button btn = btnObj.GetComponent<Button>();
+                    if (i == 0) UnityEventTools.AddPersistentListener(btn.onClick, controller.OpenJourneyTab);
+                    else if (i == 1) UnityEventTools.AddPersistentListener(btn.onClick, controller.OpenMissionsTab);
+                    else if (i == 2) UnityEventTools.AddPersistentListener(btn.onClick, controller.OpenProfileTab);
+                    else if (i == 3) UnityEventTools.AddPersistentListener(btn.onClick, controller.OpenStoreTab);
+                }
+            }
+
             return root;
         }
 
