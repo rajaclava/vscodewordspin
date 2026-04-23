@@ -20,6 +20,7 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] private TMP_InputField levelJumpInput;
         [SerializeField] private TextMeshProUGUI levelSelectSummaryLabel;
         [SerializeField] private TextMeshProUGUI languageLabel;
+        [SerializeField] private LevelPathMapView levelPathMapView;
 
         private LevelDefinition[] _cachedLevels = Array.Empty<LevelDefinition>();
         private GameObject _languageChangeDialogRoot;
@@ -28,6 +29,7 @@ namespace WordSpinAlpha.Presentation
         private TextMeshProUGUI _languageChangeConfirmLabel;
         private TextMeshProUGUI _languageChangeCancelLabel;
         private string _pendingLanguageCode;
+        private bool _entryViewConfigured;
 
         private void OnEnable()
         {
@@ -44,6 +46,7 @@ namespace WordSpinAlpha.Presentation
         private void Start()
         {
             EnsureLanguageChangeDialog();
+            ConfigureEntryView();
             RefreshLanguageLabel();
             RefreshLocalizedTexts();
             RefreshHints();
@@ -53,7 +56,6 @@ namespace WordSpinAlpha.Presentation
                 HandleEnergyChanged(EnergyManager.Instance.CurrentEnergy, EnergyManager.Instance.MaxEnergy);
             }
 
-            BuildLevelButtons();
             if (levelSelectRoot != null)
             {
                 levelSelectRoot.SetActive(false);
@@ -62,7 +64,7 @@ namespace WordSpinAlpha.Presentation
 
         public void StartCurrentProgressLevel()
         {
-            SceneNavigator.Instance?.OpenGameplayForProgress();
+            SceneNavigator.Instance?.OpenMainMenu();
         }
 
         public void OpenStore()
@@ -82,6 +84,9 @@ namespace WordSpinAlpha.Presentation
             {
                 levelSelectRoot.SetActive(true);
             }
+
+            Canvas.ForceUpdateCanvases();
+            levelPathMapView?.CenterOnLevel(GetCurrentProgressLevelId(), true);
         }
 
         public void CloseLevelSelect()
@@ -122,7 +127,7 @@ namespace WordSpinAlpha.Presentation
         {
             ContentService.Instance?.RefreshEditorContent();
             _cachedLevels = Array.Empty<LevelDefinition>();
-            BuildLevelButtons();
+            ConfigureEntryView();
             RefreshLocalizedTexts();
             RefreshHints();
             RefreshLanguageLabel();
@@ -168,6 +173,13 @@ namespace WordSpinAlpha.Presentation
 
             _cachedLevels = levels;
             UpdateLevelSelectSummary(BuildSummaryText(levels.Length));
+
+            LevelPathMapView pathMap = EnsureLevelPathMapView();
+            if (pathMap != null)
+            {
+                pathMap.Build(levels, GetCurrentProgressLevelId(), GetLocalized("level"), OpenSpecificLevel);
+                return;
+            }
 
             if (!requiresRebuild)
             {
@@ -220,8 +232,48 @@ namespace WordSpinAlpha.Presentation
 
         private string BuildSummaryText(int totalLevelCount)
         {
-            int highestUnlocked = SaveManager.Instance != null ? SaveManager.Instance.Data.progress.highestUnlockedLevel : 1;
+            int highestUnlocked = 1;
+            if (SaveManager.Instance != null)
+            {
+                highestUnlocked = SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(SaveManager.Instance.Data.languageCode);
+            }
             return $"{GetLocalized("total")} {totalLevelCount} {GetLocalized("level")} • {GetLocalized("progress")}: {highestUnlocked}";
+        }
+
+        private int GetCurrentProgressLevelId()
+        {
+            if (SaveManager.Instance == null)
+            {
+                return 1;
+            }
+
+            return SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(SaveManager.Instance.Data.languageCode);
+        }
+
+        private LevelPathMapView EnsureLevelPathMapView()
+        {
+            if (!(levelButtonContainer is RectTransform contentRect))
+            {
+                return null;
+            }
+
+            ScrollRect scrollRect = contentRect.GetComponentInParent<ScrollRect>(true);
+            if (scrollRect == null)
+            {
+                return null;
+            }
+
+            if (levelPathMapView == null)
+            {
+                levelPathMapView = scrollRect.GetComponent<LevelPathMapView>();
+                if (levelPathMapView == null)
+                {
+                    levelPathMapView = scrollRect.gameObject.AddComponent<LevelPathMapView>();
+                }
+            }
+
+            levelPathMapView.BindScene(scrollRect, contentRect, levelButtonTemplate);
+            return levelPathMapView;
         }
 
         private void UpdateLevelSelectSummary(string text)
@@ -271,6 +323,7 @@ namespace WordSpinAlpha.Presentation
 
         private void HandleLanguageChanged(string _)
         {
+            ConfigureEntryView();
             RefreshLanguageLabel();
             RefreshLocalizedTexts();
             RefreshLanguageChangeDialogTexts();
@@ -279,13 +332,33 @@ namespace WordSpinAlpha.Presentation
             {
                 HandleEnergyChanged(EnergyManager.Instance.CurrentEnergy, EnergyManager.Instance.MaxEnergy);
             }
+        }
 
-            BuildLevelButtons();
+        private void ConfigureEntryView()
+        {
+            if (_entryViewConfigured)
+            {
+                return;
+            }
+
+            _entryViewConfigured = true;
+            if (levelSelectRoot != null)
+            {
+                levelSelectRoot.SetActive(false);
+            }
+
+            SetObjectActive("LevelsButton", false);
+            SetObjectActive("StoreButton", false);
+            SetObjectActive("Energy", false);
+            SetObjectActive("Hints", false);
         }
 
         private void RefreshLocalizedTexts()
         {
-            SetText("PlayButton/Label", GetLocalized("play"));
+            SetText("Title", GetLocalized("entry_title"));
+            SetText("EntrySubtitle", GetLocalized("entry_subtitle"));
+            SetText("EntryBody", GetLocalized("entry_body"));
+            SetText("PlayButton/Label", GetLocalized("start_journey"));
             SetText("LevelsButton/Label", GetLocalized("levels"));
             SetText("StoreButton/Label", GetLocalized("store"));
             SetText("LevelSelectOverlay/LevelSelectTitle", GetLocalized("level_select"));
@@ -482,6 +555,15 @@ namespace WordSpinAlpha.Presentation
             }
         }
 
+        private void SetObjectActive(string path, bool active)
+        {
+            Transform child = transform.Find(path);
+            if (child != null)
+            {
+                child.gameObject.SetActive(active);
+            }
+        }
+
         private void SetInputPlaceholder(string path, string value)
         {
             Transform child = transform.Find(path + "/Placeholder");
@@ -515,6 +597,10 @@ namespace WordSpinAlpha.Presentation
                         "restart" => "Restart",
                         "language_warning_title" => "Change language?",
                         "language_warning_body" => "Changing the language will restart the game. Your progress will be kept.",
+                        "entry_title" => "WORDSPIN",
+                        "entry_subtitle" => "Choose your language and enter the hub.",
+                        "entry_body" => "Your progress is kept per language. Tap play to continue from the level map.",
+                        "start_journey" => "Enter Journey",
                         "level_number" => "Level no",
                         "energy" => "Energy",
                         "hints" => "Hints",
@@ -539,6 +625,10 @@ namespace WordSpinAlpha.Presentation
                         "restart" => "Reiniciar",
                         "language_warning_title" => "Cambiar idioma?",
                         "language_warning_body" => "Cambiar el idioma reiniciara el juego. Tu progreso se conserva.",
+                        "entry_title" => "WORDSPIN",
+                        "entry_subtitle" => "Elige tu idioma y entra al centro.",
+                        "entry_body" => "Tu progreso se guarda por idioma. Pulsa jugar para ir al mapa.",
+                        "start_journey" => "Entrar",
                         "level_number" => "Nivel",
                         "energy" => "Energia",
                         "hints" => "Pistas",
@@ -563,6 +653,10 @@ namespace WordSpinAlpha.Presentation
                         "restart" => "Neustart",
                         "language_warning_title" => "Sprache wechseln?",
                         "language_warning_body" => "Beim Sprachwechsel startet das Spiel neu. Dein Fortschritt bleibt erhalten.",
+                        "entry_title" => "WORDSPIN",
+                        "entry_subtitle" => "Waehle deine Sprache und gehe in den Hub.",
+                        "entry_body" => "Der Fortschritt wird pro Sprache gespeichert. Tippe auf Start fuer die Levelkarte.",
+                        "start_journey" => "Zum Hub",
                         "level_number" => "Levelnr",
                         "energy" => "Energie",
                         "hints" => "Tipps",
@@ -587,6 +681,10 @@ namespace WordSpinAlpha.Presentation
                         "restart" => "Yeniden Baslat",
                         "language_warning_title" => "Dil degissin mi?",
                         "language_warning_body" => "Dil degisince oyun yeniden baslar. Ilerlemen sifirlanmaz.",
+                        "entry_title" => "WORDSPIN",
+                        "entry_subtitle" => "Dilini sec ve merkeze gec.",
+                        "entry_body" => "Her dil kendi ilerlemesini korur. Oyna diyerek seviye yoluna gec.",
+                        "start_journey" => "Maceraya Basla",
                         "level_number" => "Level no",
                         "energy" => "Enerji",
                         "hints" => "Ipucu",

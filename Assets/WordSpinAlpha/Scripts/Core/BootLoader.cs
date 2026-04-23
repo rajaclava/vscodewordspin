@@ -6,7 +6,7 @@ namespace WordSpinAlpha.Core
     {
         private void Start()
         {
-            SceneNavigator.Instance?.OpenMainMenu();
+            SceneNavigator.Instance?.OpenEntryMenu();
         }
     }
 }

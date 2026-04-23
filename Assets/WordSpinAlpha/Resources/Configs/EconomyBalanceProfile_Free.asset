@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b4bed1c19e01ce4a937f5b1e34fa05b, type: 3}
+  m_Name: EconomyBalanceProfile_Free
+  m_EditorClassIdentifier: Assembly-CSharp::WordSpinAlpha.Core.EconomyBalanceProfile
+  awardCoinsOnlyOnFirstCompletion: 1
+  defaultFirstClearCoins: 24
+  defaultReplayCoins: 0
+  premiumMembershipCoinMultiplier: 1
+  maxStars: 3
+  zeroMistakeStars: 3
+  oneMistakeStars: 2
+  twoOrMoreMistakesStars: 1
+  maxStarsAfterContinue: 1
+  threeStarCoinMultiplier: 1
+  twoStarCoinMultiplier: 0.7
+  oneStarCoinMultiplier: 0.45
+  enableAdCatchupHook: 1
+  adCatchupOnlyOnFirstClear: 1
+  adCatchupTargetStars: 3
+  adCatchupBonusMultiplier: 1
+  showGameplayCoinHook: 1
+  showUpcomingThemesTeaser: 1
+  levelCoinOverrides:
+  - levelId: 1
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 2
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 3
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 4
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 5
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 6
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 7
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 8
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 9
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 10
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 11
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 12
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 13
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 14
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 15
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 16
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 17
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 18
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 19
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 20
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 21
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 22
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 23
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 24
+    firstClearCoins: 24
+    replayCoins: 0
+  - levelId: 25
+    firstClearCoins: 24
+    replayCoins: 0
+  themeOffers:
+  - themeId: myth_hades
+    softCurrencyPriceOverride: 1200
+    allowCoinPurchase: 1
+    allowPremiumMembership: 1
+    allowDirectPurchase: 1
+    iapTierId: theme_small
+  regionalPricePreviews:
+  - regionCode: TR
+    currencyCode: TRY
+    membershipPrice: 99.99
+    themePackPrice: 49.99
+    notes: Taslak tier. Store fiyatlari daha sonra kesinlesecek.
+  - regionCode: DE
+    currencyCode: EUR
+    membershipPrice: 7.99
+    themePackPrice: 3.99
+    notes: Taslak tier. Dil degil storefront bolgesi esas alinacak.
+  - regionCode: ES
+    currencyCode: EUR
+    membershipPrice: 7.99
+    themePackPrice: 3.99
+    notes: Taslak tier. Nihai fiyat market cikisina yakin belirlenecek.
+  - regionCode: US
+    currencyCode: USD
+    membershipPrice: 7.99
+    themePackPrice: 3.99
+    notes: Taslak tier. Nihai fiyat store eksperimenti sonrasi ayarlanacak.

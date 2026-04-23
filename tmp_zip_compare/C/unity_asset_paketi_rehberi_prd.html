@@ -1,0 +1,47 @@
+# Unity Game UI Asset Paketi - Tasarım ve Entegrasyon Rehberi
+
+## 1. Mimari Yaklaşım
+Bu paket, Unity UI (uGUI) sistemine doğrudan aktarılabilir parçalı bir yapıdadır. Tüm metinler dinamik (TextMeshPro) olacak şekilde tasarlanmıştır. Görseller; skinler, overlay'ler ve ikonlar olarak ayrılmıştır.
+
+## 2. Klasör Yapısı ve Asset Listesi
+
+### backgrounds/
+- **BG_SkyBackdrop.png**: Gradyan gökyüzü arka planı.
+- **BG_RoadPath.png**: Seviyeleri birbirine bağlayan temel yol görseli.
+- **BG_ForegroundMist.png**: Alt kısımda butonların arkasına gelen derinlik efekti.
+
+### buttons/
+- **BTN_Primary_Base.png**: "Devam Et" butonu için 9-slice uyumlu turuncu gradyan skin.
+- **BTN_Secondary_Base.png**: "Yenile/Baştan Başla" gibi ikincil aksiyonlar için yarı saydam skin.
+- **BTN_Circle_UX.png**: Yan menüdeki (Görev, Takvim) dairesel butonların temel kalıbı.
+- **BTN_BottomNav_Active.png / BTN_BottomNav_Idle.png**: Alt menü sekmeleri için durum belirteçleri.
+
+### nodes/
+- **NODE_Level_Active.png**: Mevcut seviyenin ışıklı ve belirgin tasarımı.
+- **NODE_Level_Locked.png**: Kilitli seviyeler için gri/yarı saydam varyant.
+- **NODE_Level_Completed.png**: Tamamlanmış seviyeler için onay işaretli veya farklı renkli varyant.
+
+### cards/ & popups/
+- **CARD_LevelInfo_Base.png**: Aktif seviye bilgilerini tutan cam (glassmorphism) panel.
+- **POPUP_Generic_9Slice.png**: Tüm popup'lar için ortak kullanılabilir, köşeleri yuvarlatılmış panel skini.
+- **PANEL_TopBar_Stats.png**: Üst bardaki istatistik alanları için küçük kapsül skinler.
+
+### icons/
+- **ICON_Heart.png**, **ICON_Gem.png**, **ICON_Coin.png**: Üst bar kaynak ikonları.
+- **ICON_Nav_Map.png**, **ICON_Nav_Quest.png**, **ICON_Nav_Profile.png**, **ICON_Nav_Shop.png**: Alt menü ikonları.
+- **ICON_Lock.png**, **ICON_Play.png**: Node ve buton içi yardımcı ikonlar.
+
+### effects/
+- **FX_PathGlow_Overlay.png**: Yolun üzerindeki ışıklı rota efekti (Additive shader ile kullanılabilir).
+- **FX_Node_Highlight.png**: Aktif node arkasındaki parlama efekti.
+
+## 3. Dinamik Alanlar (Unity Entegrasyonu)
+Aşağıdaki alanlar Unity tarafında dinamik metin (TMP) ile beslenmelidir:
+- **Üst Bar:** Can (5/5), Elmas (24), Coin (345) değerleri.
+- **Node'lar:** Seviye numaraları (1, 2, 3...).
+- **Kartlar:** "Seviye 1", "Zorluk: Kolay" ve açıklama metinleri.
+- **Butonlar:** "DEVAM ET", "YENİLE" metinleri.
+
+## 4. Teknik Notlar
+- **9-Slice:** Panel ve buton skinleri, Unity Sprite Editor'da border değerleri verilerek bozulmadan ölçeklenebilir.
+- **Layering:** UI katmanları; Background -> Path -> Nodes -> Popups -> Overlay HUD şeklinde dizilmelidir.

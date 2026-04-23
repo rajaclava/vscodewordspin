@@ -42,6 +42,7 @@ namespace WordSpinAlpha.Core
             if (!File.Exists(_savePath))
             {
                 _data = new PlayerSaveData();
+                _data.progress.EnsureLanguageProgressMigrated(_data.languageCode);
                 WriteToDisk();
                 return;
             }
@@ -61,6 +62,9 @@ namespace WordSpinAlpha.Core
                 _data = new PlayerSaveData();
                 WriteToDisk();
             }
+
+            _data.languageCode = GameConstants.NormalizeLanguageCode(_data.languageCode);
+            _data.progress.EnsureLanguageProgressMigrated(_data.languageCode);
         }
 
         public void Save()
@@ -84,7 +88,14 @@ namespace WordSpinAlpha.Core
         public void ReplaceData(PlayerSaveData data)
         {
             _data = data ?? new PlayerSaveData();
+            _data.languageCode = GameConstants.NormalizeLanguageCode(_data.languageCode);
+            _data.progress.EnsureLanguageProgressMigrated(_data.languageCode);
             Save();
+        }
+
+        public void FlushNow()
+        {
+            WriteToDisk();
         }
 
         private void OnApplicationPause(bool pauseStatus)

@@ -1,0 +1,696 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.12f1 (fca03ac9b0d5) revision 16556090'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 11  (10.0.26200) Professional' Language: 'tr' Physical Memory: 16206 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-neverbest" at "2026-04-21T12:52:59.5411262Z"
+System  architecture: x64
+Process architecture: x64
+Date: 2026-04-21T12:52:59Z
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.12f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+C:\Users\freed\Documents\New project
+-executeMethod
+WordSpinAlpha.Editor.WordSpinAlphaSceneBuilder.RebuildLevelHubPreviewScene
+-logFile
+C:\Users\freed\Documents\New project\unity_rebuild.log
+Successfully changed project path to: C:\Users\freed\Documents\New project
+C:/Users/freed/Documents/New project
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [20136]  Target information:
+
+Player connection [20136]  * "[IP] 172.28.176.1 [Port] 55504 [Flags] 2 [Guid] 2319112776 [EditorId] 2319112776 [Version] 1048832 [Id] WindowsEditor(7,neverbest) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [20136]  * "[IP] 192.168.1.102 [Port] 55504 [Flags] 2 [Guid] 2319112776 [EditorId] 2319112776 [Version] 1048832 [Id] WindowsEditor(7,neverbest) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [20136] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [20136] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-21532" after 0.5 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Error: HandshakeResponse reported an error:
+	ResponseCode: 505
+	ResponseStatus: Unsupported protocol version '1.18.1'.
+[Licensing::Module] Error: Failed to handshake to channel: "LicenseClient-neverbest"
+[Licensing::IpcConnector] LicenseClient-neverbest channel disconnected successfully.
+[Licensing::IpcConnector] Channel LicenseClient-neverbest-6000.3.12 doesn't exist
+[Licensing::Module] Successfully launched the LicensingClient (PId: 6812)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-neverbest-6000.3.12" at "2026-04-21T12:53:03.2701764Z"
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.1+9fbee8e
+  Session Id:              bd6d9cf164b641c9af2c7126fb42d92b
+  Correlation Id:          985e6f201f03495a4a8c853aa8e4edc3
+  External correlation Id: 8504631919612812484
+  Machine Id:              tnKM8vfgSp67p+z8yLG9mHgAqnI=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-neverbest-6000.3.12" (connect: 0.85s, validation: 0.09s, handshake: 2.60s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-neverbest-6000.3.12-notifications" at "2026-04-21T12:53:05.9678504Z"
+[Licensing::Module] Connected to LicensingClient (PId: 6812, launch time: 0.01, total connection time: 3.55s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968410852220-umutcayiroglu2022mmsofgak-UnityProStuXXXX
+  Product: Unity Student
+  Type: Assigned
+  Expiration: 2027-04-07T11:26:27Z
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.02
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 6.49s
+[Licensing::Module] Licensing is initialized (took 5.55s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 9 unused hashed content files
+[Licensing::Client] Successfully resolved entitlement details
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.12f1 (fca03ac9b0d5)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.12f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/freed/Documents/New project/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3060 Laptop GPU (ID=0x2520)
+    Vendor:   NVIDIA
+    VRAM:     5994 MB
+    Driver:   32.0.15.9174
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.12f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.12f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.12f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56532
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.12f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+Registered in 0.010465 seconds.
+- Loaded All Assemblies, in  4.188 seconds
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  1.242 seconds
+Domain Reload Profiling: 5420ms
+	BeginReloadAssembly (457ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (25ms)
+	RebuildCommonClasses (523ms)
+	RebuildNativeTypeToScriptingClass (30ms)
+	initialDomainReloadingComplete (128ms)
+	LoadAllAssembliesAndSetupDomain (3039ms)
+		LoadAssemblies (417ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (3029ms)
+			TypeCache.Refresh (3024ms)
+				TypeCache.ScanAssembly (1844ms)
+			BuildScriptInfoCaches (1ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (1243ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (1132ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (166ms)
+			SetLoadedEditorAssemblies (12ms)
+			BeforeProcessingInitializeOnLoad (260ms)
+			ProcessInitializeOnLoadAttributes (461ms)
+			ProcessInitializeOnLoadMethodAttributes (231ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (1ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 33 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.device-simulator.devices@1.0.1 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.device-simulator.devices@2af643ceec84)
+    com.unity.searcher@4.9.4 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.searcher@d45a78918735)
+    com.unity.burst@1.8.28 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.burst@07790c2d06d9)
+    com.unity.mathematics@1.3.3 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.mathematics@19a9377c4ffa)
+    com.unity.collections@2.6.5 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.collections@12999e356c23)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.test-framework.performance@3.2.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.test-framework.performance@0840f58e4562)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.2d.sprite@d14b9d497a24)
+    com.unity.render-pipelines.universal@17.3.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.render-pipelines.universal@fd0c0d56fb49)
+    com.unity.textmeshpro@5.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.textmeshpro@53f43edfd2e0)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.assetbundle@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.ugui@2.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.ugui@8ccc29d23a79)
+    com.unity.render-pipelines.core@17.3.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.render-pipelines.core@84bf82d10e47)
+    com.unity.shadergraph@17.3.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.shadergraph@c0ba2e178c6b)
+    com.unity.render-pipelines.universal-config@17.0.3 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d)
+    com.unity.modules.terrain@1.0.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.test-framework@1.6.0 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.test-framework@aebcb98460c6)
+    com.unity.ext.nunit@2.0.5 (location: C:\Users\freed\Documents\New project\Library\PackageCache\com.unity.ext.nunit@d8c07649098d)
+[Package Manager] com.unity.textmeshpro is deprecated: This package is no longer supported. TextMeshPro functionalities are now included in the com.unity.ugui package. To continue using them, consider adding it to your project dependencies.
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.03 seconds
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.12f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/freed/Documents/New project
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.12f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.12f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1300b0aE.dag.json" "Library/Bee/1300b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/Users/freed/Documents/New project
+ExitCode: 4 Duration: 6s263ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1300b0aE-inputdata.json
+[488/608    2s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[489/608    5s] Csc Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\WordSpinAlpha\Scripts\Core\EconomyManager.cs(23,21): warning CS0162: Unreachable code detected
+
+Assets\WordSpinAlpha\Scripts\Presentation\GameplayHudPresenter.cs(604,40): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\ThemeRuntimeController.cs(342,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\ThemeRuntimeController.cs(355,32): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\GameplayPausePresenter.cs(27,34): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\GameplayPausePresenter.cs(74,47): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\GameplayPausePresenter.cs(80,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\GameplayPausePresenter.cs(139,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(80,29): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(85,32): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\FailModalPresenter.cs(256,26): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\FailModalPresenter.cs(291,17): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(96,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(101,33): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(110,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(112,41): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(123,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(128,29): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(184,51): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\GameplayHudPresenter.cs(410,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(257,39): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\DebugRewardedAdPresenter.cs(135,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Services\ContentService.cs(107,66): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Services\ContentService.cs(112,68): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\ImpactFeedbackController.cs(209,34): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\Pin.cs(52,28): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\MobileRuntimeController.cs(73,33): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Core\GameManager.cs(565,51): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\LevelFlowController.cs(191,52): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\PinLauncher.cs(65,28): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\PinLauncher.cs(70,31): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\StorePresenter.cs(286,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Presentation\HubPresenter.cs(699,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Presentation\RotatorPlaquePresenter.cs(100,41): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\SceneBootstrap.cs(35,17): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\SessionManager.cs(24,29): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Core\PinLauncher.cs(203,30): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\MainMenuPresenter.cs(465,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Presentation\ResultPresenter.cs(365,17): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Core\SessionManager.cs(57,29): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\RotatorPlaquePresenter.cs(349,35): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\RotatorPlaquePresenter.cs(420,40): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Presentation\LevelPathMapView.cs(858,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Presentation\ButtonPressEffect.cs(40,27): warning CS0414: The field 'ButtonPressEffect._pressing' is assigned but its value is never used
+
+Assets\WordSpinAlpha\Scripts\Presentation\ButtonPressEffect.cs(38,27): warning CS0414: The field 'ButtonPressEffect._targetBrightness' is assigned but its value is never used
+
+Assets\WordSpinAlpha\Scripts\Presentation\ButtonPressEffect.cs(34,27): warning CS0414: The field 'ButtonPressEffect._targetScale' is assigned but its value is never used
+*** Tundra requires additional run (6.16 seconds), 2 items updated, 487 evaluated
+ExitCode: 0 Duration: 9s512ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.12f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1300b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/freed/Documents/New project
+ExitCode: 0 Duration: 11s
+Finished compiling graph: 611 nodes, 9808 flattened edges (8016 ToBuild, 86 ToUse), maximum node priority 684
+[489/608    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[601/608    1s] Csc Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\WordSpinAlpha\Scripts\Editor\AmbientPulseTuningWindow.cs(105,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\MobileRuntimeTuningWindow.cs(130,20): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\FeelVisualTuningWindow.cs(93,33): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\FeelVisualTuningWindow.cs(102,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(80,56): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(107,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(113,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(136,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(143,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(123,35): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\ThemePackagePreviewWindow.cs(47,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaUnifiedEditorWindow.cs(214,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(119,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(146,90): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(154,34): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(161,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\RotatorRhythmTuningWindow.cs(126,37): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\KeyboardLayoutTuningWindow.cs(260,43): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Editor\KeyboardLayoutTuningWindow.cs(281,49): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(144,28): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(170,35): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\ThemePackagePreviewWindow.cs(140,59): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\RotatorRhythmTuningWindow.cs(150,37): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(195,28): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaUnifiedEditorWindow.cs(326,46): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(182,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(209,30): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(117,28): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(118,26): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(119,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(120,23): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(121,22): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(122,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(123,27): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(40,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(46,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(52,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(58,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(64,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(78,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(248,90): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(258,34): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(267,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(87,57): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(99,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(113,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(133,48): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(139,44): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(145,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(151,38): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(157,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(163,46): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(169,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(180,46): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(317,20): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(196,45): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorUiTuningUtility.cs(79,51): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorUiTuningUtility.cs(79,85): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(205,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\RotatorRhythmTuningWindow.cs(276,37): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(151,44): warning CS0618: 'PlayerSettings.GetApplicationIdentifier(BuildTargetGroup)' is obsolete: 'Use GetApplicationIdentifier(NamedBuildTarget buildTarget) instead'
+
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(223,44): warning CS0618: 'PlayerSettings.GetApplicationIdentifier(BuildTargetGroup)' is obsolete: 'Use GetApplicationIdentifier(NamedBuildTarget buildTarget) instead'
+
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(236,21): warning CS0618: 'PlayerSettings.SetApplicationIdentifier(BuildTargetGroup, string)' is obsolete: 'Use SetApplicationIdentifier(NamedBuildTarget buildTarget, string identifier) instead'
+
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(281,50): warning CS0618: 'PlayerSettings.GetApplicationIdentifier(BuildTargetGroup)' is obsolete: 'Use GetApplicationIdentifier(NamedBuildTarget buildTarget) instead'
+
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(305,21): warning CS0618: 'PlayerSettings.SetApplicationIdentifier(BuildTargetGroup, string)' is obsolete: 'Use SetApplicationIdentifier(NamedBuildTarget buildTarget, string identifier) instead'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaSceneBuilder.cs(1030,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaContentEditorWindow.cs(1049,51): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaSceneBuilder.cs(1471,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaSceneBuilder.cs(1771,463): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+[602/608    7s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Assembly-CSharp.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp.dll, with 157 defines and 282 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[603/608    2s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.dll, with 155 defines and 317 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[604/608    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[605/608    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[606/608    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[607/608    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (11.20 seconds), 8 items updated, 608 evaluated
+Assets\WordSpinAlpha\Scripts\Editor\AmbientPulseTuningWindow.cs(105,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\MobileRuntimeTuningWindow.cs(130,20): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\FeelVisualTuningWindow.cs(93,33): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\FeelVisualTuningWindow.cs(102,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(80,56): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(107,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(113,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(136,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\QuestionFailFlowTuningWindow.cs(143,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(123,35): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\ThemePackagePreviewWindow.cs(47,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaUnifiedEditorWindow.cs(214,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(119,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(146,90): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(154,34): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(161,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\RotatorRhythmTuningWindow.cs(126,37): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\KeyboardLayoutTuningWindow.cs(260,43): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\WordSpinAlpha\Scripts\Editor\KeyboardLayoutTuningWindow.cs(281,49): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(144,28): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(170,35): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\ThemePackagePreviewWindow.cs(140,59): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\RotatorRhythmTuningWindow.cs(150,37): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\SlotHitTuningWindow.cs(195,28): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaUnifiedEditorWindow.cs(326,46): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(182,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(209,30): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(117,28): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(118,26): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(119,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(120,23): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(121,22): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(122,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\UiSurfaceTuningWindow.cs(123,27): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(40,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(46,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(52,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(58,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(64,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(78,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(248,90): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(258,34): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(267,29): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(87,57): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(99,51): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(113,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(133,48): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(139,44): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(145,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(151,38): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(157,36): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(163,46): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(169,42): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(180,46): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\PinInputTuningWindow.cs(317,20): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(196,45): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorUiTuningUtility.cs(79,51): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorUiTuningUtility.cs(79,85): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaEditorRuntimeRefreshUtility.cs(205,40): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\RotatorRhythmTuningWindow.cs(276,37): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(151,44): warning CS0618: 'PlayerSettings.GetApplicationIdentifier(BuildTargetGroup)' is obsolete: 'Use GetApplicationIdentifier(NamedBuildTarget buildTarget) instead'
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(223,44): warning CS0618: 'PlayerSettings.GetApplicationIdentifier(BuildTargetGroup)' is obsolete: 'Use GetApplicationIdentifier(NamedBuildTarget buildTarget) instead'
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(236,21): warning CS0618: 'PlayerSettings.SetApplicationIdentifier(BuildTargetGroup, string)' is obsolete: 'Use SetApplicationIdentifier(NamedBuildTarget buildTarget, string identifier) instead'
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(281,50): warning CS0618: 'PlayerSettings.GetApplicationIdentifier(BuildTargetGroup)' is obsolete: 'Use GetApplicationIdentifier(NamedBuildTarget buildTarget) instead'
+Assets\WordSpinAlpha\Scripts\Editor\AndroidDeviceBuildTools.cs(305,21): warning CS0618: 'PlayerSettings.SetApplicationIdentifier(BuildTargetGroup, string)' is obsolete: 'Use SetApplicationIdentifier(NamedBuildTarget buildTarget, string identifier) instead'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaSceneBuilder.cs(1030,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaContentEditorWindow.cs(1049,51): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaSceneBuilder.cs(1471,13): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\WordSpinAlpha\Scripts\Editor\WordSpinAlphaSceneBuilder.cs(1771,463): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+AssetDatabase: script compilation time: 28.863434s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  7.034 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in 12.275 seconds
+Domain Reload Profiling: 19283ms
+	BeginReloadAssembly (877ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (48ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (262ms)
+	RebuildCommonClasses (149ms)
+	RebuildNativeTypeToScriptingClass (66ms)
+	initialDomainReloadingComplete (123ms)
+	LoadAllAssembliesAndSetupDomain (5792ms)
+		LoadAssemblies (5594ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (604ms)
+			TypeCache.Refresh (467ms)
+				TypeCache.ScanAssembly (430ms)
+			BuildScriptInfoCaches (96ms)
+			ResolveRequiredComponents (33ms)
+	FinalizeReload (12276ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (11563ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (140ms)
+			SetLoadedEditorAssemblies (9ms)
+			BeforeProcessingInitializeOnLoad (564ms)
+			ProcessInitializeOnLoadAttributes (10421ms)
+			ProcessInitializeOnLoadMethodAttributes (400ms)
+			AfterProcessingInitializeOnLoad (29ms)
+			EditorAssembliesLoaded (1ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (23ms)
+Start importing Assets/WordSpinAlpha/Scenes/HubPreview.unity using Guid(2df91036cd2ff1140b977cec7fd7daae) (DefaultImporter) -> (artifact id: 'a49b053c5b3efc68241679939dc2abbf') in 0.0495478 seconds
+Start importing Packages/com.unity.render-pipelines.core/Tests/Editor/UnifiedRayTracing/TraceRays.urtshader using Guid(1142bbad8b9e8c44c83a9775ff120d37) (ScriptedImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.13 seconds
+ -> (artifact id: '928cafef662de486cd2aeadb46f1d591') in 0.5399313 seconds
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/RendererFeatures/SurfaceCacheGI/SurfaceCacheCore/RisEstimation.urtshader using Guid(713f6141bd66a134383b787f2eaa7c11) (ScriptedImporter) -> (artifact id: 'f623c1bfc0803049f947959ee22b1101') in 0.6726621 seconds
+Start importing Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/RenderingLayerMask/TraceRenderingLayerMask.urtshader using Guid(94a070d33e408384bafc1dea4a565df9) (ScriptedImporter) -> (artifact id: 'f94bb639553cc129a885310977c482b2') in 0.4920299 seconds
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/RendererFeatures/SurfaceCacheGI/SurfaceCacheCore/UniformEstimation.urtshader using Guid(94a39d12848d8d64ca962a72b74e7c50) (ScriptedImporter) -> (artifact id: '20823c9d006f5957572c8e98f8ce21bb') in 0.1101748 seconds
+Start importing Packages/com.unity.render-pipelines.core/Tests/Editor/UnifiedRayTracing/TraceTransparentRays.urtshader using Guid(6513c3b892e933c4f8d00c19d5c47532) (ScriptedImporter) -> (artifact id: 'da2f68fee043eff05a06c5f1d4149b38') in 0.0704712 seconds
+Start importing Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/DynamicGI/DynamicGISkyOcclusion.urtshader using Guid(5a2a534753fbdb44e96c3c78b5a6999d) (ScriptedImporter) -> (artifact id: '7329218e8fcc2aa148ba2a617759791b') in 0.109052 seconds
+Start importing Packages/com.unity.render-pipelines.core/Tests/Editor/UnifiedRayTracing/TraceRaysAndFetchAttributes.urtshader using Guid(fbc59f55df2416344b008dc23753cae2) (ScriptedImporter) -> (artifact id: 'e8f9709b6eb67231dec856a07a1e1507') in 0.1047667 seconds
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/RendererFeatures/SurfaceCacheGI/SurfaceCacheCore/RestirCandidateTemporal.urtshader using Guid(ad3a9f9982f8c4f4a839a78955e78458) (ScriptedImporter) -> (artifact id: '7b49a9b9da8f7eee8e8503c89c5db0c2') in 0.2639572 seconds
+Start importing Packages/com.unity.render-pipelines.core/Editor/Lighting/ProbeVolume/VirtualOffset/TraceVirtualOffset.urtshader using Guid(ff2cbab5da58bf04d82c5f34037ed123) (ScriptedImporter) -> (artifact id: 'f4faaa93783fdbe1324215f7411d70cd') in 0.1692095 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=1fa7d6189282f674d87d9992bb4844f5): Total: 56.565 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=10 (actual=10, local cache=0, cache server=0)
+		Asset DB Process Time: managed=17 ms, native=17606 ms
+		Asset DB Callback time: managed=2238 ms, native=684 ms
+		Scripting: domain reloads=1, domain reload time=7035 ms, compile time=28872 ms, other=109 ms
+		Project Asset Count: scripts=806, non-scripts=1832
+		Asset File Changes: new=0, changed=4, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 83.077ms
+	ApplyChangesToAssetFolders: 1.415ms
+	Scan: 250.193ms
+	OnSourceAssetsModified: 2.612ms
+	CategorizeAssetsWithTransientArtifact: 1622.179ms
+	ProcessAssetsWithTransientArtifactChanges: 198.334ms
+	CategorizeAssets: 259.939ms
+	ImportOutOfDateAssets: 14911.544ms (-16587.381ms without children)
+		ImportManagerImport: 2621.485ms (9.278ms without children)
+			ImportInProcess: 2610.769ms
+			UpdateCategorizedAssets: 1.438ms
+		CompileScripts: 28872.411ms
+		ReloadNativeAssets: 0.043ms
+		UnloadImportedAssets: 1.949ms
+		ReloadImportedAssets: 0.004ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.887ms
+		InitializingProgressBar: 0.017ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.002ms
+		OnDemandSchedulerStart: 1.127ms
+	PostProcessAllAssets: 2842.124ms
+	Hotreload: 4.120ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.010ms
+	UnloadStreamsBegin: 6.036ms
+	PersistCurrentRevisions: 1.238ms
+	UnloadStreamsEnd: 0.002ms
+	GenerateScriptTypeHashes: 14.903ms
+	Untracked: 36381.981ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 17.029ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-New project
+[Licensing::Client] Successfully resolved entitlement details
+Unloading 129 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3332 unused Assets / (4.9 MB). Loaded Objects now: 4220.
+Memory consumption went from 180.0 MB to 175.1 MB.
+Total: 71.681600 ms (FindLiveObjects: 1.301700 ms CreateObjectMapping: 1.460700 ms MarkObjects: 64.251200 ms  DeleteObjects: 4.662300 ms)
+
+Asset Pipeline Refresh (id=59026e0793224b640842bf31a5dd7d6d): Total: 0.161 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 1 unused Assets / (1.0 KB). Loaded Objects now: 4225.
+Memory consumption went from 152.2 MB to 152.2 MB.
+Total: 63.351500 ms (FindLiveObjects: 0.512400 ms CreateObjectMapping: 0.750300 ms MarkObjects: 62.003200 ms  DeleteObjects: 0.082200 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+Start importing Assets/WordSpinAlpha/Generated/Prefabs/LevelHubPreview.prefab using Guid(dee8391bc90a3a444876fa111006702b) (PrefabImporter) -> (artifact id: 'f9a55074871862e08b2335592fc6107e') in 0.0523135 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=ca51d98b1398d75489bcdf19aca7da56): Total: 0.261 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/WordSpinAlpha/Scenes/HubPreview.unity using Guid(2df91036cd2ff1140b977cec7fd7daae) (DefaultImporter) -> (artifact id: 'b986d7d561ed60f7db25a4457245f8f7') in 0.0037094 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=963f87890567a9847b7d7d1db557f867): Total: 0.177 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=41c8bf23660f01a41896310d1561fae4): Total: 0.046 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+[WordSpinAlpha] Level Hub Preview sahnesi olusturuldu. HubPreview.unity dosyasini Scenes klasoründen acabilirsin.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+WordSpinAlpha.Editor.WordSpinAlphaSceneBuilder:RebuildLevelHubPreviewScene () (at Assets/WordSpinAlpha/Scripts/Editor/WordSpinAlphaSceneBuilder.cs:83)
+
+(Filename: Assets/WordSpinAlpha/Scripts/Editor/WordSpinAlphaSceneBuilder.cs Line: 83)
+
+Batchmode quit successfully invoked - shutting down!
+Killing ADB server in 0,239806 seconds.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-neverbest-6000.3.12-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-neverbest-6000.3.12 channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+Exiting batchmode successfully now!
+Exiting without the bug reporter. Application will terminate with return code 0

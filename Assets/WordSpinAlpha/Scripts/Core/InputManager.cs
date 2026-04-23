@@ -14,9 +14,11 @@ namespace WordSpinAlpha.Core
         private Vector2 _swipeStart;
         private bool _trackingSwipe;
         private KeyboardConfigDefinition _keyboardConfig;
+        private bool _gameplayInputActive = true;
 
         public event Action<char, Vector3> LetterPressed;
         public event Action SwipeUpRequested;
+        public bool CanAcceptGameplayInput => _gameplayInputActive;
 
         protected override void Awake()
         {
@@ -31,6 +33,11 @@ namespace WordSpinAlpha.Core
 
         private void Update()
         {
+            if (!_gameplayInputActive)
+            {
+                return;
+            }
+
             HandleKeyboardInput();
             HandleSwipeInput();
         }
@@ -70,7 +77,21 @@ namespace WordSpinAlpha.Core
 
         public void ProcessLetterButton(char letter, Vector3 worldPosition)
         {
+            if (!_gameplayInputActive)
+            {
+                return;
+            }
+
             LetterPressed?.Invoke(char.ToUpperInvariant(letter), worldPosition);
+        }
+
+        public void SetGameplayInputActive(bool active)
+        {
+            _gameplayInputActive = active;
+            if (!active)
+            {
+                _trackingSwipe = false;
+            }
         }
 
         private void HandleKeyboardInput()

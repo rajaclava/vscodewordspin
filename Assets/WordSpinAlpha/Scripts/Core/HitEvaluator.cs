@@ -9,8 +9,8 @@ namespace WordSpinAlpha.Core
 
         public HitData EvaluateImpact(Slot slot, char letter, Vector3 pinTipWorldPoint, DifficultyProfileDefinition profile, DifficultyTierDefinition tier)
         {
-            float perfectScale = profile != null ? Mathf.Clamp(profile.perfectAngle / 7.5f, 0.82f, 1.22f) : 1f;
-            float goodScale = profile != null ? Mathf.Clamp(profile.toleranceAngle / 12f, 1.05f, 1.75f) : 1.2f;
+            float perfectScale = profile != null ? Mathf.Clamp(profile.perfectAngle / 6.5f, 0.70f, 1.30f) : 1f;
+            float goodScale = profile != null ? Mathf.Clamp(profile.toleranceAngle / 15f, 0.85f, 1.35f) : 1f;
             float nearMissScale = goodScale;
 
             if (tier != null)

@@ -193,12 +193,12 @@ namespace WordSpinAlpha.Core
         public bool IsInsidePerfectZone(Vector3 worldPoint, float scale = 1f)
         {
             Vector2 radialPoint = GetRadialHitPoint(worldPoint);
-            if (!IsInsideHitBand(radialPoint, scale))
-            {
-                return false;
-            }
-
-            return Mathf.Abs(radialPoint.x) <= (perfectZoneSize.x * scale) * 0.5f;
+            float halfWidth = (perfectZoneSize.x * scale) * 0.5f;
+            float edgeDepth = GetInnerEdgeDepth(scale);
+            float zoneHeight = Mathf.Max(0.02f, perfectZoneSize.y * scale);
+            float minDepth = edgeDepth - zoneHeight;
+            float maxDepth = edgeDepth + 0.02f;
+            return Mathf.Abs(radialPoint.x) <= halfWidth && radialPoint.y >= minDepth && radialPoint.y <= maxDepth;
         }
 
         public bool IsInsideMagnetZone(Vector3 worldPoint, float scale = 1f)

@@ -217,5 +217,56 @@ namespace WordSpinAlpha.Core
             _goodHits = 0;
             PublishScoreChanged(0, 0, 0, 0, HitResultType.Tolerated);
         }
+
+        public void PopulateSessionSnapshot(SessionSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                return;
+            }
+
+            snapshot.currentScoreTotal = _totalScore;
+            snapshot.currentHitScore = _hitScore;
+            snapshot.currentPerfectStreak = _perfectStreak;
+            snapshot.currentMultiplier = _currentMultiplier;
+            snapshot.currentBestMultiplier = _bestMultiplier;
+            snapshot.currentMistakeCount = _mistakeCount;
+            snapshot.currentPerfectHits = _perfectHits;
+            snapshot.currentGoodHits = _goodHits;
+            snapshot.currentLevelElapsedSeconds = Mathf.Max(0f, Time.unscaledTime - _levelStartedAt);
+            snapshot.currentTargetShownElapsedSeconds = _targetShownAt >= 0f
+                ? Mathf.Max(0f, Time.unscaledTime - _targetShownAt)
+                : -1f;
+            snapshot.currentLastSuccessfulHitElapsedSeconds = _lastSuccessfulHitAt > 0f
+                ? Mathf.Max(0f, Time.unscaledTime - _lastSuccessfulHitAt)
+                : -1f;
+        }
+
+        public void RestoreSession(SessionSnapshot snapshot)
+        {
+            if (snapshot == null || !snapshot.hasActiveSession)
+            {
+                return;
+            }
+
+            _activeLevelId = snapshot.levelId;
+            _totalScore = Mathf.Max(0, snapshot.currentScoreTotal);
+            _hitScore = Mathf.Max(0, snapshot.currentHitScore);
+            _perfectStreak = Mathf.Max(0, snapshot.currentPerfectStreak);
+            _currentMultiplier = Mathf.Max(1f, snapshot.currentMultiplier);
+            _bestMultiplier = Mathf.Max(_currentMultiplier, snapshot.currentBestMultiplier);
+            _mistakeCount = Mathf.Max(0, snapshot.currentMistakeCount);
+            _perfectHits = Mathf.Max(0, snapshot.currentPerfectHits);
+            _goodHits = Mathf.Max(0, snapshot.currentGoodHits);
+            _levelStartedAt = Time.unscaledTime - Mathf.Max(0f, snapshot.currentLevelElapsedSeconds);
+            _targetShownAt = snapshot.currentTargetShownElapsedSeconds >= 0f
+                ? Time.unscaledTime - snapshot.currentTargetShownElapsedSeconds
+                : Time.unscaledTime;
+            _lastSuccessfulHitAt = snapshot.currentLastSuccessfulHitElapsedSeconds >= 0f
+                ? Time.unscaledTime - snapshot.currentLastSuccessfulHitElapsedSeconds
+                : _levelStartedAt;
+
+            PublishScoreChanged(0, 0, 0, 0, HitResultType.Tolerated);
+        }
     }
 }

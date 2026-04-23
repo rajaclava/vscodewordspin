@@ -1003,3 +1003,326 @@ Bu dokuman ikinci bir AI modeline verildiginde, modeli dogrudan su sorular uzeri
 - testler nereden baslamali
 - yeni mekanik eklerken hangi sinifa dokunmak daha dogru
 - store/billing entegrasyonu nasil gecirilmeli
+
+---
+
+## 08.04.2026 - Oyun Ici Akis Guncel Durum Notu
+
+08.04.2026 itibariyla sahne ve navigasyon omurgasi asagidaki gibi kabul edilmelidir.
+
+### Sahne rolleri
+
+- `Boot`
+  - ilk giris ve sahne acilis noktasi
+- `MainMenu`
+  - artik tam ana menu degil
+  - dil secimi ve `Oyna` giris ekrani
+- `Hub`
+  - oyunun asil merkez sahnesi
+  - seviye secim yolu
+  - alt menu sekmeleri
+  - gorev / profil / magaza gibi meta ekranlar
+- `Gameplay`
+  - aktif level oynanisi
+  - fail / continue / info card / result akisi
+
+### Hub akisi
+
+- `MainMenuPresenter`
+  - `Oyna` seciminden sonra `SceneNavigator.OpenMainMenu()` yoluyla artik `Hub` acilir
+- `HubPresenter`
+  - secili level odagini
+  - alt menu page gecislerini
+  - level resume / restart popup'ini
+  yonetir
+
+### Gameplay pause akisi
+
+- `GameSceneNavigationButtons.OpenMainMenu()`
+  - artik direkt sahne degistirmez
+  - once `GameplayPausePresenter.OpenPause()` calisir
+- `GameplayPausePresenter`
+  - oyunu `Time.timeScale = 0` ile dondurur
+  - gameplay input'unu kapatir
+  - popup uzerinden:
+    - `Devam Et`
+    - `Ana Merkeze Don`
+    seceneklerini sunar
+
+### Resume / restart akisi
+
+- gameplay icinden hub'a donerken:
+  - `SessionManager.TakeSnapshot()`
+  - `SaveManager.FlushNow()`
+  zinciri calisir
+- oyuncu hub'da ayni levele tekrar bastiginda:
+  - aktif session varsa popup gorur
+  - `Devam Et` maliyetsiz resume yapar
+  - `Bastan Basla` leveli sifirdan acar
+
+### Kritik mimari not
+
+Bu akisin hassas noktasi sudur:
+
+- pause popup
+- fail modal
+- info card
+- result popup
+- resume / restart popup
+
+hepsi input ve session state uzerinden birbirini etkileyebilir.
+
+Bu nedenle bu alanlarda degisiklik yaparken su siniflar birlikte degerlendirilmelidir:
+
+- `SceneNavigator`
+- `GameManager`
+- `GameplayPausePresenter`
+- `HubPresenter`
+- `MainMenuPresenter`
+- `SaveManager`
+- `SessionManager`
+
+---
+
+## 08.04.2026 - Tasarim Asset Aktarim Notu
+
+Hub ve benzeri meta ekranlar icin tasarimdan Unity'ye gecis modeli su sekilde dusunulmelidir:
+
+### Tek parca ekran modeli kullanilmayacak
+
+Tam ekran Stitch kompozisyonu, Unity'ye tek buyuk final PNG olarak alinmayacak.
+
+Neden:
+
+- safe area
+- localization
+- dinamik sayaçlar
+- badge ve popup davranislari
+- responsive panel kirilimlari
+
+bu modelde zorlasir.
+
+### Kor tercih edilen model
+
+Kompozisyon su 3 parcaya ayrilarak dusunulmeli:
+
+1. buyuk statik arka plan katmanlari
+2. ayri UI skin asset'leri
+3. Unity tarafinda dinamik kalan text / data / button component'leri
+
+### Hub icin somut ayrim
+
+Hub ekraninda:
+
+- yol ve buyuk dekoratif kompozisyon tasarimdan gelebilir
+- alt menu butonlari ayri skin asset olarak gelmelidir
+- level node'lar Unity tarafinda dinamik kalmalidir
+- level numarasi, enerji, coin, sure, badge gibi bilgiler Unity tarafinda uretilmelidir
+
+### Pratik teslim modeli
+
+Tasarimci tarafindan ilk teslim:
+
+- tek tam ekran kompozisyon
+
+Gelistirici tarafindan donulecek cıktı:
+
+- hangi parcalar ayri export edilecek
+- dosya adlari
+- PNG mi SVG mi
+- `9-slice` uygunlugu
+- hangi Unity objesine baglanacagi
+
+### Mimari etkisi
+
+Bu karar, presentation katmaninin skinlenebilir ama veri/logic acisindan Unity icinde kalmasi anlamina gelir. Bu sayede:
+
+- sahne/prefab yapisi korunur
+- tasarim hizli iterasyon yapabilir
+- editor ve live-config tarafinda metinler ve degerler sonradan degistirilebilir
+
+---
+
+## 19.04.2026 - MainMenu, HubPreview ve Level Hub Ray Editor Teknik Notu
+
+19 Nisan 2026 itibariyla UI/meta akista iki kritik katman netlesti:
+
+- tasarimli `MainMenu` artik runtime giris ekrani olarak oyun akisana baglandi
+- `HubPreview` artik yeni meta sayfalarin sandbox/test sahnesi olarak kabul edildi
+
+### Guncel sahne rolleri
+
+- `MainMenu`
+  - oyuncunun ilk gordugu giris yuzeyi
+  - dil secimi
+  - `OYNA` aksiyonu
+  - `OYNA` aksiyonu ile `Hub` sahnesine gecis
+- `HubPreview`
+  - production akisin parcasi degil
+  - yeni UI tasarimlari icin test sahnesi
+  - PNG katman kalite kontrolu
+  - level hub ray/path editor denemesi
+- `Hub`
+  - onaylanan hub/level secim akisinin production/meta merkezi
+  - oyuncu level secimi ve alt menu akisi
+
+### MainMenu play butonu teknik karari
+
+`OYNA` butonunda Unity `Button.onClick` tabanli gecikmeli davranis play hitbox icin kullanilmamalidir.
+
+Gecerli davranis:
+
+- input `PointerDown` aninda yakalanir
+- kisa basim efekti verilir
+- hitbox tekrar tiklamayi engellemek icin kapatilir
+- release animasyonu baslarken `Hub` gecisi tetiklenir
+
+Bu karar, oyuncunun tek tikla gecis hissini hizlandirir ama basim feedback'ini de korur.
+
+### MainMenu arka plan cover notu
+
+19 Nisan 2026 cihaz/editor kalite kontrolunde, kaynak arka plan PNG'si 9:16 portrait olsa bile MainMenu'de ust-alt bos bant kalabildigi tespit edildi.
+
+Teknik sebep, gorselin oranindan ziyade `Assets/WordSpinAlpha/Generated/Prefabs/MainMenuPngPreview.prefab` icindeki arka plan katmaninin sabit boyutta kalmasi ve `WordSpinAlphaSceneBuilder.cs` rebuild davranisinin ayni kaplamayi garanti etmemesiydi.
+
+Kalici kural:
+
+- tam ekran arka planlar prefabda cover mantigiyla bosluk birakmayacak sekilde boyutlanmali
+- builder ayni yerlesimi tekrar uretebilmeli
+- sadece PNG'nin 9:16 olmasi yeterli kabul edilmemeli
+- bu ayar MainMenu presentation katmaniyla sinirli tutulmali; gameplay, save, economy ve level sistemlerine dokunulmamali
+
+### Level Hub ray/path mimarisi
+
+Level secim yolu artik sadece kod icindeki sabit pozisyon dizisine bagli dusunulmemelidir. Yeni tasarimlarda yol arka plani degisecegi icin ray/path ayari editor uzerinden yapilmalidir.
+
+Ilgili dosyalar:
+
+- `Assets/WordSpinAlpha/Scripts/Presentation/LevelHubPreviewController.cs`
+- `Assets/WordSpinAlpha/Scripts/Editor/LevelHubPreviewControllerEditor.cs`
+- `Assets/WordSpinAlpha/Generated/Prefabs/LevelHubPreview.prefab`
+- `Assets/WordSpinAlpha/Scenes/HubPreview.unity`
+
+`LevelHubPreviewController` su verileri kendi component'i uzerinde serialize eder:
+
+- ray nokta pozisyonu
+- nokta scale degeri
+- nokta rotation degeri
+- nokta alpha degeri
+- drag hassasiyeti
+- snap hizi
+- toplam preview level sayisi
+
+Bu verinin component uzerinde tutulmasinin sebebi:
+
+- `HubPreview` sahnesi kopyalaninca ayarlar da beraber gider
+- ana Hub'a aktarimda editorun "hangi sahnedeyim?" diye harici state tutmasina gerek kalmaz
+- prefab instance override mantigi korunur
+- production entegrasyonunda ray verisi kaybolmaz
+
+### Editor kullanim mantigi
+
+Ray editoru teknik olarak `CustomEditor(typeof(LevelHubPreviewController))` seklinde calisir.
+
+Kullanim:
+
+1. `HubPreview` sahnesi acilir.
+2. Arka plan gorseli sahnede gorunur olur.
+3. `LevelHubPreviewController` olan obje secilir.
+4. Scene View uzerinde `R0`, `R1`, `R2` gibi ray noktalarinin handle'lari gorunur.
+5. Noktalar arka plan yolunun ustune suruklenir.
+6. Inspector'dan scale/rotation/alpha ince ayari yapilir.
+7. Controller `EditorRefresh()` ile node'lari aninda gunceller.
+
+Bu yapi, tasarim degistiginde kod degistirmeden sadece ray noktalariyla level yolunu yeniden hizalamayi saglar.
+
+### Handoff kurali
+
+Yeni bir yazilimci veya model level hub tasarimina dokunacaksa once su kurali uygulamalidir:
+
+- Arka plan degisti diye `LevelHubPreviewController` icinde yeni hard-coded pozisyon dizisi yazma.
+- Once `HubPreview` uzerinde ray noktalarini editor ile ayarla.
+- Ray ayari onaylanmadan ana `Hub` sahnesine promote etme.
+- Production `Hub` tarafina gecis yaparken ray verisinin controller/prefab instance uzerinde tasindigini dogrula.
+
+Bu karar alpha demo son fazinda teknik borcu azaltmak icin kabul edilmistir.
+
+## 21.04.2026 - HubPreview Level Hub Recovery Notu
+
+21 Nisan 2026'da level hub kutu orani duzeltmesi sirasinda `HubPreview` sahnesi kirlenmis, sahne kokunde orphan `NodeVisual` objeleri ve prefab instance override kirliligi olusmustur. Aynı gun yapilan recovery sonrasi dogrulanan teknik durum:
+
+- `Assets/WordSpinAlpha/Scripts/Presentation/LevelHubPreviewController.cs`
+  - hierarchy mutasyonu yapmaz
+  - sadece konum/scale/rotation/alpha ve label refresh sorumlulugu tasir
+- `Assets/WordSpinAlpha/Scripts/Editor/WordSpinAlphaSceneBuilder.cs`
+  - `LevelHubPreview` node gorsel mimarisini tek kaynakta toplar
+  - `NodeVisual` child modelini yeniden uretir
+  - temiz rebuild akisini saglar
+- `Assets/WordSpinAlpha/Scripts/Editor/HubPreviewSceneNormalizer.cs`
+  - sahne kokundeki orphan `NodeVisual` objelerini temizler
+
+Recovery sonrasi veri butunlugu:
+
+- `Assets/WordSpinAlpha/Generated/Prefabs/LevelHubPreview.prefab` temiz rebuild ile geri uretilmistir
+- `Assets/WordSpinAlpha/Scenes/HubPreview.unity` temiz rebuild ile tekrar kurulmustur
+- sahne kokunde orphan `NodeVisual` kalmamistir
+- kirli `m_AddedGameObjects` birikimi temizlenmistir
+
+Kalan is:
+
+- level kutulari gorunur durumdadir
+- kutu boyutu ilk hedefe yaklasmistir
+- fakat node altinda beyaz zemin/white plate gorunumu devam etmektedir
+
+Bu nedenle 21 Nisan 2026 itibariyla level hub problemi ikiye ayrilir:
+
+1. altyapi ve scene/prefab recovery:
+   - tamam
+2. node gorsel alt zemin temizligi:
+   - acik is
+
+Sonraki edit icin kesin sinir:
+
+- `LevelHubPreviewController` icine obje ureten, parent degistiren veya sibling sirasi degistiren kod eklenmeyecek
+- scene YAML regex ile toplu kesilip bicilmeyecek
+- ray/path editor verisi yeniden yazilmayacak
+- bir sonraki is yalnizca `NodeVisual` gorsel alani, sprite alpha ve node altindaki beyaz zemin kaynaginin presentation katmaninda temizlenmesi olacak
+
+## 21.04.2026 - White Plate Fix ve Rail Veri Kaybi Teshisi
+
+21 Nisan 2026'nin ilerleyen asamasinda beyaz zemin sorunu dosya ustunden dogrulandi:
+
+- `Assets/WordSpinAlpha/Scripts/Presentation/LevelHubPreviewController.cs`
+  - `SetNodeAlpha()` artik host `Image` bileşenini gizli tutar
+  - alpha yalnizca `Button.targetGraphic` uzerindeki `NodeVisual` ve label'a uygulanir
+- `Assets/WordSpinAlpha/Scripts/Editor/WordSpinAlphaSceneBuilder.cs`
+  - host `Image` gorunmez kalacak sekilde uretilir
+  - `Button.targetGraphic` `NodeVisual` olur
+- `Assets/WordSpinAlpha/Generated/Prefabs/LevelHubPreview.prefab`
+  - 7 host `LevelNode_*` `Image` kaydinin alpha degeri `0` olarak dogrulanmistir
+
+Bu asamada kalan teknik teshis:
+
+- ray editorunde yapilan kayitlar `HubPreviewSceneNormalizer` tarafindan bozulmaz
+- ray editorunde yapilan kayitlar `LevelHubPreviewControllerEditor` tarafinda dogrudan controller uzerine serialize edilir
+- asil kayip noktasi `Assets/WordSpinAlpha/Scripts/Editor/WordSpinAlphaSceneBuilder.cs` icindeki plain rebuild zinciridir:
+  - `RebuildLevelHubPreviewScene()`
+  - `BuildLevelHubPreviewScene()`
+
+Sebep:
+
+- `BuildLevelHubPreviewScene()` sahneyi sifirdan kurar
+- yeni sahne, `BuildLevelHubPreviewPrefab()` tarafindan uretilen prefabdan gelir
+- bu prefabdaki `railPoints` degerleri script varsayilanlaridir
+- dolayisiyla plain rebuild calistiginda sahne uzerindeki manuel ray edit ayari tasinmaz ve default raya donulmus gibi gorunur
+
+Kritik ayrim:
+
+- `RunLevelHubPreviewRepair()` state capture/apply mantigiyla mevcut scene controller'indaki `railPoints` verisini okuyup yeni instance'a geri yazar
+- `BuildLevelHubPreviewScene()` bunu yapmaz
+
+Kalici is akisi kurali:
+
+- ray edit ayari korunacaksa plain `RebuildLevelHubPreviewScene()` yolu kullanilmayacak
+- `HubPreview` node/presentation editlerinde scene sifirdan kurulmayacak
+- rebuild zorunluysa rail state once capture edilip sonra apply edilmis repair akisi kullanilacak

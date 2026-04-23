@@ -20,12 +20,12 @@ Guncel kararlar:
 - Birlesik editor, telemetry, hotfix ve web panel gecisi icin detayli risk ve sira plani ayri olarak `UNIFIED_EDITOR_TO_LIVEOPS_PLAN.md` icinde tutulur. Alpha demo suresince buyume riskleri bu yardimci plan dikkate alinarak yonetilecektir.
 - Market cikisina production-safe gecis, promo/gift omurgasi, billing/rewarded/pricing production provider gecisleri ve final release testi icin detayli plan ayri olarak `MARKET_RELEASE_READINESS_PLAN.md` icinde tutulur.
 
-## Tarih Bazli Ozet ve 06.04.2026 Konumu
+## Tarih Bazli Ozet ve 08.04.2026 Konumu
 
 Bu plan dosyasinda iki farkli tarih katmani vardir:
 
 - `03.04.2026 oncesi kurulu temel omurga`
-- `03.04.2026`, `04.04.2026` ve `06.04.2026` oturumlarinda acikca izlenen ve dokumante edilen isler
+- `03.04.2026`, `04.04.2026`, `06.04.2026` ve `08.04.2026` oturumlarinda acikca izlenen ve dokumante edilen isler
 
 Onemli not:
 
@@ -58,6 +58,36 @@ Onemli not:
 - live config ve web panel gecisine yonelik detayli mimari kılavuzu yazildi
 - plan dosyalari ile teknik kılavuzlar capraz referansli hale getirildi
 
+### 08.04.2026
+
+- ilk manuel bug sweep turu fiilen baslatildi
+- su maddeler manuel olarak cogu ltilip orijinal hipotez kapsami icinde sorun vermedi:
+  - `BUG-007`
+  - `BUG-009`
+  - `BUG-010`
+  - `BUG-011`
+  - `BUG-013`
+- ayni tarama sirasinda ek bir save/session turevi sorun yakalandi:
+  - aktif level puani restore edilmiyor, session geri gelse bile skor sifirdan basliyordu
+- sorun kapatildi:
+  - score state save/session snapshot zincirine eklendi
+  - restore sirasinda gameplay state ile birlikte score state de geri yuklenir hale getirildi
+- ayni turda `BUG-014` dogrulandi ve kapatildi:
+  - fail/continue modal ve info card acikken klavye inputu kapanmiyordu
+  - gameplay input state'i merkezi kapatilarak ve klavye tuslari `interactable = false` yapilarak cozuldu
+- ayni turda `BUG-027` manuel olarak denendi ve mevcut hipotez kapsami icinde sorun vermedi
+- ayni turda `BUG-029` dogrulandi ve kapatildi:
+  - progress tek global state yerine dil bazli ilerleme okuyacak sekilde genisletildi
+  - secili dil ilk kez oynaniyorsa level 1'den baslar
+  - daha once oynanmis dil kendi kaldigi levelden devam eder
+  - first-clear level odulu global birakildigi icin dil degistirerek ayni coin odulu tekrar kazanilamaz
+- ayni gun ikinci blok kontrolunde:
+  - `BUG-024` artik aktif bug adayi olmaktan cikti
+  - `BUG-025` ana hipotezi cogu ltulemedi
+  - ancak continue sonrasi menu/store donusunde klavye kilitlenmesi seklinde turev bir sorun bulundu ve kapatildi
+  - `BUG-026`, `BUG-034`, `BUG-068` manuel olarak denenip sorun vermedi
+  - `BUG-037` ve `BUG-040` final live-config / web gecisi tarafinda tekrar acilmak uzere ertelendi
+
 ### 06.04.2026 itibariyla tam olarak neredeyiz
 
 - `Faz 1-3` teknik olarak kuruldu
@@ -66,6 +96,45 @@ Onemli not:
 - editorler arasi veri uyumu ve apply zinciri icin stabilizasyon yapildi
 - `Faz C` giris kontrolu aktif; parity dogrulamasi ve bug sweep'e resmi gecis asamasindayiz
 - dolayisiyla proje, `editor kilidi tamamlanmis / bug sweep girisi acilmis` noktasindadir
+
+### 08.04.2026 itibariyla guncel konum
+
+- bug sweep fiilen baslamistir
+- ilk manuel sweep turunda save/session/restore cekirdeginin bir kismi kontrol edilmistir
+- `BUG-007`, `BUG-009`, `BUG-010`, `BUG-011`, `BUG-013` icin orijinal hipotezler bu turda cogu ltulememistir
+- buna karsin ayni aile icinde puan persistence regressioni bulunmus ve kapatilmistir
+- `BUG-014` ve `BUG-029` gercek bug olarak dogrulanip kapatilmistir
+- `BUG-027` bu turda cogu ltulememistir
+- `BUG-024` ve `BUG-025` ilk halleriyle aktif bug olarak kalmamistir
+- `BUG-025` testinde bulunan continue-sonrasi menu/store donus input kilidi sorunu kapatilmistir
+- `BUG-026`, `BUG-034`, `BUG-068` acik bug olarak kalmamistir
+- `BUG-037` ve `BUG-040` alpha oyuncu akisindan cok final liveops/release gecisine bagli riskler olarak ertelenmistir
+- ilk tur manuel bug cogu ltma islemleri tamamlanmistir
+- ikinci turdaki runtime-kritik maddeler de temizlenmistir
+- siradaki is, final oyun hazirligi ve web/live-config gecisine yaklasirken ertelenen architecture/release maddelerini yeniden acmaktir
+
+08.04.2026 sonu net karar:
+
+- alpha demo icin acil manuel cogu ltulmesi gereken runtime-kritik bug kalmamistir
+- ertelenen maddeler sunlardir:
+  - `BUG-037`
+  - `BUG-040`
+  - `BUG-043`
+  - `BUG-046`
+  - `BUG-064`
+  - `BUG-065`
+  - `BUG-066`
+  - `BUG-067`
+  - `BUG-074`
+  - `BUG-075`
+  - `BUG-076`
+  - `BUG-077`
+- bu maddeler alpha akisini bloklamadigi icin degil, asil anlamli test baglamlari daha sonra gelecegi icin ertelenmistir
+- dogru baglam:
+  - web/live-config gecisi
+  - production monetization pass
+  - release-safe build
+  - market oncesi final smoke ve optimizasyon turu
 
 ---
 
@@ -778,3 +847,308 @@ Bu plan dosyasi artik yalnizca "ne hedefleniyor" listesi degildir. Ayni zamanda:
 - market oncesi gecis icin teknik referans
 
 olarak tutulmalidir.
+
+---
+
+## 08.04.2026 - Hub ve Gameplay Navigasyon Akisi Guncellemesi
+
+08.04.2026 itibariyla oyun ici ana navigasyon kurgusu yeniden netlestirildi ve kod altyapisina islendi.
+
+### Guncel akisin ozet hali
+
+- `Boot` acilisinda oyuncu artik dogrudan eski ana menuye degil, giris ekrani rolu verilen `MainMenu` sahnesine gider.
+- Bu giris ekrani sadece:
+  - dil secimi
+  - oyuna basla
+  akisina hizmet eder.
+- `Oyna` secildiginde oyuncu artik direkt gameplay'e degil, yeni ana merkez olan `Hub` sahnesine gecer.
+- `Hub` sahnesi artik oyunun asagidaki ana meta yuzeylerini barindirir:
+  - yol tabanli seviye secimi
+  - gorevler
+  - profil
+  - magaza
+- Bu yuzeyler alt menuden gecilir ve ayni sahne icinde kayarak panel gecisi mantigiyla calisir.
+
+### Gameplay -> pause -> hub kurali
+
+- Gameplay ekranindaki sol alt navigasyon dugmesi artik direkt sahne gecisi yapmaz.
+- Bu dugme `Duraklat` davranisi verir.
+- Basildiginda:
+  - oyun donar
+  - gameplay arkada gorunur kalir
+  - popup acilir
+  - popup icinde `Devam Et` ve `Ana Merkeze Don` secenekleri gorunur
+- `Devam Et`:
+  - popup'i kapatir
+  - oyunu kaldigi yerden surdurur
+  - ceza uygulamaz
+- `Ana Merkeze Don`:
+  - aktif session snapshot alir
+  - diske flush eder
+  - oyuncuyu `Hub` sahnesine geri gonderir
+
+### Hub -> ayni levele geri donus kurali
+
+- Oyuncu `Hub` icindeyken aktif save/session bulunan levele tekrar basarsa artik direkt yeni giris yapilmaz.
+- Bunun yerine ikinci bir karar popup'i acilir:
+  - `Devam Et`
+  - `Bastan Basla`
+  - `Vazgec`
+- `Devam Et`:
+  - oyuncuyu ayni levele kaldigi yerden geri alir
+  - can veya enerji cezasi uygulamaz
+- `Bastan Basla`:
+  - leveli sifirdan acar
+  - normal yeniden giris / tekrar dene maliyet mantigini uygular
+
+### Bu degisikligin sebebi
+
+Bu guncelleme ile:
+
+- oyuncu yanlislikla hub'a dondugunde ilerlemesini kaybetmez
+- gameplay icindeki duraklat davranisi daha anlasilir hale gelir
+- ana merkez / alt menulu hub kurgusu daha tutarli bir omurgaya oturur
+- ileride store, profil, gorevler ve teklif kartlari ayni hub yapisinda buyutulebilir
+
+### Uygulama notu
+
+Bu akis artik alpha demo davranisinin parcasi kabul edilir. Bundan sonraki bug sweep, polish ve live-config planlari bu yeni omurga uzerinden ilerlemelidir.
+
+---
+
+## 08.04.2026 - Stitch Tasarimindan Unity'ye Gecis Is Akisi
+
+08.04.2026 itibariyla sayfa tasarimlarini Unity'ye aktarma konusunda asagidaki calisma modeli esas alinacaktir.
+
+### Ana karar
+
+- Tasarimci once ekrani `Stitch` icinde tam kompozisyon olarak hazirlar.
+- Ancak bu kompozisyon Unity'ye tek parca final ekran olarak alinmaz.
+- Unity'ye tasinacak yapi `hibrit` modeldir:
+  - buyuk statik gorsel katmanlar tasarimdan gelir
+  - butonlar, kartlar, ikonlar ve popup skinleri parcali gelir
+  - metin, sayaç, badge ve tum dinamik veriler Unity icinde uretilir
+
+### Neden tek parca ekran alinmayacak
+
+Cunku tek buyuk ekran PNG modeli:
+
+- responsive yapida zor kirilir
+- safe area uyumunu zorlastirir
+- localization alanlarini bozar
+- kucuk bir degisiklikte tum ekranin yeniden export edilmesine neden olur
+- alt menu, popup, teklif karti ve level node gibi interaktif yuzeylerin tekrar kullanimini zayiflatir
+
+### Neden her kucuk parcayi da tek tek export etmiyoruz
+
+Cunku bu da asset karmasina yol acar:
+
+- gereksiz dosya sayisi artar
+- klasor ve prefab bakimi zorlasir
+- atlas ve sprite yonetimi sertlesir
+- kucuk degisikliklerde is akisi yavaslar
+
+### Uygulanacak dogru model
+
+#### 1. Stitch teslimi
+
+Tasarim once tek tam ekran kompozisyon olarak gelir.
+
+Bu asamada geliştirici tarafinda yapilacak is:
+
+- mevcut Unity sahnesi ile tasarimi karsilastirmak
+- hangi alanlarin Unity'de dinamik kalmasi gerektigini ayirmak
+- hangi parcilarin ayrik PNG olarak alinacagini listelemek
+
+#### 2. Teknik export listesi
+
+Tam ekran tasarim geldikten sonra su tip teknik liste uretilir:
+
+- hangi alan tek buyuk arka plan katmani olacak
+- hangi alan ayri buton skin'i olacak
+- hangi alan ikon olarak ayri alinacak
+- hangi panel `9-slice` icin uygun
+- hangi alan Unity text ile doldurulacak
+- hangi alan hic export edilmeyecek ve Unity'de tekrar kurulacak
+
+#### 3. Tasarimdan alinabilecek katman turleri
+
+Stitch tasarimindan su katmanlar alinabilir:
+
+- `BG_Sky`
+- `BG_City`
+- `BG_Road`
+- `BG_ForegroundDecor`
+- `UI_TopBar_Skin`
+- `UI_BottomNav_Skin`
+- `CARD_LevelActive`
+- `CARD_GenericOffer`
+- `POPUP_Pause`
+- `POPUP_Resume`
+- `ICON_*`
+
+#### 4. Unity'de kalmasi zorunlu olan alanlar
+
+Su alanlar gorselin icine gomulmeyecek:
+
+- level numaralari
+- coin, enerji, ipucu sayilari
+- sureler ve countdown alanlari
+- dil degisen metinler
+- bildirim badge sayilari
+- popup baslik ve govde metinleri
+- market / teklif / gorev sayaclari
+
+Bu alanlar `TextMeshPro`, runtime badge ve veri bagli UI ile Unity icinde kalacak.
+
+### Level secim hub icin ozel kural
+
+Level secim hub ekraninda:
+
+- arka plan ve dekoratif buyuk yol kompozisyonu Stitch'ten gelebilir
+- ama level node'lari, aktif level odagi, progress, alt menu ve teklif butonlari Unity icinde ayrik kalacaktir
+
+Boylece:
+
+- level kaydirma
+- aktif node buyume/kuculme
+- odak degisimi
+- runtime bildirimler
+- popup ve navigation davranislari
+
+tasarimi tekrar bozmadan devam eder.
+
+### En pratik calisma sekli
+
+Bu projede kabul edilen hizli pipeline su sekildedir:
+
+1. tasarimci tam ekran Stitch kompozisyonu uretir
+2. bu kompozisyon gelistiriciye tek gorsel olarak gonderilir
+3. gelistirici mevcut Unity sahnesiyle karsilastirir
+4. gelistirici teknik export listesi verir
+5. tasarimci sadece istenen PNG/SVG parcilarini uretir
+6. Unity tarafinda bu parcilar mevcut sahne iskeletine skin olarak baglanir
+
+### Beklenen fayda
+
+Bu model ile:
+
+- gereksiz asset satin alma ihtiyaci azalir
+- tasarim hizli ilerler
+- Unity sahnesi bozulmadan skinlenir
+- daha sonra ayni ekran kolayca revize edilir
+- popup, alt menu, teklif karti ve ikon sistemi yeniden kullanilabilir hale gelir
+
+### Hatirlatma
+
+Bu akis, bundan sonra hub, pause popup, resume popup, store, profil ve benzeri tum yeni meta sayfalar icin varsayilan tasarimdan-Unity'ye gecis kuralidir.
+
+---
+
+## 19.04.2026 - Alpha Demo Son Faz Karari ve UI Akis Kilidi
+
+19 Nisan 2026 itibariyla alpha demo icin ana karar degisti: yeni buyuk sayfa veya yeni buyuk mekanik eklemek yerine, eklenen iki ana meta yuzeyin oyun akisi ile uyumlulugu test edilecek ve kucuk iterasyonlarla polish/fix yapilacak.
+
+### Bugunku ana karar
+
+- `MainMenu` giris ekrani artik tasarimli PNG katmanli yapiyla ana akisa alinmistir.
+- `Oyna` aksiyonu artik eski designless ana menuden degil, tasarimli MainMenu uzerinden `Hub` sahnesine gider.
+- `HubPreview` bundan sonra yeni UI sayfalarinin test/sandbox sahnesi olarak kalir.
+- `HubPreview` uzerinde onaylanan tasarimlar, kontrollu kopyalama/promote akisi ile ana oyun akisana alinir.
+- Onaylanmamis preview hicbir zaman dogrudan production sahneye gomulmez.
+
+### MainMenu icin bugun dogrulananlar
+
+- `HubPreview` tasarimi kopyalanarak runtime `MainMenu` sahnesine aktarildi.
+- Eski tasarimsiz MainMenu davranisi yerine tasarimli giris ekraninin kullanilmasi kabul edildi.
+- Dil secimi MainMenu uzerinden calismaya devam eder.
+- `OYNA` butonu `PointerDown` temelli hizli gecis davranisina alindi.
+- `OYNA` basim efekti korunur; buton basili kalmis gibi beklemez.
+- Gecis hissi: buton once kisa press feedback verir, release animasyonu baslarken `Hub` yuklemesi tetiklenir.
+- `Button.onClick` kaynakli gecikmeli click davranisi play hitbox icin kaldirildi.
+- 9:16 portrait arka plan PNG'lerinde bile bosluk kalabildigi dogrulandi; sorun kaynak gorsel oranindan degil, `MainMenuPngPreview.prefab` icindeki sabit arka plan boyutu ve builder yerlesim davranisindan kaynaklandi.
+- Arka plan katmani prefabda bosluk kalmayacak sekilde buyutuldu ve `WordSpinAlphaSceneBuilder.cs` ayni cover davranisina cekildi. Yeni MainMenu arka planlarinda sadece PNG oranini degil, prefab + builder kaplama sonucunu da kontrol et.
+
+### Level Hub icin bugun kurulan karar
+
+Level secim yolu artik sabit kodlu noktalara bagli kalmamali. Yeni arka plan tasarimi geldiginde:
+
+1. Arka plan once `HubPreview` sahnesine koyulur.
+2. `LevelHubPreviewController` secilir.
+3. Scene View uzerinde arka plan gorunurken ray noktalarinin yeri manuel duzenlenir.
+4. Level kutulari bu ray noktalarini takip eder.
+5. Scroll/drag test edilir.
+6. Onaylaninca bu sahne/prefab ana Hub akisana tasinir.
+
+Bu sistem icin:
+
+- `LevelHubPreviewController.cs`
+- `LevelHubPreviewControllerEditor.cs`
+
+katmanlari eklendi.
+
+Ray verisi gecici editor state'inde degil, controller component'i uzerinde serialize edilir. Bu nedenle `HubPreview` sahnesi kopyalanip ana Hub sahnesine tasindiginda ray ayarlari da beraber gider.
+
+### Alpha demo icin guncel disiplin
+
+Bu tarihten sonra alpha demo oncesi calisma sirasi:
+
+1. Yeni buyuk sayfa ekleme.
+2. Yeni buyuk mekanik ekleme.
+3. MainMenu -> Hub gecisini cihazda ve editor'de test et.
+4. HubPreview level yolu ray editoru ile level hub tasarimini oturt.
+5. Level hub onaylaninca ana Hub akisana kontrollu sekilde al.
+6. Kucuk gorsel/UX polish yap.
+7. Kritik akislari tekrar test et:
+   - ilk acilis
+   - dil secimi
+   - play
+   - hub
+   - level baslatma
+   - pause
+   - hub'a donus
+   - resume/restart
+   - fail/continue
+   - skor/save
+
+Bu notun amaci, alpha demo sonuna yaklasirken kapsam kaymasini engellemektir. Bundan sonra ana risk yeni sistem eklemek degil, mevcut calisan akisi fazla degistirerek bozmak olarak kabul edilir.
+
+## 21.04.2026 - HubPreview Level Hub Recovery Durumu
+
+21 Nisan 2026'da level hub tarafinda sadece kutu boyut/oran duzeltmesi hedeflenmisken, `HubPreview` sahnesi scene/prefab override kirliligi nedeniyle bozulmustur. Aynı gun icinde yapilan teknik recovery sonrasi su durum dogrulanmistir:
+
+- `HubPreview` sahnesi source assetlerden temiz rebuild ile geri kurulmustur
+- `LevelHubPreview.prefab` temiz kaynak olarak yeniden uretilmistir
+- orphan `NodeVisual` root objeleri temizlenmistir
+- kirli `m_AddedGameObjects` birikimi temizlenmistir
+- controller artik hierarchy mutasyonu yapmaz
+- node gorsel mimarisi builder tarafinda tek kaynakta tutulur
+
+Bu nedenle 21 Nisan itibariyla level hub konusu iki faza ayrilir:
+
+1. recovery ve veri butunlugu
+   - tamam
+2. son gorsel duzeltme
+   - acik
+
+Acik kalan tek dogrulanmis gorsel is:
+
+- level kutularinin altinda beyaz zemin gorunumu devam etmektedir
+
+Bu nedenle sonraki editte uygulanacak sinir:
+
+- scene recovery veya prefab recovery yeniden acilmayacak
+- ray/path editor verisi korunacak
+- `LevelHubPreviewController` icine hierarchy mutasyonu geri sokulmayacak
+- bir sonraki is yalnizca node altindaki beyaz zemin kaynagini temizlemek olacak
+
+Kalici is akisi guncellemesi:
+
+Bir preview sayfasinda sorun sadece oran/boyut veya gorsel uyum ise, edit sirasi sunun disina cikmayacak:
+
+1. asset alpha / bos canvas kontrolu
+2. prefab rect ve gorsel katman kontrolu
+3. builder uretim davranisi
+4. en son scene rebuild
+
+Dogrudan scene hierarchy veya YAML toplu regex mudahalesi yasaktir.

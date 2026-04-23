@@ -37,10 +37,7 @@ namespace WordSpinAlpha.Core
             {
                 if (resumeSavedSession && CanRestoreActiveSession())
                 {
-                    levelFlow.RestoreSession(SaveManager.Instance.Data.session);
-                    RestoreContinuationStateFromSession();
-                    EnterPendingFailResolutionStateIfNeeded();
-                    RestorePendingCompletionUi();
+                    RestoreGameplayStateFromSession(SaveManager.Instance.Data.session);
                     return;
                 }
 
@@ -54,14 +51,13 @@ namespace WordSpinAlpha.Core
 
             if (CanRestoreActiveSession())
             {
-                levelFlow.RestoreSession(SaveManager.Instance.Data.session);
-                RestoreContinuationStateFromSession();
-                EnterPendingFailResolutionStateIfNeeded();
-                RestorePendingCompletionUi();
+                RestoreGameplayStateFromSession(SaveManager.Instance.Data.session);
                 return;
             }
 
-            int progressLevelId = SaveManager.Instance != null ? SaveManager.Instance.Data.progress.highestUnlockedLevel : 1;
+            int progressLevelId = SaveManager.Instance != null
+                ? SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(SaveManager.Instance.Data.languageCode)
+                : 1;
             StartLevel(ResolvePlayableLevelId(progressLevelId), true);
         }
 
@@ -122,6 +118,8 @@ namespace WordSpinAlpha.Core
                 }
             }
 
+            GameplayPausePresenter.EnsureInScene();
+
             if (Object.FindObjectOfType<ImpactFeedbackController>() != null)
             {
                 return;
@@ -151,7 +149,13 @@ namespace WordSpinAlpha.Core
 
             if (SaveManager.Instance != null)
             {
-                SaveManager.Instance.Data.progress.highestUnlockedLevel = Mathf.Max(SaveManager.Instance.Data.progress.highestUnlockedLevel, levelId);
+                string languageCode = levelFlow != null ? levelFlow.LanguageCode : SaveManager.Instance.Data.languageCode;
+                int highestUnlockedLevel = SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(languageCode);
+                SaveManager.Instance.Data.progress.SetHighestUnlockedLevel(languageCode, Mathf.Max(highestUnlockedLevel, levelId));
+                if (levelFlow != null && levelFlow.CurrentLevel != null)
+                {
+                    SaveManager.Instance.Data.progress.SetActiveCampaignId(languageCode, levelFlow.CurrentLevel.campaignId);
+                }
                 ClearPendingCompletionState(SaveManager.Instance.Data.session);
                 SaveManager.Instance.Save();
             }
@@ -182,10 +186,7 @@ namespace WordSpinAlpha.Core
 
             if (CanRestoreActiveSession())
             {
-                levelFlow.RestoreSession(SaveManager.Instance.Data.session);
-                RestoreContinuationStateFromSession();
-                EnterPendingFailResolutionStateIfNeeded();
-                RestorePendingCompletionUi();
+                RestoreGameplayStateFromSession(SaveManager.Instance.Data.session);
                 return;
             }
 
@@ -330,6 +331,7 @@ namespace WordSpinAlpha.Core
         private void HandleQuestionCompleted()
         {
             PinLauncher.Instance?.ClearLoadedPin();
+            SetGameplayInputEnabled(false);
             GameEvents.RaiseQuestionCompleted(BuildQuestionContext());
             bool hasInfoCard = levelFlow.CurrentQuestion != null && !string.IsNullOrEmpty(levelFlow.CurrentQuestion.infoCardId);
             bool hasAnotherQuestion = levelFlow.CurrentLevel != null &&
@@ -338,6 +340,7 @@ namespace WordSpinAlpha.Core
 
             if (hasInfoCard)
             {
+                SetGameplayInputEnabled(false);
                 _pendingInfoCardId = levelFlow.CurrentQuestion.infoCardId;
                 _pendingQuestionAdvanceAfterInfoCard = hasAnotherQuestion;
                 _pendingLevelCompleteAfterInfoCard = !hasAnotherQuestion;
@@ -358,6 +361,7 @@ namespace WordSpinAlpha.Core
 
             if (hasAnotherQuestion && levelFlow.AdvanceQuestion())
             {
+                SetGameplayInputEnabled(true);
                 return;
             }
 
@@ -365,8 +369,10 @@ namespace WordSpinAlpha.Core
 
             if (SaveManager.Instance != null)
             {
-                SaveManager.Instance.Data.progress.lastCompletedLevel = context.levelId;
-                SaveManager.Instance.Data.progress.highestUnlockedLevel = Mathf.Max(SaveManager.Instance.Data.progress.highestUnlockedLevel, context.levelId + 1);
+                int highestUnlockedLevel = SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(context.languageCode);
+                SaveManager.Instance.Data.progress.SetLastCompletedLevel(context.languageCode, context.levelId);
+                SaveManager.Instance.Data.progress.SetHighestUnlockedLevel(context.languageCode, Mathf.Max(highestUnlockedLevel, context.levelId + 1));
+                SaveManager.Instance.Data.progress.SetActiveCampaignId(context.languageCode, context.campaignId);
                 SaveManager.Instance.Save();
             }
 
@@ -406,6 +412,7 @@ namespace WordSpinAlpha.Core
             snapshot.pendingQuestionAdvanceAfterInfoCard = _pendingQuestionAdvanceAfterInfoCard;
             snapshot.pendingLevelCompleteAfterInfoCard = _pendingLevelCompleteAfterInfoCard;
             snapshot.usedContinueInCurrentLevel = _usedContinueInCurrentLevel;
+            ScoreManager.Instance?.PopulateSessionSnapshot(snapshot);
         }
 
         private LevelContext BuildLevelContext()
@@ -516,6 +523,7 @@ namespace WordSpinAlpha.Core
         {
             if (InputManager.Instance != null)
             {
+                InputManager.Instance.SetGameplayInputActive(enabled);
                 InputManager.Instance.enabled = enabled;
             }
         }
@@ -547,12 +555,26 @@ namespace WordSpinAlpha.Core
 
             if (snapshot.pendingInfoCard && !string.IsNullOrEmpty(_pendingInfoCardId))
             {
+                SetGameplayInputEnabled(false);
                 GameEvents.RaiseInfoCardRequested(_pendingInfoCardId);
                 return;
             }
 
-            ResultPresenter resultPresenter = FindObjectOfType<ResultPresenter>();
-            resultPresenter?.RestorePendingResultFromSave();
+            if (snapshot.pendingLevelResult)
+            {
+                ResultPresenter resultPresenter = FindObjectOfType<ResultPresenter>();
+                if (resultPresenter != null)
+                {
+                    SetGameplayInputEnabled(false);
+                    resultPresenter.RestorePendingResultFromSave();
+                    return;
+                }
+            }
+
+            if (!_awaitingFailResolution)
+            {
+                SetGameplayInputEnabled(true);
+            }
         }
 
         private void PersistPendingCompletionState()
@@ -602,6 +624,20 @@ namespace WordSpinAlpha.Core
             {
                 GameEvents.RaiseLevelContinueUsed(false);
             }
+        }
+
+        private void RestoreGameplayStateFromSession(SessionSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                return;
+            }
+
+            levelFlow.RestoreSession(snapshot);
+            ScoreManager.Instance?.RestoreSession(snapshot);
+            RestoreContinuationStateFromSession();
+            EnterPendingFailResolutionStateIfNeeded();
+            RestorePendingCompletionUi();
         }
 
         private static bool CanRestoreActiveSession()

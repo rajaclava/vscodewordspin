@@ -12,6 +12,10 @@ namespace WordSpinAlpha.Editor
     {
         private const string BuildRoot = "Builds/Android";
         private const string ApkName = "WordSpinAlpha-AlphaDemo.apk";
+        private const string HubPreviewOnlyApkName = "WordSpinAlpha-HubPreviewOnly.apk";
+        private const string HubPreviewScenePath = "Assets/WordSpinAlpha/Scenes/HubPreview.unity";
+        private const string HubPreviewApplicationId = "com.wordspin.alpha.hubpreview";
+        private const string HubPreviewProductName = "WordSpin HubPreview";
 
         [MenuItem("Tools/WordSpin Alpha/Android/Build APK (Device Test)")]
         public static void BuildDeviceTestApk()
@@ -23,6 +27,18 @@ namespace WordSpinAlpha.Editor
         public static void BuildAndRunDeviceTestApk()
         {
             BuildInternal(autoRunPlayer: true);
+        }
+
+        [MenuItem("Tools/WordSpin Alpha/Android/Build HubPreview Only APK")]
+        public static void BuildHubPreviewOnlyApk()
+        {
+            BuildHubPreviewOnlyInternal(autoRunPlayer: false);
+        }
+
+        [MenuItem("Tools/WordSpin Alpha/Android/Build And Run HubPreview Only APK")]
+        public static void BuildAndRunHubPreviewOnlyApk()
+        {
+            BuildHubPreviewOnlyInternal(autoRunPlayer: true);
         }
 
         [MenuItem("Tools/WordSpin Alpha/Android/Check Connected USB Devices")]
@@ -132,7 +148,8 @@ namespace WordSpinAlpha.Editor
             {
                 if (autoRunPlayer)
                 {
-                    if (!TryInstallAndLaunchApk(adbPath, deviceSerial, absoluteApkPath, out string deployMessage))
+                    string applicationId = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.Android);
+                    if (!TryInstallAndLaunchApk(adbPath, deviceSerial, absoluteApkPath, applicationId, false, out string deployMessage))
                     {
                         EditorUtility.DisplayDialog(
                             "WordSpin Alpha",
@@ -158,7 +175,167 @@ namespace WordSpinAlpha.Editor
                 "OK");
         }
 
-        private static bool TryInstallAndLaunchApk(string adbPath, string deviceSerial, string apkPath, out string message)
+        private static void BuildHubPreviewOnlyInternal(bool autoRunPlayer)
+        {
+            if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), HubPreviewScenePath)))
+            {
+                ReportBuildFailure($"HubPreview sahnesi bulunamadi:\n{HubPreviewScenePath}");
+                return;
+            }
+
+            BuildApk(
+                new[] { HubPreviewScenePath },
+                HubPreviewOnlyApkName,
+                autoRunPlayer,
+                "HubPreview only",
+                HubPreviewApplicationId,
+                HubPreviewProductName);
+        }
+
+        private static void BuildApk(
+            string[] scenes,
+            string apkName,
+            bool autoRunPlayer,
+            string buildLabel,
+            string temporaryAndroidApplicationId = null,
+            string temporaryProductName = null)
+        {
+            if (scenes == null || scenes.Length == 0)
+            {
+                ReportBuildFailure("Build icin sahne bulunamadi.");
+                return;
+            }
+
+            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
+            {
+                bool switched = EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
+                if (!switched)
+                {
+                    ReportBuildFailure("Android build target'a gecilemedi.");
+                    return;
+                }
+            }
+
+            string absoluteBuildRoot = Path.Combine(Directory.GetCurrentDirectory(), BuildRoot);
+            Directory.CreateDirectory(absoluteBuildRoot);
+            string absoluteApkPath = Path.Combine(absoluteBuildRoot, apkName);
+
+            string originalApplicationId = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.Android);
+            string originalProductName = PlayerSettings.productName;
+            UIOrientation originalOrientation = PlayerSettings.defaultInterfaceOrientation;
+            bool originalAutorotatePortrait = PlayerSettings.allowedAutorotateToPortrait;
+            bool originalAutorotatePortraitUpsideDown = PlayerSettings.allowedAutorotateToPortraitUpsideDown;
+            bool originalAutorotateLandscapeLeft = PlayerSettings.allowedAutorotateToLandscapeLeft;
+            bool originalAutorotateLandscapeRight = PlayerSettings.allowedAutorotateToLandscapeRight;
+            bool useTemporaryIdentity = !string.IsNullOrWhiteSpace(temporaryAndroidApplicationId);
+
+            try
+            {
+                if (useTemporaryIdentity)
+                {
+                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, temporaryAndroidApplicationId);
+                    if (!string.IsNullOrWhiteSpace(temporaryProductName))
+                    {
+                        PlayerSettings.productName = temporaryProductName;
+                    }
+
+                    PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+                    PlayerSettings.allowedAutorotateToPortrait = true;
+                    PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
+                    PlayerSettings.allowedAutorotateToLandscapeLeft = false;
+                    PlayerSettings.allowedAutorotateToLandscapeRight = false;
+                    Debug.Log($"[WordSpinAlpha] {buildLabel} temporary Android id: {temporaryAndroidApplicationId}");
+                    Debug.Log($"[WordSpinAlpha] {buildLabel} temporary orientation: Portrait only");
+                }
+
+                string adbPath = null;
+                string deviceSerial = null;
+                if (autoRunPlayer)
+                {
+                    if (!TryGetAdbPath(out adbPath, out string adbError))
+                    {
+                        ReportBuildFailure(adbError);
+                        return;
+                    }
+
+                    if (!TryQueryConnectedDevice(adbPath, out deviceSerial, out string deviceError))
+                    {
+                        ReportBuildFailure(deviceError);
+                        return;
+                    }
+                }
+
+                BuildPlayerOptions buildOptions = new BuildPlayerOptions
+                {
+                    scenes = scenes,
+                    locationPathName = absoluteApkPath,
+                    target = BuildTarget.Android,
+                    targetGroup = BuildTargetGroup.Android,
+                    options = BuildOptions.Development
+                };
+
+                BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
+                BuildSummary summary = report.summary;
+                if (summary.result == BuildResult.Succeeded)
+                {
+                    string launchApplicationId = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.Android);
+                    if (autoRunPlayer)
+                    {
+                        if (!TryInstallAndLaunchApk(adbPath, deviceSerial, absoluteApkPath, launchApplicationId, true, out string deployMessage))
+                        {
+                            ReportBuildFailure($"{buildLabel} build tamamlandi ama cihaza gonderilemedi.\n\n{deployMessage}\n\nAPK:\n{absoluteApkPath}");
+                            return;
+                        }
+                    }
+
+                    Debug.Log($"[WordSpinAlpha] {buildLabel} Android APK hazir: {absoluteApkPath}");
+                    ReportBuildSuccess(
+                        autoRunPlayer
+                            ? $"{buildLabel} build tamamlandi ve APK USB cihaza yuklenip baslatildi.\n\nCihaz: {deviceSerial}\nPackage: {launchApplicationId}\nAPK: {absoluteApkPath}"
+                            : $"{buildLabel} build tamamlandi.\n\nPackage: {launchApplicationId}\nAPK: {absoluteApkPath}");
+                    return;
+                }
+
+                ReportBuildFailure($"{buildLabel} Android build basarisiz oldu.\nResult: {summary.result}\nErrors: {summary.totalErrors}");
+            }
+            finally
+            {
+                if (useTemporaryIdentity)
+                {
+                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, originalApplicationId);
+                    PlayerSettings.productName = originalProductName;
+                    PlayerSettings.defaultInterfaceOrientation = originalOrientation;
+                    PlayerSettings.allowedAutorotateToPortrait = originalAutorotatePortrait;
+                    PlayerSettings.allowedAutorotateToPortraitUpsideDown = originalAutorotatePortraitUpsideDown;
+                    PlayerSettings.allowedAutorotateToLandscapeLeft = originalAutorotateLandscapeLeft;
+                    PlayerSettings.allowedAutorotateToLandscapeRight = originalAutorotateLandscapeRight;
+                    AssetDatabase.SaveAssets();
+                    Debug.Log($"[WordSpinAlpha] Android id restored after {buildLabel}: {originalApplicationId}");
+                }
+            }
+        }
+
+        private static void ReportBuildSuccess(string message)
+        {
+            Debug.Log($"[WordSpinAlpha] {message}");
+            if (!Application.isBatchMode)
+            {
+                EditorUtility.DisplayDialog("WordSpin Alpha", message, "OK");
+            }
+        }
+
+        private static void ReportBuildFailure(string message)
+        {
+            Debug.LogError($"[WordSpinAlpha] {message}");
+            if (Application.isBatchMode)
+            {
+                throw new InvalidOperationException(message);
+            }
+
+            EditorUtility.DisplayDialog("WordSpin Alpha", message, "OK");
+        }
+
+        private static bool TryInstallAndLaunchApk(string adbPath, string deviceSerial, string apkPath, string applicationId, bool allowDowngrade, out string message)
         {
             if (!File.Exists(apkPath))
             {
@@ -170,13 +347,13 @@ namespace WordSpinAlpha.Editor
 
             RunProcess(adbPath, "start-server", out _, out _);
 
-            if (!RunProcess(adbPath, $"{serialArg}install -r \"{apkPath}\"", out int installExitCode, out string installOutput) || installExitCode != 0)
+            string installFlags = allowDowngrade ? "install -r -d" : "install -r";
+            if (!RunProcess(adbPath, $"{serialArg}{installFlags} \"{apkPath}\"", out int installExitCode, out string installOutput) || installExitCode != 0)
             {
-                message = $"ADB install basarisiz.\n\n{installOutput}";
+                message = $"ADB install basarisiz.\n\n{ExplainInstallFailure(installOutput)}";
                 return false;
             }
 
-            string applicationId = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.Android);
             if (string.IsNullOrWhiteSpace(applicationId))
             {
                 message = "Android application identifier bulunamadi. APK yuklendi ama oyun baslatilamadi.";
@@ -191,6 +368,34 @@ namespace WordSpinAlpha.Editor
 
             message = "APK yuklendi ve baslatildi.";
             return true;
+        }
+
+        private static string ExplainInstallFailure(string installOutput)
+        {
+            if (installOutput.Contains("INSTALL_FAILED_USER_RESTRICTED", StringComparison.OrdinalIgnoreCase))
+            {
+                return installOutput +
+                    "\n\nTelefon kurulumu guvenlik nedeniyle reddetti. Cozum:\n" +
+                    "- Telefonda USB hata ayiklama acik olmali.\n" +
+                    "- Gelistirici seceneklerinde 'USB uzerinden yukle' / 'Install via USB' acik olmali.\n" +
+                    "- Xiaomi/Redmi/POCO cihazlarda ayrica 'USB hata ayiklama guvenlik ayarlari' acik olmali.\n" +
+                    "- Telefonda kurulum izni penceresi cikarsa Onayla secilmeli.\n" +
+                    "- Bu izinler acilamiyorsa APK dosyasini telefona kopyalayip manuel kur.";
+            }
+
+            if (installOutput.Contains("INSTALL_FAILED_VERSION_DOWNGRADE", StringComparison.OrdinalIgnoreCase))
+            {
+                return installOutput +
+                    "\n\nCihazdaki ayni paket daha yeni versionCode tasiyor. HubPreview APK icin eski kurulumu kaldir veya yeniden build al.";
+            }
+
+            if (installOutput.Contains("INSTALL_FAILED_UPDATE_INCOMPATIBLE", StringComparison.OrdinalIgnoreCase))
+            {
+                return installOutput +
+                    "\n\nAyni package id farkli imzayla kurulu. Cihazdaki eski uygulamayi kaldirip tekrar dene.";
+            }
+
+            return installOutput;
         }
 
         private static bool TryQueryConnectedDevice(string adbPath, out string deviceSerial, out string message)

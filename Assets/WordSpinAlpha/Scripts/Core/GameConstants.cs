@@ -6,6 +6,8 @@ namespace WordSpinAlpha.Core
         public const string SaveFileName = "wordspin_alpha_save.json";
         public const string SceneBoot = "Boot";
         public const string SceneMainMenu = "MainMenu";
+        public const string SceneHub = "Hub";
+        public const string SceneHubPreview = "HubPreview";
         public const string SceneGameplay = "Gameplay";
         public const string SceneStore = "Store";
 

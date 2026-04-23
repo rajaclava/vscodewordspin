@@ -37,6 +37,7 @@ Bu iki dokuman birlikte okunmalidir. Bir yazilimci veya AI modeli:
 Bu kılavuzun anlattigi teknik durumun ana snapshot tarihi:
 
 - `06.04.2026`
+- `08.04.2026` ek durum notlari
 
 Tarih bazli kisa ozet:
 
@@ -57,12 +58,68 @@ Tarih bazli kisa ozet:
 - editorler arasi commit-sonrasi sync katmani eklendi
 - bu kılavuz, o mimarinin referans dokumani haline getirildi
 
+### 08.04.2026
+
+- bug sweep'in ilk manuel turu baslatildi
+- save/session/restore ailesindeki ilk kritik maddeler sahada kontrol edildi
+- `BUG-007`, `BUG-009`, `BUG-010`, `BUG-011`, `BUG-013` icin orijinal hipotez kapsami icinde bozuk davranis cogu ltulemedi
+- buna karsin ayni restore zincirinde puan state'inin save'e hic girmedigi bulundu
+- score persistence sorunu kapatildi:
+  - `SessionSnapshot` score state alanlariyla genisletildi
+  - `ScoreManager` snapshot doldurma ve restore akisina baglandi
+  - `GameManager` restore zinciri gameplay + score state'i birlikte kurar hale getirildi
+- `BUG-014` de ayni turda kapatildi:
+  - fail/continue modal ve info card acikken gameplay input kapanmiyordu
+  - `InputManager`, `KeyboardPresenter` ve `GameManager` uzerinden input gating merkezi hale getirildi
+- `BUG-029` de ayni turda kapatildi:
+  - progress save modeli dil bazli ilerleme destekleyecek sekilde genisletildi
+  - menu summary, `Play` akisi ve level complete update yollarÄ± secili dilin kendi progress state'ini okur hale getirildi
+  - level reward/first-clear coin takibi global birakildi
+- `BUG-027` manuel olarak denendi ve ilk turda sorun vermedi
+- ayni gun sonraki kontrolde:
+  - `BUG-024` su anki progress/session ayristirma mimarisi nedeniyle aktif bug adayi olmaktan cikti
+  - `BUG-025` ana hipotezi cogu ltulemedi
+  - fakat ayni testte continue sonrasi menu/store donusunde gameplay input'un kilitli kalmasi bulundu
+  - bu sorun `GameManager` restore akisinda `pending result` yokken gereksiz input kapatilmasi duzeltilerek kapatildi
+  - `BUG-026`, `BUG-034`, `BUG-068` manuel cogu ltma turunda sorun vermedi
+  - `BUG-037` ve `BUG-040` bu asamada acik runtime blocker olarak ele alinmadi; final live-config / web panel / release-safe build gecisine yakin tekrar acilacak
+
 ### 06.04.2026 itibariyla teknik durum
 
 - tek shell editor vardir
 - tekli editorler parity icin halen mevcuttur
 - veri sahipligi, refresh ve sync katmanlari artik ayrik olarak tanimlanmistir
 - web panel ve live-config gecisi henuz uygulanmamis, fakat bu kılavuzdaki prensiplere gore planlanmis durumdadir
+
+### 08.04.2026 itibariyla teknik durum
+
+- tek shell editor ve tekli editor parity modeli korunuyor
+- bug sweep aktif olarak baslamis durumda
+- save/session restore omurgasi ilk manuel turdan gecirildi
+- score state'in restore edilmemesi seklindeki gercek regression kapatildi
+- `BUG-014` ve `BUG-029` kapatildi
+- `BUG-027` ilk turda cogu ltulemedi
+- `BUG-024` ve `BUG-025` ilk halleriyle acik bug olarak kalmadi
+- `BUG-025` taramasinda bulunan continue-sonrasi menu/store donus klavye kilidi sorunu kapatildi
+- `BUG-026`, `BUG-034`, `BUG-068` acik bug olarak kalmadi
+- `BUG-037` ve `BUG-040` ertelendi cunku bunlar su an oyuncu akisindan cok editor/live-config/release gecisi tarafina ait risklerdir
+- bu noktadan sonra ayni ailede yeni degisiklik yapilirsa session snapshot ve restore zinciri birlikte ele alinmalidir
+
+08.04.2026 sonu teknik yorum:
+
+- su an alpha demo icin acil runtime blocker kalmamistir
+- bug sweep sonrasi acik kalan maddelerin agirlik merkezi artik gameplay cekirdegi degil, su katmanlardadir:
+  - remote override ve local precedence
+  - test sandbox izolasyonu
+  - telemetry queue / policy
+  - release-safe build ayrimi
+  - production provider gecisi
+
+Bu nedenle editor ve live-config mimarisi acisindan uygulanacak kural:
+
+1. bu maddeler simdi gameplay hotfix backlog'u gibi ele alinmayacak
+2. `live config`, `web panel`, `release-safe build`, `market release` asamalarinda yeniden acilacak
+3. o ana kadar mevcut editor mimarisine yeni risk eklenmemeli; yalnizca veri sahipligi ve refresh/sync kurallari korunmalidir
 
 Hemen sonraki teknik adim:
 
@@ -1022,3 +1079,349 @@ Bu dokumanin bundan sonraki rolü:
 - yeni tuning eklemelerinde kurallari sabitlemek
 - web panel ve cloud live-config tasarimina temel olmak
 - yeni bir gelistirici veya AI’nin projeye zarar vermeden ekleme yapabilmesini saglamak
+---
+
+## 08.04.2026 - Hub / Pause / Resume Mimari Guncellemesi
+
+08.04.2026 tarihinde oyun ici navigasyon omurgasi guncellendi. Bu karar, bundan sonra hem Unity icindeki local editor islerinde hem de ileride kurulacak web panel / live-config tarafinda referans kabul edilmelidir.
+
+### Mevcut davranis
+
+- `MainMenuPresenter`
+  - artik giris ekrani rolundedir
+  - dil secimi ve `Oyna` akisina hizmet eder
+- `HubPresenter`
+  - seviye secim yolunu
+  - alt menulu sayfa gecislerini
+  - secili level kartini
+  - resume / restart popup mantigini
+  yonetir
+- `GameplayPausePresenter`
+  - gameplay ustunde pause popup acilmasini
+  - oyun donmasini
+  - `Devam Et` ve `Ana Merkeze Don` davranisini
+  yonetir
+- `SceneNavigator`
+  - `MainMenu` ve `Hub` rollerini artik yeni akisa gore ayirir
+
+### Veri ve state semantigi
+
+- aktif level session'i gameplay kapanmadan once `SessionManager.TakeSnapshot()` ile alinabilir durumda kalmali
+- hub'a donus oncesi `SaveManager.FlushNow()` ile disk yazimi zorlanir
+- ayni levele geri donuste `HubPresenter` session varligini kontrol eder
+- ayni level icin:
+  - resume varsa `Devam Et / Bastan Basla / Vazgec` popup'i acilir
+  - resume yoksa normal giris yapilir
+
+### Bu yapida neye dokunurken dikkat edilmeli
+
+Bu akisi degistirecek herkes su kurallara uymali:
+
+1. `pause` davranisini direkt scene jump'e geri cevirmemeli
+2. `resume` davranisini enerji/can maliyetine baglamamali
+3. `restart` davranisini `resume` ile ayni semantic kategoriye koymamali
+4. hub'a donus oncesi snapshot/flush zincirini kaldirmamali
+5. info card, result ve fail modal input kilitleri ile pause popup mantigini birbirine karistirmamali
+
+### Editor ve web panel etkisi
+
+Bu yeni akista ileride editor veya web panelden degistirilebilecek seyler:
+
+- popup metinleri
+- popup renkleri / stil tokenlari
+- hub alt menu sekmeleri
+- hub icindeki UX teklif kartlari
+- seviye karti copy ve buton etiketleri
+
+Ama web panelden rastgele degistirilmemesi gereken seyler:
+
+- pause -> hub -> resume cekirdek karari
+- resume maliyetsiz / restart maliyetli semantigi
+- save snapshot ve flush zorunlulugu
+
+### Handoff notu
+
+Yeni bir yazilimci veya model bu yapiya ekleme yaparken once su dosyalari birlikte okumali:
+
+- `SceneNavigator.cs`
+- `MainMenuPresenter.cs`
+- `HubPresenter.cs`
+- `GameplayPausePresenter.cs`
+- `GameSceneNavigationButtons.cs`
+- `GameManager.cs`
+- `SaveManager.cs`
+
+Bu dosyalar birlikte degerlendirilmeden hub/gameplay/session akisina mudahale edilmemelidir.
+
+---
+
+## 08.04.2026 - Tasarim Kompozisyonundan Unity Asset Uretim Kurali
+
+08.04.2026 itibariyla Stitch benzeri bir tasarim aracindan gelen tam ekran kompozisyonlar icin su kural kabul edilmistir:
+
+### Ana ilke
+
+Unity'ye:
+
+- ne tek parca final ekran PNG'si yuklenecek
+- ne de sahnedeki her kucuk parca kontrolsuz sekilde tek tek export edilecektir
+
+Dogru model:
+
+- kompozisyon once tam ekran olarak tasarlanir
+- sonra teknik olarak anlamli katmanlara bolunur
+- Unity'de mevcut scene/prefab iskeletine skin olarak baglanir
+
+### Teknik ayrim
+
+#### A. Buyuk statik gorseller
+
+Bunlar buyuk katmanlar halinde alinabilir:
+
+- gokyuzu
+- sehir / ada / yol arka plani
+- buyuk dekoratif foreground/backdrop katmanlari
+
+Bu tip asset'ler:
+
+- genelde `PNG`
+- cogunlukla interaktif olmayan
+- sahnenin atmosferini tasiyan
+katmanlardir.
+
+#### B. Ayrik UI skin asset'leri
+
+Bunlar ayri alinmalidir:
+
+- alt menu butonlari
+- top bar skinleri
+- kart arka planlari
+- teklif butonlari
+- level badge skinleri
+- popup panelleri
+- ikonlar
+
+Bu katmanlar tekrar kullanilir ve prefab'a baglanir.
+
+#### C. Unity'de uretilmesi gereken seyler
+
+Bunlar asla gorselin icine gomulmemelidir:
+
+- dinamik metinler
+- localization metinleri
+- sayaclar
+- level numaralari
+- bildirim badge adetleri
+- countdown / sureler
+- coin / enerji / ipucu degerleri
+
+### Pratik teslim modeli
+
+Bu projede tasarim teslim akisi su sekildedir:
+
+1. tasarimci once tek tam ekran kompozisyonu yollar
+2. gelistirici Unity sahnesi ile bunu karsilastirir
+3. gelistirici teknik export listesi uretir
+4. tasarimci sadece istenen katmanlari ayri export eder
+5. bu katmanlar Unity sahnesine prefab ve sprite skin olarak yerlestirilir
+
+### Gelistiricinin verecegi export listesi formati
+
+Beklenen teknik liste su tipte olur:
+
+- dosya adi
+- kullanim amaci
+- seffaf arka plan gerekli mi
+- `9-slice` uygun mu
+- Unity'de hangi objeye baglanacak
+- text veya ikon mu
+- tek buyuk layer mi yoksa tekrar kullanilan skin mi
+
+Ornek:
+
+- `BG_RoadBase.png`
+- `BTN_BottomNav_Journey.png`
+- `BTN_BottomNav_Store.png`
+- `CARD_LevelActive.png`
+- `POPUP_PausePanel.png`
+- `ICON_Coin.png`
+
+### Unity klasorleme kurali
+
+Bu tip asset'ler ileride karismasin diye kategori bazli tutulmalidir:
+
+- `Assets/WordSpinAlpha/Art/UI/Hub/Backgrounds`
+- `Assets/WordSpinAlpha/Art/UI/Hub/Buttons`
+- `Assets/WordSpinAlpha/Art/UI/Hub/Cards`
+- `Assets/WordSpinAlpha/Art/UI/Hub/Icons`
+- `Assets/WordSpinAlpha/Art/UI/Common/Popups`
+
+Bu klasorleme daha sonra:
+
+- atlaslama
+- tema ayirma
+- build sizinti kontrolu
+
+icin de fayda saglar.
+
+### Hangi alanlar Unity prefab olarak kalmali
+
+Asagidaki yuzeyler tasarim skin'i alsa bile Unity prefab ve component yapisinda kalmalidir:
+
+- hub bottom navigation
+- level node sistemleri
+- pause popup
+- resume / restart popup
+- store teklif kartlari
+- gorev kartlari
+- bildirim badge'leri
+
+### Web panel ve live-config etkisi
+
+Bu karar gelecekteki web panel acisindan da dogrudur. Cunku:
+
+- metinler ve dinamik degerler Unity component'lerinde kalir
+- skin asset'leri ile veri birbirinden ayrik olur
+- uzaktan gelen copy/offer/layout tuning'i gorselin icine gomulu kalmaz
+
+### Handoff kuralı
+
+Yeni bir yazilimci veya model, tasarim aktarma isinde once su sorulari cevaplamalidir:
+
+1. Bu alan statik arka plan mi?
+2. Bu alan tekrar kullanilan UI skin'i mi?
+3. Bu alan runtime text veya data mi?
+4. Bu alan `9-slice` panel olmali mi?
+5. Bu alan prefab olarak mi kalmali?
+6. Bu alan localization aliyor mu?
+7. Bu alan sonradan web panel veya live-config ile degisebilir mi?
+
+Bu sorular cevaplanmadan tasarim asset'i import edilmemelidir.
+
+---
+
+## 19.04.2026 - HubPreview Ray Editor ve Alpha Demo Son Faz Kurali
+
+19 Nisan 2026 itibariyla `HubPreview` yalnizca PNG tasarim deneme sahnesi degil, level hub yol/ray ayari icin de resmi preview sahnesidir.
+
+### Yeni editor katmani
+
+Level hub yolu icin editor destekli ray sistemi eklendi:
+
+- `Assets/WordSpinAlpha/Scripts/Presentation/LevelHubPreviewController.cs`
+- `Assets/WordSpinAlpha/Scripts/Editor/LevelHubPreviewControllerEditor.cs`
+
+Bu editorun amaci:
+
+- arka plan gorseli sahnede gorunurken ray noktalarini manuel yerlestirmek
+- level kutularinin bu ray uzerinde akmasini test etmek
+- yeni arka plan tasarimi geldiginde kod yazmadan yol hizalamasi yapmak
+- onaylanan sahne/prefab ana Hub akisana tasindiginda ayarlari kaybetmemek
+
+### Neden veri controller uzerinde tutuluyor
+
+Ray verisi ayri bir gecici editor dosyasinda tutulmaz. `LevelHubPreviewController` uzerinde serialize edilir.
+
+Sebep:
+
+- `HubPreview` sahnesi kopyalaninca ray ayarlari da kopyalanir
+- ana `Hub` sahnesine aktarimda hangi profile bakilacagi belirsiz kalmaz
+- prefab instance override mantigi Unity icinde dogal sekilde calisir
+- editor otomatik olarak aktif sahnedeki veya secili objedeki controller'i hedefler
+
+Bu, "HubPreview'de ayarla, onaylaninca kopyalayip production akisa al" kuralina uygundur.
+
+### Ray editor kullanim sirasi
+
+1. Level hub arka plan PNG'si `HubPreview` sahnesine yerlestirilir.
+2. `LevelHubPreviewController` bulunan obje secilir.
+3. Scene View'de arka plan uzerindeki ray noktalarinin handle'lari gorulur.
+4. Noktalar yol hattina manuel suruklenir.
+5. Inspector'da her nokta icin `position`, `scale`, `rotation`, `alpha` ayarlanir.
+6. Drag/scroll preview yapilir.
+7. Tasarim onaylanirsa sahne/prefab ana Hub tarafina kontrollu aktarilir.
+
+### MainMenu arka plan kaplama referansi
+
+MainMenu arka planinda 19 Nisan 2026'da su kural netlesti:
+
+- kaynak PNG'nin 9:16 portrait olmasi tek basina yeterli degildir
+- `MainMenuPngPreview.prefab` icindeki arka plan katmani canvas/safe area kombinasyonunda bosluk birakmayacak boyutta olmalidir
+- `WordSpinAlphaSceneBuilder.cs` ayni kaplama davranisini yeniden uretebilmelidir
+- yeni arka plan eklendiginde hem prefab hem builder ciktisi kontrol edilmelidir
+
+Bu bilgi live-config degil, presentation pipeline kuralidir. Oyuncu verisi, ekonomi, save veya level progression tarafina tasinmamalidir.
+
+### Alpha demo disiplinine etkisi
+
+Bu tarihten sonra alpha demo oncesi ana kural:
+
+- yeni buyuk sayfa ekleme
+- yeni buyuk mekanik ekleme
+- mevcut iki yeni yuzeyi test et:
+  - tasarimli `MainMenu`
+  - level hub preview/ray editor akisi
+- sadece kucuk UX polish ve bug fix yap
+
+### Ana oyun akisi korunacak alanlar
+
+Ray editoru su sistemlere dogrudan mudahale etmemelidir:
+
+- save/session
+- economy
+- gameplay input
+- fail/continue
+- score
+- store purchase/pricing
+- production `Hub` akisi, onayli promote disinda
+
+Ray editoru presentation/test tooling katmanidir. Runtime oyuncu verisini degistirmez.
+
+### Gelecekte web/live-config ile iliski
+
+Bu ray sistemi ileride live-config tarafina tasinacaksa once veri semasi netlestirilmelidir:
+
+- ray point listesi
+- scale/rotation/alpha degerleri
+- aktif level platform pozisyonu
+- node pool size
+- snap ve drag hassasiyeti
+
+Ancak alpha demo icin bu veriler once Unity editor uzerinde sabitlenir. Web panel bu fazda hedef degildir.
+
+## 20. 21.04.2026 - HubPreview Recovery Sonrasi Editor Disiplini
+
+21 Nisan 2026'da `HubPreview` level hub node boyutu duzeltmesi sirasinda sahne/prefab kirliligi olusmustur. Recovery sonrasi kabul edilen editor disiplini su sekildedir:
+
+- `LevelHubPreviewController` hierarchy uretmez
+- `WordSpinAlphaSceneBuilder` node gorsel mimarisinin tek kaynagidir
+- `HubPreviewSceneNormalizer` yalnizca sahne kokunde birikmis orphan `NodeVisual` objelerini temizler
+- temizleme veya recovery icin scene YAML regex ile toplu duzenlenmez
+
+Recovery sonrasi dogrulanan durum:
+
+- `Assets/WordSpinAlpha/Generated/Prefabs/LevelHubPreview.prefab` temiz kaynak olarak yeniden olusturulmustur
+- `Assets/WordSpinAlpha/Scenes/HubPreview.unity` tekrar rebuild edilmistir
+- orphan `NodeVisual` root objeleri temizlenmistir
+- kirli prefab instance override birikimi sifirlanmistir
+
+Kalan acik is:
+
+- node boyutu/orani hedefe yaklastirilmistir
+- fakat level kutularinin altinda beyaz zemin gorunumu devam etmektedir
+
+Bu nedenle sonraki editte uygulanacak kural nettir:
+
+1. recovery katmanina yeniden mudahale etme
+2. ray/path editor verisini elle veya kodla yeniden yazma
+3. sadece `NodeVisual` gorsel katmani, sprite alpha ve node altindaki beyaz zemin kaynagini incele
+4. degisiklik once preview/prefab/builder ucgeninde dogrulanir, sonra sahneye bakilir
+
+Bu madde, sonraki sayfa kurulumlari icin de geneldir:
+
+- oran/boyut sorunu varsa once asset alpha ve bos canvas kontrol edilir
+- sonra prefab rect'i
+- sonra builder uretimi
+- en son scene rebuild
+
+Bu sira disina cikilmaz.

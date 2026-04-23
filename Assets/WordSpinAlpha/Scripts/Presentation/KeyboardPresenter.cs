@@ -31,6 +31,7 @@ namespace WordSpinAlpha.Presentation
         private Button _consumedButton;
         private Vector2 _lastContainerSize = Vector2.zero;
         private KeyboardLayoutTuningProfile _loadedProfile;
+        private bool _lastInteractableState = true;
 
         private void Start()
         {
@@ -72,6 +73,8 @@ namespace WordSpinAlpha.Presentation
             {
                 Build();
             }
+
+            RefreshInteractivity();
         }
 
         public void Build()
@@ -98,10 +101,17 @@ namespace WordSpinAlpha.Presentation
             {
                 _lastContainerSize = rootRect.rect.size;
             }
+
+            RefreshInteractivity(true);
         }
 
         private void HandleKeyPressed(Button button, char pressed)
         {
+            if (InputManager.Instance == null || !InputManager.Instance.CanAcceptGameplayInput)
+            {
+                return;
+            }
+
             if (_consumedButton != null)
             {
                 return;
@@ -414,6 +424,32 @@ namespace WordSpinAlpha.Presentation
             if (label != null)
             {
                 label.text = visible ? button.name.Replace("Key_", string.Empty) : string.Empty;
+            }
+        }
+
+        private void RefreshInteractivity(bool force = false)
+        {
+            bool interactable = InputManager.Instance == null || InputManager.Instance.CanAcceptGameplayInput;
+            if (!force && interactable == _lastInteractableState)
+            {
+                return;
+            }
+
+            _lastInteractableState = interactable;
+            for (int i = 0; i < _builtButtons.Count; i++)
+            {
+                Button button = _builtButtons[i];
+                if (button == null)
+                {
+                    continue;
+                }
+
+                button.interactable = interactable;
+            }
+
+            if (!interactable)
+            {
+                RestoreConsumedKey();
             }
         }
     }

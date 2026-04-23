@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/WordSpinAlpha/Scenes/MainMenu.unity
     guid: 941e13339bde09342ad5cc782e27d4b0
   - enabled: 1
+    path: Assets/WordSpinAlpha/Scenes/Hub.unity
+    guid: 65511da54d4af10418953e199e1360c1
+  - enabled: 1
     path: Assets/WordSpinAlpha/Scenes/Gameplay.unity
     guid: c38edf11e5a785840b9cd01212b23a09
   - enabled: 1

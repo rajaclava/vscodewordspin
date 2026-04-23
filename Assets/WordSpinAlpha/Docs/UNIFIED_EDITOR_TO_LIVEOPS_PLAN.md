@@ -39,7 +39,7 @@ Okuma sirasi:
 1. once bu plan dosyasi ile hedef faz okunur
 2. sonra ilgili uygulama ayrintisi icin teknik kılavuz acilir
 
-## Tarih Bazli Kilometre Taslari ve 06.04.2026 Durumu
+## Tarih Bazli Kilometre Taslari ve 08.04.2026 Durumu
 
 Bu planin tarih bazli okunusu su sekildedir:
 
@@ -64,6 +64,25 @@ Bu planin tarih bazli okunusu su sekildedir:
 - editorler arasi commit-sonrasi sync katmani eklendi
 - teknik uygulama karsiligi icin `UNIFIED_EDITOR_AND_LIVE_CONFIG_GUIDE.md` olusturuldu
 
+### 08.04.2026
+
+- bug sweep'in ilk manuel turu fiilen baslatildi
+- save/session/restore ailesindeki ilk kritik maddeler manuel olarak tarandi
+- `BUG-007`, `BUG-009`, `BUG-010`, `BUG-011`, `BUG-013` icin orijinal hipotez kapsami icinde bug cogu ltulemedi
+- buna karsin ayni tur sirasinda puan persistence regressioni bulundu
+- score state save/session snapshot zincirine tasinarak sorun kapatildi
+- `BUG-014` dogrulandi ve kapatildi
+- `BUG-027` manuel olarak denenip ilk turda sorun vermedi
+- `BUG-029` dogrulandi ve kapatildi:
+  - language progress global degil, dil bazli ilerleme olarak ele alinacak sekilde save modeli genisletildi
+  - global level reward mantigi korunarak coin exploit yolu kapatildi
+- ayni gun sonraki bug sweep adiminda:
+  - `BUG-024` aktif bug adayi olmaktan cikti
+  - `BUG-025` ana hipotezi cogu ltulemedi
+  - continue sonrasi menu/store donusunde input kilitlenmesi seklinde turev bir bug bulundu ve kapatildi
+  - `BUG-026`, `BUG-034`, `BUG-068` cogu ltilip sorun vermedi
+  - `BUG-037` ve `BUG-040` final live-config / web uygulamasi gecisine yakin fazda ele alinmak uzere ertelendi
+
 ### 06.04.2026 itibariyla bu planda neredeyiz
 
 - `Faz 1`: tamamlandi
@@ -78,6 +97,81 @@ Kisa durum:
 - editor parity, stabilizasyon ve bug sweep oncesi hazirlik fazina
 
 gecilmis durumdadir.
+
+### 08.04.2026 itibariyla bu planda neredeyiz
+
+- `Faz 3`: tamamlandi kabul edilebilecek olgunluga yaklasti
+- `Faz 4`: fiilen basladi
+- bug sweep artik yalnizca hazirlik degil, aktif manuel cogu ltma ve secici hotfix fazindadir
+- ilk dogrulama turunda save/session ailesi yeniden siniflandirildi:
+  - bazi orijinal hipotezler cogu ltulemedi
+  - fakat ayni ailede skorun restore edilmemesi seklinde gercek bir regression bulundu ve kapatildi
+- ilk tur sonunda:
+  - `BUG-014` kapatildi
+  - `BUG-029` kapatildi
+  - `BUG-027` acik bug olarak kalmadi
+  - `BUG-024` ve `BUG-025` ilk halleriyle acik bug olarak kalmadi
+  - `BUG-025` taramasinda bulunan continue-sonrasi restore/input kilidi sorunu kapatildi
+  - `BUG-026`, `BUG-034`, `BUG-068` acik bug olarak kalmadi
+  - `BUG-037` ve `BUG-040` su anki alpha oyuncu akisinda blocker olmadigi icin liveops/release kovasina tasindi
+  - ilk manuel cogu ltma turu tamamlandi
+
+Bu erteleme karari mantiklidir cunku:
+
+- `BUG-037` remote/local precedence riskidir ve asil etkisini canli config / hotfix / web panel acildiginda gosterecektir
+- `BUG-040` test sandbox snapshot izolasyon riskidir ve asil onemi release-safe build davranisi netlesirken artacaktir
+- bu iki maddeyi simdi zorlayici hotfix konusu yapmak yerine, final oyun hazirligi ve liveops gecisine yakin ele almak daha verimlidir
+
+08.04.2026 sonu faz karari:
+
+- alpha demo icin acil bug sweep fazi, oyuncu akisina dogrudan dokunan maddeler acisindan yeterli doygunluga ulasmistir
+- bundan sonraki acik bug maddeleri daha cok:
+  - remote/local precedence
+  - sandbox/release-safe ayrimi
+  - telemetry/liveops
+  - production provider gecisi
+  alanlarina aittir
+
+Bu nedenle su resmi karar uygulanir:
+
+1. yeni runtime-kritik acil bug cikmadikca ayni ailede tekrar manuel sweep derinlestirilmez
+2. ertelenen buglar `liveops/release kovasi`nda tutulur
+3. bunlar ancak dogru teknik baglam acildiginda yeniden aktif edilir:
+   - web panel / cloud live-config
+   - production billing/rewarded/pricing
+   - release-safe build
+   - market oncesi final optimizasyon ve smoke matrix
+
+### 19.04.2026
+
+- PNG katmanli `MainMenu` tasarimi previewden runtime `MainMenu` akisana alinmistir.
+- `MainMenu` artik tasarimli giris/dil/oyna ekrani olarak calisir.
+- `OYNA` butonu icin hizli `PointerDown` gecisi ve kisa/fresh basim feedback davranisi kabul edilmistir.
+- MainMenu arka plan bosluk sorununun kaynak PNG oranindan degil, prefab/builder kaplama davranisindan kaynaklandigi kayda alinmistir.
+- `MainMenuPngPreview.prefab` arka plan katmani bosluk kalmayacak sekilde buyutulmus, `WordSpinAlphaSceneBuilder.cs` ayni davranisa cekilmistir.
+- `HubPreview` sahnesi sonraki tasarim denemeleri icin sandbox olarak korunmustur.
+- Level hub tasarimi icin `LevelHubPreviewController` ve `LevelHubPreviewControllerEditor` ray/path editor yaklasimi kurulmustur.
+- 21 Nisan 2026'da `HubPreview` level hub scene/prefab kirliligi temizlenmis, clean rebuild ile geri kurulmustur.
+- Bu recovery sonrasi acik kalan tek gorsel is, level kutularinin altinda gorunen beyaz zemin temizligidir.
+- Sonraki editte recovery katmanina degil, sadece `NodeVisual` gorsel katmani / alpha / rect davranisina dokunulacaktir.
+- Level yolu artik arka plana gore Scene View uzerinden manuel ray noktasi yerlestirme ile ayarlanabilir hale gelmistir.
+- Ray verisi controller component'i uzerinde serialize edildigi icin preview sahnesi kopyalanip production Hub akisana tasindiginda ayarlar kaybolmaz.
+
+19.04.2026 itibariyla bu planda neredeyiz:
+
+- `Faz 4`: manuel bug sweep ve kritik hotfix fazi alpha demo icin yeterli seviyede tamamlanmis kabul edilir.
+- `Faz 5`: visual/feel/editor polish fazi aktif olarak uygulanmistir.
+- `Faz 6`: UI polish ve cihaz uzeri gorsel kalite dogrulama fazina girilmistir.
+- `Faz 7`: alpha demo lock ve optimizasyon oncesi son meta UI uyumluluk testleri baslamistir.
+
+19.04.2026 resmi calisma karari:
+
+1. alpha demo icin yeni buyuk sayfa eklenmez
+2. yeni buyuk mekanik eklenmez
+3. tasarimli `MainMenu` ve level hub ray editor akisi test edilir
+4. sadece kucuk UX polish, gorsel hizalama ve bug fix yapilir
+5. onaylanan `HubPreview` tasarimlari kontrollu promote/kopyalama akisiyle production sahnelere alinir
+6. liveops/web panel ve production provider isleri alpha demo sonrasina planli sekilde kalir
 
 ## Ozet
 
@@ -1196,3 +1290,59 @@ Bu plan izlenirse:
 - sonra tasarim ve content hizlanir
 - sonra telemetry/liveops katmani guvenli sekilde eklenir
 - en sonda da oyun markete hizli cikabilecek bir omurgaya sahip olur
+
+---
+
+## 08.04.2026 - Yeni Hub Navigasyonu ve Session Davranisi
+
+08.04.2026 itibariyla ana menu ve gameplay donus davranisi su sekilde guncellenmistir:
+
+### Yeni sahne rolleri
+
+- `MainMenu`
+  - artik tam ana menu degil
+  - giris / dil secimi / oyna ekrani rolu gorur
+- `Hub`
+  - oyunun asil ana merkezi olarak davranir
+  - seviye secimi, gorevler, profil ve magaza alt menuden buradan yonetilir
+- `Gameplay`
+  - sadece aktif oynanis ve ona bagli fail/info/result akisini tasir
+
+### Pause davranisi
+
+- Gameplay icindeki menu dugmesi artik dogrudan hub'a atmaz
+- once pause popup acilir
+- popup:
+  - oyunu dondurur
+  - `Devam Et`
+  - `Ana Merkeze Don`
+  seceneklerini sunar
+
+### Session continuity davranisi
+
+- `Ana Merkeze Don` secildiginde aktif oturum aninda snapshot + flush ile diske yazilir
+- oyuncu hub'da ayni levele bastiginda yeni karar popup'i gorur:
+  - `Devam Et`
+  - `Bastan Basla`
+  - `Vazgec`
+- `Devam Et` maliyetsizdir
+- `Bastan Basla` yeniden baslatma maliyet mantigina girer
+
+### LiveOps ve ilerideki web panel etkisi
+
+Bu karar, web panel / live-config tasariminda da temel kabul edilmelidir:
+
+- aktif session varligi hub seviyesinde gorulebilir bir state olarak dusunulmeli
+- ayni levele geri donus davranisi remote config ile bozulmamalidir
+- pause popup ve resume popup metinleri ileride lokalize ve uzaktan duzenlenebilir hale getirilebilir
+- ancak resume / restart karar mantigi core gameplay ve save semantigi oldugu icin rastgele live apply kapsaminda degistirilmemelidir
+
+### Plan etkisi
+
+Bu guncelleme ile alpha demo suresince artik:
+
+- hub, ana dolasim omurgasi
+- gameplay pause, session birakma noktasi
+- resume/restart popup'i ise session restore semantiginin zorunlu parcasi
+
+olarak kabul edilir.

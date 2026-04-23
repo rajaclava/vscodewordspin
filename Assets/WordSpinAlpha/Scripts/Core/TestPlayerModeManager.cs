@@ -198,6 +198,17 @@ namespace WordSpinAlpha.Core
                 SaveManager.Instance.Data.session.pendingResultCoinReward = 0;
                 SaveManager.Instance.Data.session.pendingResultAdBonusCoins = 0;
                 SaveManager.Instance.Data.session.pendingResultAdBonusEligible = false;
+                SaveManager.Instance.Data.session.currentScoreTotal = 0;
+                SaveManager.Instance.Data.session.currentHitScore = 0;
+                SaveManager.Instance.Data.session.currentPerfectStreak = 0;
+                SaveManager.Instance.Data.session.currentMultiplier = 1f;
+                SaveManager.Instance.Data.session.currentBestMultiplier = 1f;
+                SaveManager.Instance.Data.session.currentMistakeCount = 0;
+                SaveManager.Instance.Data.session.currentPerfectHits = 0;
+                SaveManager.Instance.Data.session.currentGoodHits = 0;
+                SaveManager.Instance.Data.session.currentLevelElapsedSeconds = 0f;
+                SaveManager.Instance.Data.session.currentTargetShownElapsedSeconds = -1f;
+                SaveManager.Instance.Data.session.currentLastSuccessfulHitElapsedSeconds = -1f;
                 SaveManager.Instance.Data.session.usedContinueInCurrentLevel = false;
                 SaveManager.Instance.Data.session.questionHeartsRemaining = 0;
                 SaveManager.Instance.Data.session.hasActiveSession = false;

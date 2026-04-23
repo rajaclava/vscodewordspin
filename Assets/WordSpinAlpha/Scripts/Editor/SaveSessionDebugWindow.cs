@@ -112,8 +112,10 @@ namespace WordSpinAlpha.Editor
 
             DrawSection("Ilerleme ve Metrikler", () =>
             {
-                EditorGUILayout.LabelField("Highest Unlocked", SaveManager.Instance.Data.progress.highestUnlockedLevel.ToString());
-                EditorGUILayout.LabelField("Last Completed", SaveManager.Instance.Data.progress.lastCompletedLevel.ToString());
+                string languageCode = SaveManager.Instance.Data.languageCode;
+                EditorGUILayout.LabelField("Aktif Dil Ilerlemesi", languageCode.ToUpperInvariant());
+                EditorGUILayout.LabelField("Highest Unlocked", SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(languageCode).ToString());
+                EditorGUILayout.LabelField("Last Completed", SaveManager.Instance.Data.progress.GetLastCompletedLevel(languageCode).ToString());
                 EditorGUILayout.LabelField("Completed Levels", SaveManager.Instance.Data.metrics.completedLevels.ToString());
                 EditorGUILayout.LabelField("Perfect Hits", SaveManager.Instance.Data.metrics.perfectHits.ToString());
                 EditorGUILayout.LabelField("Good Hits", SaveManager.Instance.Data.metrics.toleratedHits.ToString());

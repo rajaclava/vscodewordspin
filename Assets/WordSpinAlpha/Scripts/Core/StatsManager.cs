@@ -55,8 +55,11 @@ namespace WordSpinAlpha.Core
             }
 
             SaveManager.Instance.Data.metrics.completedLevels++;
-            SaveManager.Instance.Data.progress.lastCompletedLevel = Mathf.Max(SaveManager.Instance.Data.progress.lastCompletedLevel, levelContext.levelId);
-            SaveManager.Instance.Data.progress.highestUnlockedLevel = Mathf.Max(SaveManager.Instance.Data.progress.highestUnlockedLevel, levelContext.levelId + 1);
+            int highestUnlockedLevel = SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(levelContext.languageCode);
+            int lastCompletedLevel = SaveManager.Instance.Data.progress.GetLastCompletedLevel(levelContext.languageCode);
+            SaveManager.Instance.Data.progress.SetLastCompletedLevel(levelContext.languageCode, Mathf.Max(lastCompletedLevel, levelContext.levelId));
+            SaveManager.Instance.Data.progress.SetHighestUnlockedLevel(levelContext.languageCode, Mathf.Max(highestUnlockedLevel, levelContext.levelId + 1));
+            SaveManager.Instance.Data.progress.SetActiveCampaignId(levelContext.languageCode, levelContext.campaignId);
             SaveManager.Instance.Save();
         }
     }

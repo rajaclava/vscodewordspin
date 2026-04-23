@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#570008",
+                    "error-container": "#fb5151",
+                    "tertiary-fixed": "#8fafff",
+                    "tertiary-container": "#8fafff",
+                    "on-tertiary-fixed-variant": "#003483",
+                    "surface-bright": "#e8faf9",
+                    "secondary-fixed-dim": "#c7bbff",
+                    "primary": "#8c4a00",
+                    "surface-container-high": "#d0e7e6",
+                    "primary-fixed-dim": "#ea8000",
+                    "tertiary": "#2056ba",
+                    "on-tertiary": "#f0f2ff",
+                    "on-surface-variant": "#4e5f5e",
+                    "on-primary-fixed": "#180800",
+                    "outline-variant": "#9fb1b0",
+                    "on-primary-fixed-variant": "#512800",
+                    "surface-variant": "#c8e2e1",
+                    "primary-dim": "#7b4000",
+                    "secondary-dim": "#5130c6",
+                    "error-dim": "#9f0519",
+                    "surface-tint": "#8c4a00",
+                    "surface-dim": "#bfdad9",
+                    "background": "#e8faf9",
+                    "tertiary-dim": "#074aad",
+                    "inverse-surface": "#021111",
+                    "surface": "#e8faf9",
+                    "error": "#b31b25",
+                    "on-secondary-fixed-variant": "#5231c7",
+                    "on-primary-container": "#442100",
+                    "surface-container-low": "#e1f5f4",
+                    "on-secondary-fixed": "#3400a5",
+                    "secondary": "#5d3fd3",
+                    "on-surface": "#223131",
+                    "inverse-on-surface": "#8fa0a0",
+                    "surface-container": "#d7edec",
+                    "outline": "#697a79",
+                    "on-primary": "#fff0e7",
+                    "tertiary-fixed-dim": "#79a0ff",
+                    "on-tertiary-container": "#002c71",
+                    "secondary-container": "#d5cbff",
+                    "secondary-fixed": "#d5cbff",
+                    "on-error": "#ffefee",
+                    "on-background": "#223131",
+                    "surface-container-highest": "#c8e2e1",
+                    "inverse-primary": "#fd8b00",
+                    "on-secondary-container": "#4824be",
+                    "on-secondary": "#f6f0ff",
+                    "primary-fixed": "#fd8b00",
+                    "on-tertiary-fixed": "#00153f",
+                    "primary-container": "#fd8b00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .path-gradient {
+            background: linear-gradient(180deg, rgba(93, 63, 211, 0) 0%, rgba(93, 63, 211, 0.4) 50%, rgba(93, 63, 211, 0) 100%);
+        }
+        .node-glow-active {
+            box-shadow: 0 0 30px rgba(253, 139, 0, 0.6);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-cyan-950 font-body text-on-surface overflow-hidden h-screen select-none">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full rounded-b-[3rem] bg-cyan-950/60 backdrop-blur-xl z-50 flex justify-between items-center px-6 py-4 shadow-[0_20px_50px_rgba(34,49,49,0.06)]">
+<div class="flex items-center gap-3">
+<div class="relative w-12 h-12 rounded-full border-2 border-orange-500 p-0.5">
+<img alt="User Avatar" class="w-full h-full rounded-full object-cover" data-alt="Stylized casual game avatar of a hero character with a confident smile and glowing level border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk94xE-5NNP-KGdejNsriCQZNzEMk-PZJMbEwCkzyklKlrF8JCcG5wdSe6zsclz-4r8vQkczBbTB_9sHnVqIldT1Ef9DiY6W9yJhEMzjefETfmLwsHEQqDB66klZ-1N9PjhPcQ8KWFsmdrsJhFf7rkz9VzKr0LLtjP6XyfnMJfgy916pVWkkHkm4aoyznUo5lxRcb2p5aV9Yrkzpye-Gqi0LxvKgJn9LEb24eEdLCFaboz4YPJbi3uEHOe8iS48fphEYEuTRwImP4"/>
+<div class="absolute -bottom-1 -right-1 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-cyan-900">LV 12</div>
+</div>
+<h1 class="text-lg font-black text-white drop-shadow-sm font-headline tracking-tight">Macera Merkezi</h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+<span class="text-sm">❤️</span>
+<span class="text-white font-bold text-sm">5</span>
+</div>
+<div class="flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+<span class="text-sm">💎</span>
+<span class="text-white font-bold text-sm">120</span>
+</div>
+<div class="flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+<span class="text-sm">🪙</span>
+<span class="text-white font-bold text-sm">1.5k</span>
+</div>
+</div>
+</header>
+<!-- World Canvas -->
+<main class="relative w-full h-full pt-24 pb-48 overflow-y-auto overflow-x-hidden no-scrollbar">
+<!-- Curved Path Background Layer -->
+<div class="absolute inset-0 z-0 flex justify-center">
+<div class="w-2 h-full path-gradient opacity-40 blur-sm rounded-full"></div>
+<!-- Decorative atmospheric glows -->
+<div class="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-600/20 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-cyan-600/10 rounded-full blur-[120px]"></div>
+</div>
+<!-- Level Nodes -->
+<div class="relative z-10 flex flex-col items-center gap-32 py-12">
+<!-- Level 4: Locked -->
+<div class="flex flex-col items-center translate-x-12 opacity-60">
+<div class="w-16 h-16 bg-cyan-900 rounded-full flex items-center justify-center border-4 border-cyan-800 shadow-lg">
+<span class="material-symbols-outlined text-white/40">lock</span>
+</div>
+<span class="mt-2 font-headline font-bold text-cyan-200/50 uppercase tracking-widest text-[10px]">Seviye 4</span>
+</div>
+<!-- Level 3: Locked -->
+<div class="flex flex-col items-center -translate-x-16 opacity-80">
+<div class="w-16 h-16 bg-cyan-900 rounded-full flex items-center justify-center border-4 border-cyan-800 shadow-lg">
+<span class="material-symbols-outlined text-white/40">lock</span>
+</div>
+<span class="mt-2 font-headline font-bold text-cyan-200/50 uppercase tracking-widest text-[10px]">Seviye 3</span>
+</div>
+<!-- Level 2: Active -->
+<div class="flex flex-col items-center translate-x-8">
+<div class="relative">
+<div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center border-4 border-white node-glow-active transition-transform active:scale-95 duration-150">
+<span class="text-white font-black text-3xl font-headline">2</span>
+</div>
+<!-- Indicator pulses -->
+<div class="absolute -inset-2 border-2 border-orange-500/50 rounded-full animate-ping"></div>
+</div>
+<span class="mt-4 font-headline font-black text-white uppercase tracking-widest text-sm drop-shadow-md">AKTİF</span>
+</div>
+<!-- Level 1: Completed -->
+<div class="flex flex-col items-center -translate-x-10">
+<div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center border-4 border-secondary-container shadow-lg">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="mt-2 font-headline font-bold text-secondary-container uppercase tracking-widest text-[10px]">Seviye 1</span>
+</div>
+</div>
+<!-- Sidebar UX Buttons (Right) -->
+<div class="fixed right-6 top-1/3 flex flex-col gap-4 z-40">
+<button class="w-12 h-12 glass-panel rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">assignment</span>
+</button>
+<button class="w-12 h-12 glass-panel rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">event_note</span>
+</button>
+<button class="w-12 h-12 glass-panel rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-orange-500" style="font-variation-settings: 'FILL' 1;">local_offer</span>
+</button>
+</div>
+</main>
+<!-- Glassmorphism Level Card (Bottom Float) -->
+<div class="fixed bottom-28 inset-x-6 z-40 pointer-events-none">
+<div class="glass-panel rounded-xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] pointer-events-auto border border-white/20">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="text-2xl font-black font-headline text-on-surface">Seviye 2</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<p class="text-on-surface-variant font-semibold text-sm">Zorluk: Kolay</p>
+</div>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                    Yeni Ödül
+                </div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-full shadow-lg shadow-primary/30 active:scale-95 transition-transform font-headline">
+                    DEVAM ET
+                </button>
+<button class="w-16 bg-surface-container-high rounded-full flex items-center justify-center text-on-surface-variant active:scale-90 transition-transform">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-cyan-900/80 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-10px_40px_rgba(93,63,211,0.15)]">
+<!-- Yolculuk (Map) - Active -->
+<a class="flex flex-col items-center justify-center bg-secondary text-white rounded-full p-3 shadow-[0_0_15px_rgba(93,63,211,0.5)] active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-['Be_Vietnam_Pro'] text-[8px] font-semibold uppercase tracking-widest mt-0.5">Yolculuk</span>
+</a>
+<!-- Heroes -->
+<a class="flex flex-col items-center justify-center text-cyan-200/50 p-3 hover:text-white transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">shield</span>
+<span class="font-['Be_Vietnam_Pro'] text-[8px] font-semibold uppercase tracking-widest mt-0.5">Kahramanlar</span>
+</a>
+<!-- Shop -->
+<a class="flex flex-col items-center justify-center text-cyan-200/50 p-3 hover:text-white transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">local_mall</span>
+<span class="font-['Be_Vietnam_Pro'] text-[8px] font-semibold uppercase tracking-widest mt-0.5">Mağaza</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-cyan-200/50 p-3 hover:text-white transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Be_Vietnam_Pro'] text-[8px] font-semibold uppercase tracking-widest mt-0.5">Ayarlar</span>
+</a>
+</nav>
+</body></html>

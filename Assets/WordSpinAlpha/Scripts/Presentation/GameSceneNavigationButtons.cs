@@ -6,6 +6,8 @@ namespace WordSpinAlpha.Presentation
 {
     public class GameSceneNavigationButtons : MonoBehaviour
     {
+        private GameplayPausePresenter _pausePresenter;
+
         private void OnEnable()
         {
             GameEvents.LanguageChanged += HandleLanguageChanged;
@@ -18,17 +20,34 @@ namespace WordSpinAlpha.Presentation
 
         private void Start()
         {
+            _pausePresenter = GameplayPausePresenter.EnsureInScene();
             RefreshLocalizedTexts();
         }
 
         public void OpenMainMenu()
         {
+            if (_pausePresenter == null)
+            {
+                _pausePresenter = GameplayPausePresenter.EnsureInScene();
+            }
+
+            if (_pausePresenter != null)
+            {
+                _pausePresenter.OpenPause();
+                return;
+            }
+
             SessionManager.Instance?.TakeSnapshot();
             SceneNavigator.Instance?.OpenMainMenu();
         }
 
         public void OpenStore()
         {
+            if (InputManager.Instance != null && !InputManager.Instance.CanAcceptGameplayInput)
+            {
+                return;
+            }
+
             SceneNavigator.Instance?.OpenStore();
         }
 
@@ -39,7 +58,7 @@ namespace WordSpinAlpha.Presentation
 
         private void RefreshLocalizedTexts()
         {
-            SetButtonLabel("MenuOpen", GetLocalized("menu"));
+            SetButtonLabel("MenuOpen", GetLocalized("pause"));
             SetButtonLabel("StoreOpen", GetLocalized("store"));
             SetStandaloneLabel("SwipeHint", GetLocalized("swipe_hint"));
         }
@@ -85,7 +104,7 @@ namespace WordSpinAlpha.Presentation
                 case "en":
                     return key switch
                     {
-                        "menu" => "Menu",
+                        "pause" => "Pause",
                         "store" => "Store",
                         "swipe_hint" => "Tap a letter, then swipe up",
                         _ => key
@@ -93,7 +112,7 @@ namespace WordSpinAlpha.Presentation
                 case "es":
                     return key switch
                     {
-                        "menu" => "Menu",
+                        "pause" => "Pausa",
                         "store" => "Tienda",
                         "swipe_hint" => "Toca una letra y desliza hacia arriba",
                         _ => key
@@ -101,7 +120,7 @@ namespace WordSpinAlpha.Presentation
                 case "de":
                     return key switch
                     {
-                        "menu" => "Menu",
+                        "pause" => "Pause",
                         "store" => "Shop",
                         "swipe_hint" => "Tippe einen Buchstaben und wische nach oben",
                         _ => key
@@ -109,7 +128,7 @@ namespace WordSpinAlpha.Presentation
                 default:
                     return key switch
                     {
-                        "menu" => "Menu",
+                        "pause" => "Duraklat",
                         "store" => "Magaza",
                         "swipe_hint" => "Bir harfe dokun, sonra yukari kaydir",
                         _ => key

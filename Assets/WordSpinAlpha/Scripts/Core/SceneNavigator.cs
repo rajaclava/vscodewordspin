@@ -10,12 +10,18 @@ namespace WordSpinAlpha.Core
         private bool _hasPendingGameplayRequest;
         private bool _resumeSavedSession;
         private int _pendingLevelId;
-        private string _returnSceneName = GameConstants.SceneMainMenu;
+        private string _returnSceneName = GameConstants.SceneHub;
+
+        public bool OpenEntryMenu()
+        {
+            _returnSceneName = GameConstants.SceneHub;
+            return LoadScene(GameConstants.SceneMainMenu, false);
+        }
 
         public bool OpenMainMenu()
         {
-            _returnSceneName = GameConstants.SceneMainMenu;
-            return LoadScene(GameConstants.SceneMainMenu, false);
+            _returnSceneName = GameConstants.SceneHub;
+            return LoadScene(GameConstants.SceneHub, false);
         }
 
         public bool OpenStore()
@@ -83,7 +89,7 @@ namespace WordSpinAlpha.Core
                 _pendingLevelId = SaveManager.Instance.Data.session.levelId;
             }
 
-            return LoadScene(string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneMainMenu : _returnSceneName, false);
+            return LoadScene(string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHub : _returnSceneName, false);
         }
 
         private static bool LoadScene(string sceneName, bool forceReloadCurrent)
@@ -117,7 +123,11 @@ namespace WordSpinAlpha.Core
 
         private static int ResolvePlayableProgressLevel()
         {
-            int requestedLevelId = SaveManager.Instance != null ? Mathf.Max(1, SaveManager.Instance.Data.progress.highestUnlockedLevel) : 1;
+            int requestedLevelId = 1;
+            if (SaveManager.Instance != null)
+            {
+                requestedLevelId = SaveManager.Instance.Data.progress.GetHighestUnlockedLevel(SaveManager.Instance.Data.languageCode);
+            }
             LevelCatalog levelCatalog = ContentService.Instance?.LoadLevels();
             LevelDefinition[] levels = levelCatalog != null ? levelCatalog.levels : null;
             if (levels == null || levels.Length == 0)

@@ -47,6 +47,387 @@ Planlarin ortak gosterdigi mevcut konum:
   - `DebugRewardedAdPresenter`
   halen mevcuttur.
 
+## 08.04.2026 Manuel Cogu ltma Durum Guncellemesi
+
+08.04.2026 tarihinde bu rapordaki ilk manuel sweep turunun bir kismi fiilen denenmistir.
+
+Bu turda manuel olarak cogu ltilip **orijinal hipotez kapsami icinde sorun vermedigi gorulen** maddeler:
+
+- `BUG-007`
+- `BUG-009`
+- `BUG-010`
+- `BUG-011`
+- `BUG-013`
+
+Onemli not:
+
+- Bu maddelerin rapordaki orijinal senaryo hipotezleri, 08.04.2026 manuel cogu ltma turunda **beklenen bozuk davranisi uretmemistir**.
+- Ancak ayni save/session/restore turu sirasinda, ana hipotezlerden ayri bir **ek puan persistence sorunu** yakalanmistir.
+
+Ek yakalanan sorun:
+
+- aktif level sirasinda biriken skor save/session snapshot icine yazilmadigi icin
+- menuye cikis, store donusu, session restore ve uygulama yeniden acilis gibi akislar sonrasinda
+- gameplay state geri gelse bile **puan 0'dan basliyormus gibi gorunuyordu**
+
+Sorunun teknik nedeni:
+
+- `SessionSnapshot` icinde aktif skor state'i tutulmuyordu
+- `ScoreManager` runtime state'i save zincirine hic girmiyordu
+- `GameManager` restore sirasinda `LevelFlowController` state'ini geri yukluyor ama skor state'i ayrica geri kurulmuyordu
+
+Nasil cozuldu:
+
+- `SessionSnapshot` modeline aktif skor alanlari eklendi
+- `ScoreManager` icine session snapshot doldurma ve session restore metodlari eklendi
+- `GameManager` restore akisinda gameplay state ile birlikte skor state'i de geri yukler hale getirildi
+- test/sandbox reset akisinda bu yeni skor alanlari da temizlendi
+
+Bu guncelleme ile 08.04.2026 itibariyla:
+
+- `BUG-007`, `BUG-009`, `BUG-010`, `BUG-011`, `BUG-013` ilk manuel sweep turunda **dogrudan cogu ltu rulmus bug olarak acik kalmamistir**
+- fakat bu maddeleri test ederken yakalanan **puan persistence sorunu** kapatilmistir
+- ayni save/session ailesine ait oldugu icin ileride benzer regressions tekrar kontrol edilmelidir
+
+08.04.2026 ayni manuel sweep turunda ek olarak su maddeler de netlestirilmistir:
+
+- `BUG-014`
+  - manuel olarak cogu ltulmus
+  - fail/continue modal ve info card acikken klavye inputunun acik kalmasi dogrulanmistir
+  - sorun kapatilmistir
+  - cozum:
+    - fail modal, info card ve level completion state'lerinde gameplay input merkezi olarak kapatildi
+    - klavye tuslari sadece mantiksal olarak degil, gorsel olarak da `interactable = false` hale getirildi
+- `BUG-027`
+  - manuel olarak cogu ltulmus
+  - mevcut hipotez kapsami icinde sorun vermemistir
+  - ilk turda acik dogrulanmis bug olarak kalmamistir
+- `BUG-029`
+  - manuel olarak cogu ltulmus ve gercek sorun dogrulanmistir
+  - dil degisimi sonrasi ilerleme tek global progress uzerinden okundugu icin oyuncu secili dilin kendi level ilerlemesinden degil, baska dilin acik ilerlemesinden basliyordu
+  - sorun kapatilmistir
+  - cozum:
+    - progress modeli dil bazli ilerleme tutacak sekilde genisletildi
+    - eski save yapisi bozulmadan migrate edildi
+    - `Play` ve level summary akislari secili dilin kendi progress state'ini okuyacak sekilde guncellendi
+    - level reward / first-clear coin takibi global birakildi; dil degistirerek ayni level odulu tekrar kazanilamaz
+
+08.04.2026 ilk manuel bug cogu ltma turu sonucu:
+
+- ilk tur hedef listesinde test edilen maddeler:
+  - `BUG-007`
+  - `BUG-009`
+  - `BUG-010`
+  - `BUG-011`
+  - `BUG-013`
+  - `BUG-014`
+  - `BUG-027`
+  - `BUG-029`
+- bu turun sonunda:
+  - save/session ailesindeki puan persistence sorunu kapatildi
+  - `BUG-014` kapatildi
+  - `BUG-029` kapatildi
+  - `BUG-027` icin sorun cogu ltulemedi
+- ilk tur manuel cogu ltma fazi tamamlandi
+- sonraki adim, ilk tur listesinde kalan maddelerin yeni blok halinde ele alinmasidir
+
+08.04.2026 ayni gun icindeki sonraki manuel taramada su iki madde de netlestirilmistir:
+
+- `BUG-024`
+  - `BUG-029` duzeltmesi sonrasinda onceki etkisini kaybetmistir
+  - dil degisimi artik her dili kendi progress/session mantigi ile ayirdigi icin, bu bug ilk formuyla aktif cogu ltilebilir bug olmaktan cikmistir
+  - bu nedenle su asamada acik hotfix maddesi olarak tutulmamaktadir
+- `BUG-025`
+  - mevcut akista oyuncu continue reklam akisi sirasinda menu veya magaza tuslarina gidememektedir
+  - bu nedenle ilk hipotez kapsami icindeki "yanlis state'e continue callback uygulanmasi" senaryosu aktif bug olarak cogu ltulememistir
+
+Ancak `BUG-025` cogu ltma denemesi sirasinda yeni bir turev sorun yakalanmistir:
+
+- oyuncu fail sonrasi continue/reklam akisini bitirip oyuna dondukten sonra
+- menu veya magazaya gidip geri geldiginde
+- klavye kilitli kaliyor ve harf basimina izin vermiyordu
+
+Sorunun teknik nedeni:
+
+- session restore zincirinde `pending result` yokken bile result restore dali input'u pasif birakabiliyordu
+- yani fail modal ve info card icin ekledigimiz koruma, continue sonrasi menu/store donusunde yan etki uretmisti
+
+Nasil cozuldu:
+
+- restore akisinda input sadece gercekten `pending info card` veya `pending result` varsa kapali tutulur hale getirildi
+- normal continue sonrasi menu/store donusunde, fail cözümü pending degilse gameplay input tekrar aktiflestirilir
+- boylece `BUG-014` icin kapatilan modal/input korumasi korunurken, continue sonrasi geri donuslerde klavye kilitlenmesi giderildi
+
+08.04.2026 bu guncellemenin sonucu:
+
+- `BUG-024` su anki mimaride aktif bug adayi olarak oncelik listesinden dusmustur
+- `BUG-025` ana hipotezi aktif olarak cogu ltulememistir
+- fakat ayni testte yakalanan continue-sonrasi menu/store donus klavye kilitlenmesi sorunu kapatilmistir
+
+08.04.2026 ikinci tur manuel cogu ltma sonucunda asagidaki maddeler de netlesmistir:
+
+- `BUG-026`
+  - manuel olarak cogu ltilmistir
+  - mevcut hipotez kapsami icinde sorun vermemistir
+  - su asamada acik hotfix maddesi olarak kalmamistir
+- `BUG-034`
+  - manuel olarak cogu ltilmistir
+  - editorde gorulen icerik/shape ile oyun ici gorunum arasinda bu turda sorun cikarilmamistir
+  - su asamada acik hotfix maddesi olarak kalmamistir
+- `BUG-068`
+  - manuel olarak cogu ltilmistir
+  - play sirasinda uygulanan editor degisikliklerinin aktif oyunu bozdugu bir durum bu turda cikarilmamistir
+  - su asamada acik hotfix maddesi olarak kalmamistir
+
+08.04.2026 itibariyla ikinci turdan sonra ertelenen maddeler:
+
+- `BUG-037`
+  - local editor force / remote hotfix / override precedence riski
+  - su an oyuncuya donuk ana alpha runtime akisini bloklamiyor
+  - asil onemi, final canli ayar ve web uygulamasi gecisinde ortaya cikacak
+- `BUG-040`
+  - test mode / sandbox save snapshot izolasyonu riski
+  - su an gelistirici test katmani icinde izlenmesi gereken bir alan
+  - asil onemi final release-safe build, liveops ve web panel gecisinde artacak
+
+Bu nedenle 08.04.2026 karari:
+
+- ikinci turda dogrudan oyuncu akisina dokunan runtime-kritik maddeler once kapatildi veya elendi
+- `BUG-037` ve `BUG-040` ise teknik olarak notta tutulup
+- final oyun hazirligi, release-safe build ve web/live-config gecisi asamasinda yeniden acilmak uzere ertelendi
+
+## 08.04.2026 Sonu - Alpha Demo Icin Acil Bug Durumu
+
+08.04.2026 sonunda, bu raporun manuel cogu ltulen bloklari uzerinden varilan karar su sekildedir:
+
+- alpha demo oyuncu akisina dogrudan etki eden
+- hemen hotfix gerektiren
+- manuel olarak siradaki turda zorunlu cogu ltulmesi gereken
+
+yeni bir bug maddesi kalmamistir.
+
+Bu karar neden verilmiştir:
+
+1. ilk iki turda test edilen runtime-kritik maddeler ya cogu ltulememis ya da kapatilmistir
+2. kapanan maddeler:
+   - `BUG-014`
+   - `BUG-029`
+   - score persistence turevi save/session sorunu
+   - `BUG-025` testinde bulunan continue-sonrasi menu/store donus input kilidi
+3. sorun vermeyen veya aktif bug olarak kalmayan maddeler:
+   - `BUG-007`
+   - `BUG-009`
+   - `BUG-010`
+   - `BUG-011`
+   - `BUG-013`
+   - `BUG-024`
+   - `BUG-025` ana hipotezi
+   - `BUG-026`
+   - `BUG-027`
+   - `BUG-034`
+   - `BUG-068`
+
+Bu nedenle bundan sonraki erteleme karari "bug unutulsun" anlami tasimaz. Anlami sudur:
+
+- oyuncu deneyimini ve alpha demo akisini bloklamayan
+- daha cok live-config, remote override, sandbox izolasyonu, telemetry veya market/release gecisiyle ilgili
+
+maddeler ayri kovaya alinmistir.
+
+### Erteleme Gerekceleri - Ayrintili
+
+#### `BUG-037` neden ertelendi
+
+Konu:
+
+- editor local force / remote hotfix precedence riski
+
+Neden alpha demo icin acil degil:
+
+- su an canli web panel, cloud publish ve production remote rollout aktif kullanilmiyor
+- bugun oyuncunun telefondaki alpha demo akisini bozan ana risk bu degil
+- bu madde daha cok "finalde local override mi, remote override mi kazaniyor" sorusuna ait
+
+Ne zaman yeniden acilacak:
+
+- web uygulamasi
+- remote manifest/version
+- cloud uzerinden canli ayar
+
+aktif olarak kurulmaya baslandiginda
+
+Neden o zaman daha dogru:
+
+- bu bug ancak gercek remote publish zinciri varken anlamli sekilde dogrulanabilir
+- simdi zorlayici test yapmak, teorik kalir ve gereksiz zaman kaybettirir
+
+#### `BUG-040` neden ertelendi
+
+Konu:
+
+- test mode / sandbox snapshot restore yeni state'i ezebilir
+
+Neden alpha demo icin acil degil:
+
+- bu risk oyuncu runtime'indan cok geliştirici/test mod izolasyonuna ait
+- su an alpha oyuncu build'inin ana deneyimini bozan bir davranis olarak cogu ltulmedi
+- asil kritikligi, release-safe build ve liveops oncesi artacak
+
+Ne zaman yeniden acilacak:
+
+- test katmanlarini shipping davranisindan ayirma
+- release build profile
+- markete hazir package
+
+asamasinda
+
+Neden o zaman daha dogru:
+
+- o noktada `Default / Free / Premium` ayriminin oyuncu build'ine sizmadigi kesinlestirilecek
+- sandbox snapshot mantigi tam release baglaminda yeniden kontrol edilecek
+
+#### `BUG-043` neden ertelendi
+
+Konu:
+
+- store presenter production provider'i bypass edebilir
+
+Neden alpha demo icin acil degil:
+
+- su an store akisi bilerek `MockPurchaseService` ve preview/practice provider mantigiyla calisiyor
+- gercek billing provider olmadigi icin bu bugun tam dogrulanmasi bugunden verimli degil
+
+Ne zaman yeniden acilacak:
+
+- production billing
+- gercek pricing provider
+- entitlement / restore purchase
+
+gecisinde
+
+#### `BUG-046` neden ertelendi
+
+Konu:
+
+- theme fiyat fallback ve provider uyumsuzlugu
+
+Neden alpha demo icin acil degil:
+
+- final storefront pricing henuz aktif degil
+- su an preview pricing ile gameplay/store akisi test ediliyor
+
+Ne zaman yeniden acilacak:
+
+- gercek Play Billing fiyatlari ve storefront quote sistemi baglandiginda
+
+#### `BUG-064` ve `BUG-065` neden ertelendi
+
+Konu:
+
+- telemetry queue trim
+- pending telemetry count / queue uyumu
+
+Neden alpha demo icin acil degil:
+
+- telemetry su an production veri operasyonu degil
+- oyuncunun anlik alpha deneyimini bozan ana blocker bunlar degil
+
+Ne zaman yeniden acilacak:
+
+- telemetry upload/flush/ack zinciri finalize oldugunda
+- web panel ve analiz tarafina veri akmaya basladiginda
+
+#### `BUG-066` ve `BUG-067` neden ertelendi
+
+Konu:
+
+- partial remote manifest
+- tek dil remote override / diger dil local fallback
+
+Neden alpha demo icin acil degil:
+
+- bu maddeler canli locale/content operasyonu ile ilgilidir
+- bugun yerel editor ve local content odakli calisiyoruz
+
+Ne zaman yeniden acilacak:
+
+- web panelden locale bazli publish
+- cloud remote override
+- staged rollout
+
+devreye girdiginde
+
+#### `BUG-074` neden ertelendi
+
+Konu:
+
+- release build'e debug/test presenter sizmasi
+
+Neden alpha demo icin acil degil:
+
+- bu madde markete cikis oncesi son kapidan gecis testidir
+- alpha icinde ic tooling ve test katmanlari bilerek acik tutuluyor
+
+Ne zaman yeniden acilacak:
+
+- release-safe build
+- market package
+- final smoke matrix
+
+asamasinda
+
+#### `BUG-075` ve `BUG-076` neden ertelendi
+
+Konu:
+
+- resources yukunun buyumesi
+- editor/reference assetlerinin build'e sizmasi
+
+Neden alpha demo icin acil degil:
+
+- bunlar final content lock ve build optimizasyon asamasinda gercek degerini gosterir
+- bugun erken optimize etmek yerine once alpha kapsam kilitlenmelidir
+
+Ne zaman yeniden acilacak:
+
+- alpha content lock sonrasi
+- final APK boyutu ve memory olcumleri yapilirken
+
+#### `BUG-077` neden ertelendi
+
+Konu:
+
+- production provider gecisinde store/editor parity kirilmasi
+
+Neden alpha demo icin acil degil:
+
+- gercek production provider'lar henuz baglanmadi
+- bugun bunu zorlamak teorik kalir
+
+Ne zaman yeniden acilacak:
+
+- production monetization pass
+- billing/rewarded/pricing gercek provider gecisi
+
+asamasinda
+
+### 08.04.2026 Sonu Net Karar
+
+Bu rapora gore su an:
+
+- alpha demo icin acil manuel bug cogu ltma zorunlulugu kalmamistir
+- siradaki mantikli odak yeni runtime bug kovalamak degil
+- alpha icerik, tasarim, hissiyat ve final hazirlik sirasini surdurmektir
+
+Ertelenen maddeler unutulmaz. Bunlar:
+
+- `final live-config gecisi`
+- `web panel`
+- `release-safe build`
+- `market hazirligi`
+
+asamalarinda yeniden acilacak resmi bekleme listesidir.
+
 ## Metodoloji
 
 Bu raporun her maddesi su mantikla yazildi:
