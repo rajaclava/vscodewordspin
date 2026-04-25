@@ -401,10 +401,6 @@ namespace WordSpinAlpha.Presentation
 
             string normalized = GameConstants.NormalizeLanguageCode(_pendingLanguageCode);
             SaveManager.Instance.Data.languageCode = normalized;
-            SaveManager.Instance.Data.session = new SessionSnapshot
-            {
-                languageCode = normalized
-            };
             SaveManager.Instance.Save();
 
             ContentService.Instance?.RefreshLanguageContext();

@@ -7,6 +7,8 @@ namespace WordSpinAlpha.Core
     public class SaveManager : Singleton<SaveManager>
     {
         private const float SaveThrottleSeconds = 0.35f;
+        private const string TempFileSuffix = ".tmp";
+        private const string BackupFileSuffix = ".bak";
 
         private PlayerSaveData _data;
         private string _savePath;
@@ -43,6 +45,7 @@ namespace WordSpinAlpha.Core
             {
                 _data = new PlayerSaveData();
                 _data.progress.EnsureLanguageProgressMigrated(_data.languageCode);
+                _data.EnsureSessionLocalizationMigrated();
                 WriteToDisk();
                 return;
             }
@@ -53,18 +56,22 @@ namespace WordSpinAlpha.Core
                 _data = JsonUtility.FromJson<PlayerSaveData>(json);
                 if (_data == null)
                 {
+                    BackupCorruptedSave();
                     _data = new PlayerSaveData();
+                    WriteToDisk();
                 }
             }
             catch (Exception exception)
             {
                 Debug.LogWarning($"[SaveManager] Failed to load save, resetting. {exception.Message}");
+                BackupCorruptedSave();
                 _data = new PlayerSaveData();
                 WriteToDisk();
             }
 
             _data.languageCode = GameConstants.NormalizeLanguageCode(_data.languageCode);
             _data.progress.EnsureLanguageProgressMigrated(_data.languageCode);
+            _data.EnsureSessionLocalizationMigrated();
         }
 
         public void Save()
@@ -74,6 +81,8 @@ namespace WordSpinAlpha.Core
                 _data = new PlayerSaveData();
             }
 
+            _data.EnsureSessionLocalizationMigrated();
+            _data.SyncLegacySessionFromCurrentLanguage();
             _savePending = true;
             if (Time.unscaledTime >= _nextSaveAllowedAt)
             {
@@ -90,6 +99,7 @@ namespace WordSpinAlpha.Core
             _data = data ?? new PlayerSaveData();
             _data.languageCode = GameConstants.NormalizeLanguageCode(_data.languageCode);
             _data.progress.EnsureLanguageProgressMigrated(_data.languageCode);
+            _data.EnsureSessionLocalizationMigrated();
             Save();
         }
 
@@ -119,9 +129,61 @@ namespace WordSpinAlpha.Core
             }
 
             string json = JsonUtility.ToJson(_data, true);
-            File.WriteAllText(_savePath, json);
+            string directory = Path.GetDirectoryName(_savePath);
+            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            string tempPath = _savePath + TempFileSuffix;
+            string backupPath = _savePath + BackupFileSuffix;
+
+            File.WriteAllText(tempPath, json);
+
+            if (File.Exists(_savePath))
+            {
+                try
+                {
+                    File.Replace(tempPath, _savePath, backupPath, true);
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    File.Copy(tempPath, _savePath, true);
+                    if (File.Exists(tempPath))
+                    {
+                        File.Delete(tempPath);
+                    }
+                }
+            }
+            else
+            {
+                File.Move(tempPath, _savePath);
+            }
+
             _savePending = false;
             _nextSaveAllowedAt = Time.unscaledTime + SaveThrottleSeconds;
+        }
+
+        private void BackupCorruptedSave()
+        {
+            if (string.IsNullOrWhiteSpace(_savePath) || !File.Exists(_savePath))
+            {
+                return;
+            }
+
+            try
+            {
+                string directory = Path.GetDirectoryName(_savePath);
+                string fileName = Path.GetFileNameWithoutExtension(_savePath);
+                string extension = Path.GetExtension(_savePath);
+                string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss_fff");
+                string corruptedCopyPath = Path.Combine(directory ?? string.Empty, $"{fileName}.corrupt_{timestamp}{extension}");
+                File.Copy(_savePath, corruptedCopyPath, false);
+            }
+            catch (Exception backupException)
+            {
+                Debug.LogWarning($"[SaveManager] Failed to backup corrupted save. {backupException.Message}");
+            }
         }
     }
 }

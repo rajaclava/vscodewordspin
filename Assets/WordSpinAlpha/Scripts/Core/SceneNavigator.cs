@@ -45,9 +45,10 @@ namespace WordSpinAlpha.Core
         {
             if (CanResumeSavedSession())
             {
+                SessionSnapshot localizedSession = SaveManager.Instance.Data.GetCurrentLanguageSession();
                 _hasPendingGameplayRequest = true;
                 _resumeSavedSession = true;
-                _pendingLevelId = SaveManager.Instance.Data.session.levelId;
+                _pendingLevelId = localizedSession.levelId;
                 return LoadScene(GameConstants.SceneGameplay, true);
             }
 
@@ -85,9 +86,10 @@ namespace WordSpinAlpha.Core
         {
             if (_returnSceneName == GameConstants.SceneGameplay && CanResumeSavedSession())
             {
+                SessionSnapshot localizedSession = SaveManager.Instance.Data.GetCurrentLanguageSession();
                 _hasPendingGameplayRequest = true;
                 _resumeSavedSession = true;
-                _pendingLevelId = SaveManager.Instance.Data.session.levelId;
+                _pendingLevelId = localizedSession.levelId;
             }
 
             return LoadScene(string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHubPreview : _returnSceneName, false);
@@ -114,12 +116,17 @@ namespace WordSpinAlpha.Core
 
         private static bool CanResumeSavedSession()
         {
-            if (SaveManager.Instance == null || !SaveManager.Instance.Data.session.hasActiveSession)
+            if (SaveManager.Instance == null)
             {
                 return false;
             }
 
-            SessionSnapshot session = SaveManager.Instance.Data.session;
+            SessionSnapshot session = SaveManager.Instance.Data.GetCurrentLanguageSession();
+            if (!session.hasActiveSession)
+            {
+                return false;
+            }
+
             if (session.levelId <= 0)
             {
                 return false;

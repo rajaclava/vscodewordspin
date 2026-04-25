@@ -50,6 +50,13 @@ namespace WordSpinAlpha.Core
     }
 
     [Serializable]
+    public class LanguageSessionState
+    {
+        public string languageCode = GameConstants.DefaultLanguageCode;
+        public SessionSnapshot session = new SessionSnapshot();
+    }
+
+    [Serializable]
     public class EnergyState
     {
         public int currentEnergy = GameConstants.DefaultMaxEnergy;
@@ -221,6 +228,7 @@ namespace WordSpinAlpha.Core
     {
         public string languageCode = "tr";
         public SessionSnapshot session = new SessionSnapshot();
+        public List<LanguageSessionState> localizedSessions = new List<LanguageSessionState>();
         public EnergyState energy = new EnergyState();
         public MembershipState membership = new MembershipState();
         public ThemeOwnershipState themes = new ThemeOwnershipState();
@@ -229,5 +237,239 @@ namespace WordSpinAlpha.Core
         public MetricsState metrics = new MetricsState();
         public RemoteContentState remoteContent = new RemoteContentState();
         public TelemetryState telemetry = new TelemetryState();
+
+        public void EnsureSessionLocalizationMigrated()
+        {
+            languageCode = GameConstants.NormalizeLanguageCode(languageCode);
+            if (session == null)
+            {
+                session = new SessionSnapshot();
+            }
+
+            EnsureLocalizedSessionsInitialized();
+            NormalizeLocalizedSessions();
+
+            string migrationLanguageCode = ResolveSessionLanguageCode(session, languageCode);
+            if (HasMeaningfulSessionData(session))
+            {
+                if (!TryGetSessionForLanguage(migrationLanguageCode, out SessionSnapshot existing) || !existing.hasActiveSession)
+                {
+                    SetSessionForLanguage(migrationLanguageCode, session);
+                }
+            }
+            else if (!TryGetSessionForLanguage(languageCode, out _))
+            {
+                SetSessionForLanguage(languageCode, new SessionSnapshot { languageCode = languageCode });
+            }
+
+            SyncLegacySessionFromCurrentLanguage();
+        }
+
+        public SessionSnapshot GetSessionForLanguage(string requestedLanguageCode)
+        {
+            string normalizedLanguageCode = GameConstants.NormalizeLanguageCode(requestedLanguageCode);
+            EnsureLocalizedSessionsInitialized();
+
+            int index = FindLanguageSessionIndex(normalizedLanguageCode);
+            if (index >= 0)
+            {
+                LanguageSessionState existing = localizedSessions[index];
+                if (existing.session == null)
+                {
+                    existing.session = new SessionSnapshot();
+                }
+
+                existing.languageCode = normalizedLanguageCode;
+                existing.session.languageCode = normalizedLanguageCode;
+                return existing.session;
+            }
+
+            LanguageSessionState created = new LanguageSessionState
+            {
+                languageCode = normalizedLanguageCode,
+                session = new SessionSnapshot
+                {
+                    languageCode = normalizedLanguageCode
+                }
+            };
+            localizedSessions.Add(created);
+            return created.session;
+        }
+
+        public bool TryGetSessionForLanguage(string requestedLanguageCode, out SessionSnapshot snapshot)
+        {
+            string normalizedLanguageCode = GameConstants.NormalizeLanguageCode(requestedLanguageCode);
+            EnsureLocalizedSessionsInitialized();
+            int index = FindLanguageSessionIndex(normalizedLanguageCode);
+            if (index < 0)
+            {
+                snapshot = null;
+                return false;
+            }
+
+            LanguageSessionState existing = localizedSessions[index];
+            if (existing.session == null)
+            {
+                existing.session = new SessionSnapshot();
+            }
+
+            existing.languageCode = normalizedLanguageCode;
+            existing.session.languageCode = normalizedLanguageCode;
+            snapshot = existing.session;
+            return true;
+        }
+
+        public void SetSessionForLanguage(string requestedLanguageCode, SessionSnapshot snapshot)
+        {
+            string normalizedLanguageCode = GameConstants.NormalizeLanguageCode(requestedLanguageCode);
+            SessionSnapshot cloned = CloneSessionSnapshot(snapshot, normalizedLanguageCode);
+            EnsureLocalizedSessionsInitialized();
+
+            int index = FindLanguageSessionIndex(normalizedLanguageCode);
+            if (index >= 0)
+            {
+                LanguageSessionState existing = localizedSessions[index];
+                existing.languageCode = normalizedLanguageCode;
+                existing.session = cloned;
+                return;
+            }
+
+            localizedSessions.Add(new LanguageSessionState
+            {
+                languageCode = normalizedLanguageCode,
+                session = cloned
+            });
+        }
+
+        public void ClearSessionForLanguage(string requestedLanguageCode)
+        {
+            string normalizedLanguageCode = GameConstants.NormalizeLanguageCode(requestedLanguageCode);
+            SetSessionForLanguage(normalizedLanguageCode, new SessionSnapshot { languageCode = normalizedLanguageCode });
+        }
+
+        public SessionSnapshot GetCurrentLanguageSession()
+        {
+            return GetSessionForLanguage(languageCode);
+        }
+
+        public void SetCurrentLanguageSession(SessionSnapshot snapshot)
+        {
+            SetSessionForLanguage(languageCode, snapshot);
+        }
+
+        public void ClearCurrentLanguageSession()
+        {
+            ClearSessionForLanguage(languageCode);
+        }
+
+        public void SyncLegacySessionFromCurrentLanguage()
+        {
+            session = CloneSessionSnapshot(GetCurrentLanguageSession(), languageCode);
+        }
+
+        private void EnsureLocalizedSessionsInitialized()
+        {
+            if (localizedSessions == null)
+            {
+                localizedSessions = new List<LanguageSessionState>();
+            }
+        }
+
+        private void NormalizeLocalizedSessions()
+        {
+            for (int i = 0; i < localizedSessions.Count; i++)
+            {
+                LanguageSessionState entry = localizedSessions[i];
+                if (entry == null)
+                {
+                    entry = new LanguageSessionState();
+                    localizedSessions[i] = entry;
+                }
+
+                entry.languageCode = GameConstants.NormalizeLanguageCode(entry.languageCode);
+                if (entry.session == null)
+                {
+                    entry.session = new SessionSnapshot();
+                }
+
+                entry.session.languageCode = entry.languageCode;
+            }
+        }
+
+        private int FindLanguageSessionIndex(string normalizedLanguageCode)
+        {
+            for (int i = 0; i < localizedSessions.Count; i++)
+            {
+                LanguageSessionState entry = localizedSessions[i];
+                if (entry == null)
+                {
+                    continue;
+                }
+
+                if (GameConstants.NormalizeLanguageCode(entry.languageCode) == normalizedLanguageCode)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static bool HasMeaningfulSessionData(SessionSnapshot snapshot)
+        {
+            return snapshot != null &&
+                   (snapshot.hasActiveSession ||
+                    snapshot.levelId > 0 ||
+                    snapshot.pendingFailResolution ||
+                    snapshot.pendingInfoCard ||
+                    snapshot.pendingLevelResult);
+        }
+
+        private static string ResolveSessionLanguageCode(SessionSnapshot snapshot, string fallbackLanguageCode)
+        {
+            if (snapshot != null && !string.IsNullOrWhiteSpace(snapshot.languageCode))
+            {
+                return GameConstants.NormalizeLanguageCode(snapshot.languageCode);
+            }
+
+            return GameConstants.NormalizeLanguageCode(fallbackLanguageCode);
+        }
+
+        private static SessionSnapshot CloneSessionSnapshot(SessionSnapshot source, string fallbackLanguageCode)
+        {
+            SessionSnapshot clone;
+            if (source == null)
+            {
+                clone = new SessionSnapshot();
+            }
+            else
+            {
+                string json = JsonUtility.ToJson(source);
+                clone = JsonUtility.FromJson<SessionSnapshot>(json) ?? new SessionSnapshot();
+            }
+
+            clone.languageCode = ResolveSessionLanguageCode(clone, fallbackLanguageCode);
+            if (clone.revealedSlotIndices == null)
+            {
+                clone.revealedSlotIndices = new List<int>();
+            }
+
+            if (clone.revealedTipLocalPoints == null)
+            {
+                clone.revealedTipLocalPoints = new List<Vector2>();
+            }
+
+            if (clone.revealedPinLocalPositions == null)
+            {
+                clone.revealedPinLocalPositions = new List<Vector2>();
+            }
+
+            if (clone.revealedPinLocalRotations == null)
+            {
+                clone.revealedPinLocalRotations = new List<float>();
+            }
+
+            return clone;
+        }
     }
 }

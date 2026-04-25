@@ -148,6 +148,11 @@ namespace WordSpinAlpha.Core
             if (TestPlayerModeManager.Instance != null &&
                 TestPlayerModeManager.Instance.TryGetEnergyOverride(out maxEnergy, out refillMinutes, out bypassEntryEnergy))
             {
+                if (DevTestPolicy.IsEnergyBypassEnabled())
+                {
+                    bypassEntryEnergy = true;
+                }
+
                 return;
             }
 
@@ -157,6 +162,11 @@ namespace WordSpinAlpha.Core
                                EconomyManager.Instance.PremiumMembershipActive &&
                                _config != null &&
                                _config.bypassForPremiumMembership;
+
+            if (DevTestPolicy.IsEnergyBypassEnabled())
+            {
+                bypassEntryEnergy = true;
+            }
         }
     }
 }

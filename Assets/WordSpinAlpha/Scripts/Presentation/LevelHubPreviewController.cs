@@ -82,6 +82,12 @@ namespace WordSpinAlpha.Presentation
         private Button resumePromptContinueButton;
         private Button resumePromptRestartButton;
         private Button resumePromptCancelButton;
+        private GameObject replayWarningPromptRoot;
+        private Button replayWarningConfirmButton;
+        private Button replayWarningCancelButton;
+        private TextMeshProUGUI replayWarningBodyLabel;
+        private int pendingReplayLevelId;
+        private Button temporaryMenuTestButton;
         private HubPreviewTab activeTab = HubPreviewTab.Journey;
 
         private static int pendingScrollToLevel = -1;
@@ -173,6 +179,8 @@ namespace WordSpinAlpha.Presentation
             EnsureRuntimeDefaults();
             LoadCachedLevels();
             EnsureResumePrompt();
+            EnsureReplayWarningPrompt();
+            EnsureTemporaryMenuTestButton();
 
             if (!Application.isPlaying)
             {
@@ -260,8 +268,14 @@ namespace WordSpinAlpha.Presentation
         {
             int selectedLevel = SelectedLevelId;
             int highestUnlockedLevel = GetHighestUnlockedLevel();
-            if (selectedLevel > highestUnlockedLevel)
+            bool lockBypassEnabled = DevTestPolicy.IsHubLevelUnlockBypassEnabled();
+            if (!lockBypassEnabled && selectedLevel > highestUnlockedLevel)
             {
+                if (TrySmoothAlignToActiveSessionLevel())
+                {
+                    return;
+                }
+
                 Debug.LogWarning($"[HubPreview] Kilitli seviye baslatilamaz. Secili={selectedLevel}, Acik={highestUnlockedLevel}");
                 return;
             }
@@ -275,6 +289,12 @@ namespace WordSpinAlpha.Presentation
             if (CanResumeSelectedLevel())
             {
                 ShowResumePrompt();
+                return;
+            }
+
+            if (ShouldShowReplayWarning(selectedLevel, highestUnlockedLevel, out int activeSessionLevel))
+            {
+                ShowReplayWarningPrompt(selectedLevel, activeSessionLevel);
                 return;
             }
 
@@ -347,6 +367,11 @@ namespace WordSpinAlpha.Presentation
 
         private static int GetHighestUnlockedLevel()
         {
+            if (DevTestPolicy.IsHubHighestUnlockedOverrideEnabled(out int forcedHighestUnlockedLevel))
+            {
+                return Mathf.Max(1, forcedHighestUnlockedLevel);
+            }
+
             if (SaveManager.Instance == null)
             {
                 return 1;
@@ -362,7 +387,7 @@ namespace WordSpinAlpha.Presentation
                 return false;
             }
 
-            SessionSnapshot session = SaveManager.Instance.Data.session;
+            SessionSnapshot session = SaveManager.Instance.Data.GetCurrentLanguageSession();
             return session != null &&
                    session.hasActiveSession &&
                    session.levelId == SelectedLevelId &&
@@ -370,6 +395,64 @@ namespace WordSpinAlpha.Presentation
                        GameConstants.NormalizeLanguageCode(session.languageCode),
                        CurrentLanguageCode(),
                        System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool ShouldShowReplayWarning(int selectedLevel, int highestUnlockedLevel, out int activeSessionLevel)
+        {
+            activeSessionLevel = 0;
+            if (selectedLevel > highestUnlockedLevel)
+            {
+                return false;
+            }
+
+            if (!TryGetActiveSessionLevelId(out activeSessionLevel))
+            {
+                return false;
+            }
+
+            return selectedLevel != activeSessionLevel;
+        }
+
+        private bool TrySmoothAlignToActiveSessionLevel()
+        {
+            if (!TryGetActiveSessionLevelId(out int activeSessionLevelId))
+            {
+                return false;
+            }
+
+            int targetCatalogIndex = FindCatalogIndexForLevelId(activeSessionLevelId);
+            if (snapRoutine != null)
+            {
+                StopCoroutine(snapRoutine);
+                snapRoutine = null;
+            }
+
+            snapRoutine = StartCoroutine(LerpScrollTo(targetCatalogIndex));
+            return true;
+        }
+
+        private static bool TryGetActiveSessionLevelId(out int levelId)
+        {
+            levelId = 0;
+            if (SaveManager.Instance == null || SaveManager.Instance.Data == null)
+            {
+                return false;
+            }
+
+            SessionSnapshot session = SaveManager.Instance.Data.GetCurrentLanguageSession();
+            if (session == null || !session.hasActiveSession || session.levelId <= 0)
+            {
+                return false;
+            }
+
+            string sessionLanguage = GameConstants.NormalizeLanguageCode(session.languageCode);
+            if (!string.Equals(sessionLanguage, CurrentLanguageCode(), StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            levelId = session.levelId;
+            return true;
         }
 
         private static string CurrentLanguageCode()
@@ -747,6 +830,121 @@ namespace WordSpinAlpha.Presentation
             }
         }
 
+        private void EnsureReplayWarningPrompt()
+        {
+            if (replayWarningPromptRoot != null)
+            {
+                replayWarningPromptRoot.SetActive(false);
+                return;
+            }
+
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
+            Canvas parentCanvas = GetComponentInParent<Canvas>();
+            Transform promptParent = parentCanvas != null ? parentCanvas.transform : transform;
+
+            replayWarningPromptRoot = new GameObject("ReplayWarningPromptOverlay", typeof(RectTransform), typeof(Image));
+            replayWarningPromptRoot.transform.SetParent(promptParent, false);
+            replayWarningPromptRoot.transform.SetAsLastSibling();
+            RectTransform overlayRect = replayWarningPromptRoot.GetComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            Image overlayImage = replayWarningPromptRoot.GetComponent<Image>();
+            overlayImage.color = new Color(0.03f, 0.06f, 0.10f, 0.78f);
+
+            GameObject panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
+            panel.transform.SetParent(replayWarningPromptRoot.transform, false);
+            RectTransform panelRect = panel.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            panelRect.sizeDelta = new Vector2(700f, 380f);
+            panelRect.anchoredPosition = Vector2.zero;
+            Image panelImage = panel.GetComponent<Image>();
+            panelImage.type = Image.Type.Simple;
+            panelImage.color = new Color(0.16f, 0.28f, 0.44f, 0.98f);
+
+            PromptLabel("Title", panel.transform, new Vector2(0f, 90f), new Vector2(560f, 54f), 34f, FontStyles.Bold, Color.white, "Kayitli Ilerleme Uyarisi");
+            replayWarningBodyLabel = PromptLabel("Body", panel.transform, new Vector2(0f, 20f), new Vector2(580f, 120f), 24f, FontStyles.Normal, new Color(0.94f, 0.97f, 1f),
+                "Kayitli bir ilerlemen var.\nBu leveli tekrar oynarsan mevcut kayitli ilerleme sifirlanabilir.");
+            replayWarningBodyLabel.enableWordWrapping = true;
+
+            replayWarningConfirmButton = PromptButton("ConfirmButton", panel.transform, new Vector2(0f, -80f), new Vector2(360f, 68f), new Color(0.84f, 0.43f, 0.22f, 1f), "Tekrar Oyna");
+            replayWarningCancelButton = PromptButton("CancelButton", panel.transform, new Vector2(0f, -160f), new Vector2(280f, 54f), new Color(0.18f, 0.24f, 0.31f, 1f), "Vazgec");
+
+            replayWarningConfirmButton.onClick.AddListener(OnReplayWarningConfirm);
+            replayWarningCancelButton.onClick.AddListener(OnReplayWarningCancel);
+
+            replayWarningPromptRoot.SetActive(false);
+        }
+
+        private void ShowReplayWarningPrompt(int selectedLevel, int sessionLevel)
+        {
+            EnsureReplayWarningPrompt();
+            pendingReplayLevelId = selectedLevel;
+            if (replayWarningBodyLabel != null)
+            {
+                replayWarningBodyLabel.text =
+                    $"Kayitli ilerlemen Level {sessionLevel} uzerinde.\n" +
+                    $"Level {selectedLevel} baslatilirsa Level {sessionLevel} kayitli ilerlemesi sifirlanabilir.\n" +
+                    "Devam etmek istiyor musun?";
+            }
+
+            if (replayWarningConfirmButton != null)
+            {
+                TextMeshProUGUI confirmLabel = replayWarningConfirmButton.GetComponentInChildren<TextMeshProUGUI>(true);
+                if (confirmLabel != null)
+                {
+                    confirmLabel.text = $"Level {selectedLevel} Oyna";
+                }
+            }
+
+            HideResumePrompt();
+            if (replayWarningPromptRoot != null)
+            {
+                replayWarningPromptRoot.SetActive(true);
+            }
+        }
+
+        private void HideReplayWarningPrompt()
+        {
+            pendingReplayLevelId = 0;
+            if (replayWarningPromptRoot != null)
+            {
+                replayWarningPromptRoot.SetActive(false);
+            }
+        }
+
+        private void OnReplayWarningConfirm()
+        {
+            int selectedReplayLevel = pendingReplayLevelId > 0 ? pendingReplayLevelId : SelectedLevelId;
+            HideReplayWarningPrompt();
+            if (SceneNavigator.Instance == null)
+            {
+                Debug.LogWarning("[HubPreview] SceneNavigator bulunamadi. Replay baslatilamadi.");
+                return;
+            }
+
+            bool started = SceneNavigator.Instance.OpenGameplayLevel(selectedReplayLevel, true);
+            if (started)
+            {
+                SetReturnScene();
+                SetReturnLevel(selectedReplayLevel);
+                return;
+            }
+
+            Debug.LogWarning($"[HubPreview] Replay seviyesi {selectedReplayLevel} baslatilamadi.");
+        }
+
+        private void OnReplayWarningCancel()
+        {
+            HideReplayWarningPrompt();
+        }
+
         private void OnResumeContinue()
         {
             HideResumePrompt();
@@ -772,6 +970,75 @@ namespace WordSpinAlpha.Presentation
         private void OnResumeCancel()
         {
             HideResumePrompt();
+        }
+
+        private void EnsureTemporaryMenuTestButton()
+        {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
+            if (temporaryMenuTestButton != null)
+            {
+                return;
+            }
+
+            Canvas parentCanvas = GetComponentInParent<Canvas>();
+            Transform buttonParent = parentCanvas != null ? parentCanvas.transform : transform;
+            Transform existing = buttonParent.Find("TempTestMenuButton");
+            if (existing != null)
+            {
+                temporaryMenuTestButton = existing.GetComponent<Button>();
+                if (temporaryMenuTestButton != null)
+                {
+                    temporaryMenuTestButton.onClick.RemoveAllListeners();
+                    temporaryMenuTestButton.onClick.AddListener(OpenEntryMenuForManualTesting);
+                }
+
+                return;
+            }
+
+            GameObject buttonObject = new GameObject("TempTestMenuButton", typeof(RectTransform), typeof(Image), typeof(Button));
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.SetParent(buttonParent, false);
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = new Vector2(0f, 1f);
+            rect.pivot = new Vector2(0f, 1f);
+            rect.anchoredPosition = new Vector2(16f, -16f);
+            rect.sizeDelta = new Vector2(140f, 52f);
+
+            Image image = buttonObject.GetComponent<Image>();
+            image.type = Image.Type.Simple;
+            image.color = new Color(0.17f, 0.24f, 0.33f, 0.92f);
+
+            temporaryMenuTestButton = buttonObject.GetComponent<Button>();
+            temporaryMenuTestButton.targetGraphic = image;
+            temporaryMenuTestButton.onClick.AddListener(OpenEntryMenuForManualTesting);
+
+            GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.SetParent(rect, false);
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = "MENU";
+            label.fontSize = 22f;
+            label.fontStyle = FontStyles.Bold;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = Color.white;
+            label.raycastTarget = false;
+
+            buttonObject.transform.SetAsLastSibling();
+        }
+
+        private void OpenEntryMenuForManualTesting()
+        {
+            // Temporary test navigation only; not a market-final UI flow decision.
+            SceneNavigator.Instance?.OpenEntryMenu();
         }
 
         private static TextMeshProUGUI PromptLabel(string name, Transform parent, Vector2 pos, Vector2 size, float fontSize, FontStyles style, Color color, string text)

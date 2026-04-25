@@ -37,7 +37,7 @@ namespace WordSpinAlpha.Core
             {
                 if (resumeSavedSession && CanRestoreActiveSession())
                 {
-                    RestoreGameplayStateFromSession(SaveManager.Instance.Data.session);
+                    RestoreGameplayStateFromSession(SaveManager.Instance.Data.GetCurrentLanguageSession());
                     return;
                 }
 
@@ -51,7 +51,7 @@ namespace WordSpinAlpha.Core
 
             if (CanRestoreActiveSession())
             {
-                RestoreGameplayStateFromSession(SaveManager.Instance.Data.session);
+                RestoreGameplayStateFromSession(SaveManager.Instance.Data.GetCurrentLanguageSession());
                 return;
             }
 
@@ -156,7 +156,7 @@ namespace WordSpinAlpha.Core
                 {
                     SaveManager.Instance.Data.progress.SetActiveCampaignId(languageCode, levelFlow.CurrentLevel.campaignId);
                 }
-                ClearPendingCompletionState(SaveManager.Instance.Data.session);
+                ClearPendingCompletionState(SaveManager.Instance.Data.GetCurrentLanguageSession());
                 SaveManager.Instance.Save();
             }
 
@@ -186,7 +186,7 @@ namespace WordSpinAlpha.Core
 
             if (CanRestoreActiveSession())
             {
-                RestoreGameplayStateFromSession(SaveManager.Instance.Data.session);
+                RestoreGameplayStateFromSession(SaveManager.Instance.Data.GetCurrentLanguageSession());
                 return;
             }
 
@@ -490,7 +490,15 @@ namespace WordSpinAlpha.Core
 
         private void EnterPendingFailResolutionStateIfNeeded()
         {
-            if (SaveManager.Instance == null || !SaveManager.Instance.Data.session.pendingFailResolution)
+            if (SaveManager.Instance == null)
+            {
+                _awaitingFailResolution = false;
+                SetGameplayInputEnabled(true);
+                return;
+            }
+
+            SessionSnapshot localizedSession = SaveManager.Instance.Data.GetCurrentLanguageSession();
+            if (!localizedSession.pendingFailResolution)
             {
                 _awaitingFailResolution = false;
                 SetGameplayInputEnabled(true);
@@ -535,9 +543,10 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            SaveManager.Instance.Data.session.hasActiveSession = true;
-            SaveManager.Instance.Data.session.pendingFailResolution = pending;
-            SaveManager.Instance.Data.session.questionHeartsRemaining = hearts;
+            SessionSnapshot localizedSession = SaveManager.Instance.Data.GetCurrentLanguageSession();
+            localizedSession.hasActiveSession = true;
+            localizedSession.pendingFailResolution = pending;
+            localizedSession.questionHeartsRemaining = hearts;
             SaveManager.Instance.Save();
         }
 
@@ -548,7 +557,7 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            SessionSnapshot snapshot = SaveManager.Instance.Data.session;
+            SessionSnapshot snapshot = SaveManager.Instance.Data.GetCurrentLanguageSession();
             _pendingInfoCardId = snapshot.pendingInfoCardId ?? string.Empty;
             _pendingQuestionAdvanceAfterInfoCard = snapshot.pendingQuestionAdvanceAfterInfoCard;
             _pendingLevelCompleteAfterInfoCard = snapshot.pendingLevelCompleteAfterInfoCard;
@@ -584,7 +593,7 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            PopulateSessionSnapshot(SaveManager.Instance.Data.session);
+            PopulateSessionSnapshot(SaveManager.Instance.Data.GetCurrentLanguageSession());
             SaveManager.Instance.Save();
         }
 
@@ -619,7 +628,7 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            _usedContinueInCurrentLevel = SaveManager.Instance.Data.session.usedContinueInCurrentLevel;
+            _usedContinueInCurrentLevel = SaveManager.Instance.Data.GetCurrentLanguageSession().usedContinueInCurrentLevel;
             if (_usedContinueInCurrentLevel)
             {
                 GameEvents.RaiseLevelContinueUsed(false);
@@ -642,12 +651,17 @@ namespace WordSpinAlpha.Core
 
         private static bool CanRestoreActiveSession()
         {
-            if (SaveManager.Instance == null || !SaveManager.Instance.Data.session.hasActiveSession)
+            if (SaveManager.Instance == null)
             {
                 return false;
             }
 
-            SessionSnapshot session = SaveManager.Instance.Data.session;
+            SessionSnapshot session = SaveManager.Instance.Data.GetCurrentLanguageSession();
+            if (!session.hasActiveSession)
+            {
+                return false;
+            }
+
             if (session.levelId <= 0)
             {
                 return false;

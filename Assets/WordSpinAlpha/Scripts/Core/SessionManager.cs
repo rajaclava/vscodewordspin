@@ -62,23 +62,24 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            SaveManager.Instance.Data.session.hasActiveSession = true;
-            SaveManager.Instance.Data.session.levelId = levelFlow.CurrentLevel.levelId;
-            SaveManager.Instance.Data.session.questionIndex = levelFlow.CurrentQuestionIndex;
-            SaveManager.Instance.Data.session.revealedLetters = revealedLetterOverride >= 0
+            SessionSnapshot localizedSession = SaveManager.Instance.Data.GetCurrentLanguageSession();
+            localizedSession.hasActiveSession = true;
+            localizedSession.levelId = levelFlow.CurrentLevel.levelId;
+            localizedSession.questionIndex = levelFlow.CurrentQuestionIndex;
+            localizedSession.revealedLetters = revealedLetterOverride >= 0
                 ? revealedLetterOverride
                 : levelFlow.CurrentLetterIndex;
-            SaveManager.Instance.Data.session.currentTargetSlotIndex = levelFlow.CurrentTargetSlotIndex;
-            SaveManager.Instance.Data.session.questionHeartsRemaining = QuestionLifeManager.Instance != null ? QuestionLifeManager.Instance.CurrentHearts : GameConstants.DefaultQuestionHearts;
-            SaveManager.Instance.Data.session.pendingFailResolution = GameManager.Instance != null && GameManager.Instance.IsAwaitingFailResolution;
-            SaveManager.Instance.Data.session.languageCode = levelFlow.LanguageCode;
-            SaveManager.Instance.Data.session.campaignId = levelFlow.CurrentLevel.campaignId;
-            SaveManager.Instance.Data.session.themeId = levelFlow.CurrentLevel.themeId;
-            SaveManager.Instance.Data.session.revealedSlotIndices = new List<int>(levelFlow.RevealedSlotHistory);
-            SaveManager.Instance.Data.session.revealedTipLocalPoints = new List<Vector2>(levelFlow.RevealedTipLocalHistory);
-            SaveManager.Instance.Data.session.revealedPinLocalPositions = new List<Vector2>(levelFlow.RevealedPinLocalPositionHistory);
-            SaveManager.Instance.Data.session.revealedPinLocalRotations = new List<float>(levelFlow.RevealedPinLocalRotationHistory);
-            GameManager.Instance?.PopulateSessionSnapshot(SaveManager.Instance.Data.session);
+            localizedSession.currentTargetSlotIndex = levelFlow.CurrentTargetSlotIndex;
+            localizedSession.questionHeartsRemaining = QuestionLifeManager.Instance != null ? QuestionLifeManager.Instance.CurrentHearts : GameConstants.DefaultQuestionHearts;
+            localizedSession.pendingFailResolution = GameManager.Instance != null && GameManager.Instance.IsAwaitingFailResolution;
+            localizedSession.languageCode = levelFlow.LanguageCode;
+            localizedSession.campaignId = levelFlow.CurrentLevel.campaignId;
+            localizedSession.themeId = levelFlow.CurrentLevel.themeId;
+            localizedSession.revealedSlotIndices = new List<int>(levelFlow.RevealedSlotHistory);
+            localizedSession.revealedTipLocalPoints = new List<Vector2>(levelFlow.RevealedTipLocalHistory);
+            localizedSession.revealedPinLocalPositions = new List<Vector2>(levelFlow.RevealedPinLocalPositionHistory);
+            localizedSession.revealedPinLocalRotations = new List<float>(levelFlow.RevealedPinLocalRotationHistory);
+            GameManager.Instance?.PopulateSessionSnapshot(localizedSession);
             SaveManager.Instance.Save();
         }
 
@@ -89,7 +90,7 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
-            SaveManager.Instance.Data.session = new SessionSnapshot();
+            SaveManager.Instance.Data.ClearCurrentLanguageSession();
             SaveManager.Instance.Save();
         }
 
