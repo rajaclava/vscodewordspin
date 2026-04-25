@@ -136,6 +136,12 @@ namespace WordSpinAlpha.Core
                 return;
             }
 
+            // PHASE 3: Preserve original canvas scaling for HubPreview
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == GameConstants.SceneHubPreview)
+            {
+                return;
+            }
+
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = referenceResolution;
             scaler.matchWidthOrHeight = canvasMatchWidthOrHeight;

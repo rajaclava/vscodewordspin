@@ -64,6 +64,10 @@ namespace WordSpinAlpha.Presentation
         [SerializeField] internal GameObject missionsPlaceholder;
         [SerializeField] internal GameObject profilePlaceholder;
         [SerializeField] internal GameObject storePlaceholder;
+        [SerializeField] private TextMeshProUGUI topBarEnergyLabel;
+        [SerializeField] private TextMeshProUGUI topBarHintLabel;
+        [SerializeField] private TextMeshProUGUI topBarCoinLabel;
+        [SerializeField] private TextMeshProUGUI topBarLanguageLabel;
         [SerializeField] private RailPoint[] railPoints = CloneDefaultRailPoints();
         [SerializeField, Min(1)] private int totalLevels = DefaultTotalLevels;
         [SerializeField, Min(20f)] private float dragPixelsPerLevel = 160f;
@@ -146,6 +150,24 @@ namespace WordSpinAlpha.Presentation
             return Mathf.Max(0, levelId - 1);
         }
 
+        private void OnEnable()
+        {
+            GameEvents.EntryEnergyChanged += HandleTopBarEnergyChanged;
+            GameEvents.SoftCurrencyChanged += HandleTopBarCurrencyChanged;
+            GameEvents.LanguageChanged += HandleTopBarLanguageChanged;
+        }
+
+        private void OnDisable()
+        {
+            GameEvents.EntryEnergyChanged -= HandleTopBarEnergyChanged;
+            GameEvents.SoftCurrencyChanged -= HandleTopBarCurrencyChanged;
+            GameEvents.LanguageChanged -= HandleTopBarLanguageChanged;
+        }
+
+        private void HandleTopBarEnergyChanged(int _, int __) => RefreshTopBarMetrics();
+        private void HandleTopBarCurrencyChanged(int _, int __) => RefreshTopBarMetrics();
+        private void HandleTopBarLanguageChanged(string _) => RefreshTopBarMetrics();
+
         private void Start()
         {
             EnsureRuntimeDefaults();
@@ -157,6 +179,9 @@ namespace WordSpinAlpha.Presentation
                 Refresh();
                 return;
             }
+
+            // PHASE 2: Do not overwrite rail points with node positions in Play mode
+            // CaptureRailPointsFromNodes();
 
             for (int i = 0; levelNodes != null && i < levelNodes.Length; i++)
             {
@@ -177,6 +202,7 @@ namespace WordSpinAlpha.Presentation
 
             RestoreScrollFromGameplay();
             Refresh();
+            RefreshTopBarMetrics();
         }
 
         private void RestoreScrollFromGameplay()
@@ -396,11 +422,6 @@ namespace WordSpinAlpha.Presentation
                 node.localRotation = Quaternion.Euler(0f, 0f, EvalRotation(slotT));
                 TextMeshProUGUI label = levelNumberLabels != null && i < levelNumberLabels.Length ? levelNumberLabels[i] : null;
                 float lockDim = 1f;
-                if (Application.isPlaying)
-                {
-                    int highestUnlocked = GetHighestUnlockedLevel();
-                    lockDim = (levelId > highestUnlocked) ? 0.35f : 1f;
-                }
                 SetNodeAlpha(node, label, EvalAlpha(slotT) * lockDim);
 
                 if (label != null)
@@ -432,6 +453,32 @@ namespace WordSpinAlpha.Presentation
                 {
                     oynaSubtitleLabel.text = $"Seviye {selectedId}'den basla";
                 }
+            }
+        }
+
+        private void RefreshTopBarMetrics()
+        {
+            if (!Application.isPlaying) return;
+
+            if (topBarEnergyLabel != null && EnergyManager.Instance != null)
+            {
+                topBarEnergyLabel.text =
+                    $"{EnergyManager.Instance.CurrentEnergy}/{EnergyManager.Instance.MaxEnergy}";
+            }
+
+            if (topBarHintLabel != null && EconomyManager.Instance != null)
+            {
+                topBarHintLabel.text = EconomyManager.Instance.Hints.ToString();
+            }
+
+            if (topBarCoinLabel != null && EconomyManager.Instance != null)
+            {
+                topBarCoinLabel.text = EconomyManager.Instance.SoftCurrency.ToString();
+            }
+
+            if (topBarLanguageLabel != null)
+            {
+                topBarLanguageLabel.text = CurrentLanguageCode().ToUpperInvariant();
             }
         }
 
@@ -514,6 +561,26 @@ namespace WordSpinAlpha.Presentation
             }
 
             railPoints = CloneDefaultRailPoints();
+        }
+
+        private void CaptureRailPointsFromNodes()
+        {
+            if (railPoints == null || levelNodes == null)
+            {
+                return;
+            }
+
+            int count = Mathf.Min(railPoints.Length, levelNodes.Length);
+            for (int i = 0; i < count; i++)
+            {
+                RectTransform node = levelNodes[i];
+                if (node == null)
+                {
+                    continue;
+                }
+
+                railPoints[i].position = node.anchoredPosition;
+            }
         }
 
         private void EnsureRuntimeDefaults()

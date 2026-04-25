@@ -133,7 +133,7 @@ namespace WordSpinAlpha.Editor
             {
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneBoot}.unity", true),
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneMainMenu}.unity", true),
-                new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneHub}.unity", true),
+                new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneHubPreview}.unity", true),
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneGameplay}.unity", true),
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneStore}.unity", true)
             };
@@ -266,6 +266,7 @@ namespace WordSpinAlpha.Editor
 
         private static void TryRestoreBrokenHubPreviewScene()
         {
+            return; // PHASE 1: Disable auto-rebuild of broken prefab connection
             if (EditorApplication.isCompiling || EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isUpdating)
             {
                 EditorApplication.delayCall += TryRestoreBrokenHubPreviewScene;
@@ -280,9 +281,11 @@ namespace WordSpinAlpha.Editor
             string sceneText = System.IO.File.ReadAllText(LevelHubPreviewScenePath);
             bool hasCanvas = sceneText.IndexOf("HubPreviewCanvas", System.StringComparison.Ordinal) >= 0;
             bool hasRoot = sceneText.IndexOf("LevelHubPreviewRoot", System.StringComparison.Ordinal) >= 0;
-            bool hasPoolNodes = sceneText.IndexOf("LevelNode_0", System.StringComparison.Ordinal) >= 0;
+            string previewPrefabGuid = AssetDatabase.AssetPathToGUID(LevelHubPreviewPrefabPath);
+            bool hasPreviewPrefabInstance = !string.IsNullOrWhiteSpace(previewPrefabGuid)
+                && sceneText.IndexOf(previewPrefabGuid, System.StringComparison.OrdinalIgnoreCase) >= 0;
 
-            if (hasCanvas && hasRoot && hasPoolNodes)
+            if (hasCanvas && hasRoot && hasPreviewPrefabInstance)
             {
                 return;
             }
@@ -437,7 +440,7 @@ namespace WordSpinAlpha.Editor
             {
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneBoot}.unity", true),
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneMainMenu}.unity", true),
-                new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneHub}.unity", true),
+                new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneHubPreview}.unity", true),
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneGameplay}.unity", true),
                 new EditorBuildSettingsScene($"{Scenes}/{GameConstants.SceneStore}.unity", true)
             };
@@ -1047,6 +1050,10 @@ namespace WordSpinAlpha.Editor
             bottomPageNav.transform.SetSiblingIndex(3);
             oynaGo.transform.SetSiblingIndex(4);
 
+            // Top bar widget (Can / İpucu / Coin / Dil)
+            GameObject topBarWidget = BuildTopBarWidget(rootRect, controller);
+            topBarWidget.transform.SetSiblingIndex(5);
+
             // Referans görseli (gizli, sadece editörde doğrulama için)
             Sprite refSprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{LevelHubPreviewArt}/levelseçimtekparça.png");
             if (refSprite == null)
@@ -1192,6 +1199,68 @@ namespace WordSpinAlpha.Editor
                     else if (i == 2) UnityEventTools.AddPersistentListener(btn.onClick, controller.OpenProfileTab);
                     else if (i == 3) UnityEventTools.AddPersistentListener(btn.onClick, controller.OpenStoreTab);
                 }
+            }
+
+            return root;
+        }
+
+        private static GameObject BuildTopBarWidget(RectTransform parent, LevelHubPreviewController controller)
+        {
+            GameObject root = new GameObject("TopBarWidget", typeof(RectTransform), typeof(Image));
+            RectTransform rootRect = root.GetComponent<RectTransform>();
+            rootRect.SetParent(parent, false);
+            rootRect.anchorMin = new Vector2(0f, 1f);
+            rootRect.anchorMax = new Vector2(1f, 1f);
+            rootRect.pivot = new Vector2(0.5f, 1f);
+            rootRect.offsetMin = new Vector2(0f, -80f);
+            rootRect.offsetMax = Vector2.zero;
+            rootRect.localScale = Vector3.one;
+
+            Image background = root.GetComponent<Image>();
+            Sprite topBarSprite = HubPreviewTopBarAutoSync.ResolveTopBarSprite();
+            background.sprite = topBarSprite != null ? topBarSprite : Builtin();
+            background.type = Image.Type.Simple;
+            background.color = topBarSprite != null ? Color.white : new Color(0.05f, 0.07f, 0.10f, 0.90f);
+            background.raycastTarget = false;
+
+            TextMeshProUGUI energyLabel = Label("TopBarEnergyLabel", rootRect, "Can: 5/50", 24f, new Vector2(0f, 0.5f), new Vector2(170f, 30f), Color.white);
+            RectTransform energyRect = energyLabel.rectTransform;
+            energyRect.anchorMin = new Vector2(0f, 0.5f);
+            energyRect.anchorMax = new Vector2(0f, 0.5f);
+            energyRect.pivot = new Vector2(0f, 0.5f);
+            energyRect.anchoredPosition = new Vector2(24f, 0f);
+            energyLabel.alignment = TextAlignmentOptions.Left;
+
+            TextMeshProUGUI hintLabel = Label("TopBarHintLabel", rootRect, "İpucu: 5", 24f, new Vector2(0f, 0.5f), new Vector2(170f, 30f), Color.white);
+            RectTransform hintRect = hintLabel.rectTransform;
+            hintRect.anchorMin = new Vector2(0f, 0.5f);
+            hintRect.anchorMax = new Vector2(0f, 0.5f);
+            hintRect.pivot = new Vector2(0f, 0.5f);
+            hintRect.anchoredPosition = new Vector2(210f, 0f);
+            hintLabel.alignment = TextAlignmentOptions.Left;
+
+            TextMeshProUGUI coinLabel = Label("TopBarCoinLabel", rootRect, "4165", 26f, new Vector2(0f, 0.5f), new Vector2(160f, 32f), Color.white);
+            RectTransform coinRect = coinLabel.rectTransform;
+            coinRect.anchorMin = new Vector2(1f, 0.5f);
+            coinRect.anchorMax = new Vector2(1f, 0.5f);
+            coinRect.pivot = new Vector2(1f, 0.5f);
+            coinRect.anchoredPosition = new Vector2(-138f, 0f);
+            coinLabel.alignment = TextAlignmentOptions.Right;
+
+            TextMeshProUGUI languageLabel = Label("TopBarLanguageLabel", rootRect, "TR", 22f, new Vector2(0f, 0.5f), new Vector2(72f, 30f), Color.white);
+            RectTransform languageRect = languageLabel.rectTransform;
+            languageRect.anchorMin = new Vector2(1f, 0.5f);
+            languageRect.anchorMax = new Vector2(1f, 0.5f);
+            languageRect.pivot = new Vector2(1f, 0.5f);
+            languageRect.anchoredPosition = new Vector2(-24f, 0f);
+            languageLabel.alignment = TextAlignmentOptions.Right;
+
+            if (controller != null)
+            {
+                Ref(controller, "topBarEnergyLabel", energyLabel);
+                Ref(controller, "topBarHintLabel", hintLabel);
+                Ref(controller, "topBarCoinLabel", coinLabel);
+                Ref(controller, "topBarLanguageLabel", languageLabel);
             }
 
             return root;

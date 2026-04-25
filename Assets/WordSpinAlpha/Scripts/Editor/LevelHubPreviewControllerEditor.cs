@@ -1,5 +1,7 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using WordSpinAlpha.Presentation;
 
 namespace WordSpinAlpha.Editor
@@ -16,6 +18,7 @@ namespace WordSpinAlpha.Editor
         private SerializedProperty dragPixelsPerLevelProperty;
         private SerializedProperty snapSharpnessProperty;
         private int selectedPointIndex;
+        private LevelHubPreviewController pendingRailSceneSaveController;
 
         [MenuItem("Tools/WordSpin Alpha/Hub Preview/Select Level Hub Rail Editor")]
         public static void SelectActiveRailEditor()
@@ -70,6 +73,7 @@ namespace WordSpinAlpha.Editor
                     controller.ResetRailToDefault();
                     EditorUtility.SetDirty(controller);
                     PrefabUtility.RecordPrefabInstancePropertyModifications(controller);
+                    MarkAndSaveScene(controller.gameObject.scene);
                     serializedObject.Update();
                 }
             }
@@ -95,6 +99,7 @@ namespace WordSpinAlpha.Editor
                 controller.EditorRefresh();
                 EditorUtility.SetDirty(controller);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(controller);
+                MarkAndSaveScene(controller.gameObject.scene);
                 SceneView.RepaintAll();
             }
         }
@@ -116,6 +121,12 @@ namespace WordSpinAlpha.Editor
             Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
             DrawRailLines(controller, root);
             DrawPointHandles(controller, root);
+
+            if (pendingRailSceneSaveController != null && IsMouseUpEvent(Event.current))
+            {
+                MarkAndSaveScene(pendingRailSceneSaveController.gameObject.scene);
+                pendingRailSceneSaveController = null;
+            }
         }
 
         private void DrawRailPoints(LevelHubPreviewController controller)
@@ -241,6 +252,8 @@ namespace WordSpinAlpha.Editor
                     controller.SetRailPoint(i, point);
                     EditorUtility.SetDirty(controller);
                     PrefabUtility.RecordPrefabInstancePropertyModifications(controller);
+                    EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);
+                    pendingRailSceneSaveController = controller;
                 }
             }
         }
@@ -260,6 +273,25 @@ namespace WordSpinAlpha.Editor
             }
 
             return null;
+        }
+
+        private static bool IsMouseUpEvent(Event currentEvent)
+        {
+            return currentEvent != null && (currentEvent.type == EventType.MouseUp || currentEvent.rawType == EventType.MouseUp);
+        }
+
+        private static void MarkAndSaveScene(Scene scene)
+        {
+            if (!scene.IsValid() || !scene.isLoaded)
+            {
+                return;
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!string.IsNullOrWhiteSpace(scene.path))
+            {
+                EditorSceneManager.SaveScene(scene);
+            }
         }
     }
 }

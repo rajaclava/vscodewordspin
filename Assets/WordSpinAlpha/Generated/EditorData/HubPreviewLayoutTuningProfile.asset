@@ -35,9 +35,9 @@ MonoBehaviour:
       height: 390
       preserveAspect: 1
     hasBaselineValue: 1
-  - anchoredPosition: {x: 0.00000071526, y: -668}
-    width: 780.5436
-    height: 450.6345
+  - anchoredPosition: {x: -4.002577, y: -665.01154}
+    width: 787.8187
+    height: 640.9204
     preserveAspect: 1
     elementId: HubPreviewBottomPageNav
     baselineValue:

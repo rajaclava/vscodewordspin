@@ -43,6 +43,16 @@ namespace WordSpinAlpha.Editor
             EditorApplication.delayCall += NormalizeIfHubPreviewIsOpen;
             EditorSceneManager.sceneOpened -= OnSceneOpened;
             EditorSceneManager.sceneOpened += OnSceneOpened;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                EditorApplication.delayCall += NormalizeIfHubPreviewIsOpen;
+            }
         }
 
         private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
@@ -58,6 +68,7 @@ namespace WordSpinAlpha.Editor
         [MenuItem("Tools/WordSpin Alpha/Normalize Open Hub Preview")]
         public static void NormalizeIfHubPreviewIsOpen()
         {
+            return; // PHASE 1: Disable sandbox normalization
             if (EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 return;

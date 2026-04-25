@@ -127,7 +127,7 @@ namespace WordSpinAlpha.Presentation
         private void Update()
         {
             float targetPitch = 1f + (_rhythmFlowIntensity * 0.08f) + (_rhythmMomentumLevel * 0.03f);
-            if (_bgmSource != null)
+            if (_bgmSource != null && ShouldDriveThemeOwnedBgm())
             {
                 _bgmSource.pitch = Mathf.Lerp(_bgmSource.pitch, targetPitch, Time.deltaTime * 6f);
             }
@@ -400,7 +400,15 @@ namespace WordSpinAlpha.Presentation
 
             if (_bgmSource != null)
             {
-                if (_themeBgmClip != null && _bgmSource.clip != _themeBgmClip)
+                // Demo mode currently uses one global cross-scene track owned by GlobalMusicManager.
+                // When gameplay gets its own music after the demo, keep the ownership switch here:
+                // GlobalMusicManager can either keep owning BGM or hand gameplay BGM back to this controller.
+                if (!ShouldDriveThemeOwnedBgm())
+                {
+                    _bgmSource.Stop();
+                    _bgmSource.clip = null;
+                }
+                else if (_themeBgmClip != null && _bgmSource.clip != _themeBgmClip)
                 {
                     _bgmSource.clip = _themeBgmClip;
                     _bgmSource.Play();
@@ -505,6 +513,8 @@ namespace WordSpinAlpha.Presentation
 
         private void HandleHitEvaluated(HitData hit)
         {
+            GlobalMusicManager.Instance?.NotifyGameplayHit(hit.resultType);
+
             switch (hit.resultType)
             {
                 case HitResultType.Perfect:
@@ -556,6 +566,7 @@ namespace WordSpinAlpha.Presentation
         {
             _rhythmFlowIntensity = Mathf.Clamp01(state.flowIntensity);
             _rhythmMomentumLevel = Mathf.Clamp(state.perfectMomentumLevel, 0, 2);
+            GlobalMusicManager.Instance?.NotifyGameplayFlowState(_rhythmFlowIntensity, _rhythmMomentumLevel);
         }
 
         private void HandleQuestionCompleted(QuestionContext context)
@@ -871,6 +882,12 @@ namespace WordSpinAlpha.Presentation
                         _ => key
                     };
             }
+        }
+
+        private static bool ShouldDriveThemeOwnedBgm()
+        {
+            GlobalMusicManager manager = GlobalMusicManager.Instance;
+            return manager == null || manager.AllowsSceneOwnedBackgroundMusic;
         }
     }
 }

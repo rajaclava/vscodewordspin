@@ -10,18 +10,18 @@ namespace WordSpinAlpha.Core
         private bool _hasPendingGameplayRequest;
         private bool _resumeSavedSession;
         private int _pendingLevelId;
-        private string _returnSceneName = GameConstants.SceneHub;
+        private string _returnSceneName = GameConstants.SceneHubPreview;
 
         public bool OpenEntryMenu()
         {
-            _returnSceneName = GameConstants.SceneHub;
+            _returnSceneName = GameConstants.SceneHubPreview;
             return LoadScene(GameConstants.SceneMainMenu, false);
         }
 
         public bool OpenMainMenu()
         {
-            string target = string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHub : _returnSceneName;
-            _returnSceneName = GameConstants.SceneHub;
+            string target = string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHubPreview : _returnSceneName;
+            _returnSceneName = GameConstants.SceneHubPreview;
             return LoadScene(target, false);
         }
 
@@ -90,7 +90,7 @@ namespace WordSpinAlpha.Core
                 _pendingLevelId = SaveManager.Instance.Data.session.levelId;
             }
 
-            return LoadScene(string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHub : _returnSceneName, false);
+            return LoadScene(string.IsNullOrEmpty(_returnSceneName) ? GameConstants.SceneHubPreview : _returnSceneName, false);
         }
 
         public void SetReturnSceneOverride(string sceneName)

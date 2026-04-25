@@ -20,6 +20,14 @@ namespace WordSpinAlpha.Editor
         private const string HubPreviewRootName = "LevelHubPreviewRoot";
         private const string BottomPageNavObjectName = "BottomPageNav";
         private const string OynaButtonObjectName = "OynaBg";
+        private static RectTransform s_AlttasMoveTarget;
+        private static bool s_AlttasMoveUndoRecorded;
+        private static RectTransform s_AlttasResizeTarget;
+        private static bool s_AlttasResizeUndoRecorded;
+        private static RectTransform s_BottomPageNavMoveTarget;
+        private static bool s_BottomPageNavMoveUndoRecorded;
+        private static RectTransform s_BottomPageNavResizeTarget;
+        private static bool s_BottomPageNavResizeUndoRecorded;
         private static RectTransform s_MainMenuRotatorMoveTarget;
         private static bool s_MainMenuRotatorMoveUndoRecorded;
         private static RectTransform s_OynaButtonMoveTarget;
@@ -32,6 +40,9 @@ namespace WordSpinAlpha.Editor
         {
             SceneView.duringSceneGui -= HandleSceneViewGUI;
             SceneView.duringSceneGui += HandleSceneViewGUI;
+            // PHASE 1: Disable forced layout sync on scene save
+            // EditorSceneManager.sceneSaving -= SyncHubPreviewLayoutProfileBeforeSceneSave;
+            // EditorSceneManager.sceneSaving += SyncHubPreviewLayoutProfileBeforeSceneSave;
         }
 
         [MenuItem(MenuPath)]
@@ -423,12 +434,323 @@ namespace WordSpinAlpha.Editor
             selectAction?.Invoke(target);
         }
 
+        private static void SyncHubPreviewLayoutProfileBeforeSceneSave(Scene scene, string path)
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return;
+            }
+
+            if (!IsHubPreviewScene(scene))
+            {
+                return;
+            }
+
+            LevelHubPreviewController controller = FindHubPreviewControllerInScene(scene);
+            if (controller == null)
+            {
+                return;
+            }
+
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile == null)
+            {
+                return;
+            }
+
+            bool changed = false;
+            changed |= SyncSceneRectToProfileAndPrefab(profile, HubPreviewLayoutTuningProfile.AlttasElementId, FindDirectChildRect(controller.transform, HubPreviewLayoutTuningProfile.AlttasElementId));
+            changed |= SyncSceneRectToProfileAndPrefab(profile, HubPreviewLayoutTuningProfile.BottomPageNavElementId, FindDirectChildRect(controller.transform, BottomPageNavObjectName));
+            changed |= SyncSceneRectToProfileAndPrefab(profile, HubPreviewLayoutTuningProfile.HubPreviewOynaButtonElementId, FindDirectChildRect(controller.transform, OynaButtonObjectName));
+            changed |= SyncControllerRailFromSceneNodes(controller);
+            changed |= SyncControllerRailToPrefabSource(controller);
+
+            if (!changed)
+            {
+                return;
+            }
+
+            EditorUtility.SetDirty(profile);
+            AssetDatabase.SaveAssets();
+        }
+
+        private static bool SyncControllerRailFromSceneNodes(LevelHubPreviewController controller)
+        {
+            if (controller == null)
+            {
+                return false;
+            }
+
+            SerializedObject so = new SerializedObject(controller);
+            SerializedProperty railPoints = so.FindProperty("railPoints");
+            if (railPoints == null || !railPoints.isArray || railPoints.arraySize < 2)
+            {
+                return false;
+            }
+
+            SerializedProperty levelNodes = so.FindProperty("levelNodes");
+            bool changed = false;
+
+            for (int i = 0; i < railPoints.arraySize; i++)
+            {
+                RectTransform node = FindRailNodeRect(controller, levelNodes, i);
+                if (node == null)
+                {
+                    continue;
+                }
+
+                SerializedProperty point = railPoints.GetArrayElementAtIndex(i);
+                if (point == null)
+                {
+                    continue;
+                }
+
+                changed |= CopyVector2Value(point.FindPropertyRelative("position"), node.anchoredPosition);
+            }
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(controller);
+            EditorUtility.SetDirty(controller);
+            return true;
+        }
+
+        private static RectTransform FindRailNodeRect(LevelHubPreviewController controller, SerializedProperty levelNodes, int index)
+        {
+            if (levelNodes != null && levelNodes.isArray && index >= 0 && index < levelNodes.arraySize)
+            {
+                Object reference = levelNodes.GetArrayElementAtIndex(index).objectReferenceValue;
+                RectTransform nodeFromArray = reference as RectTransform;
+                if (nodeFromArray != null)
+                {
+                    return nodeFromArray;
+                }
+            }
+
+            if (controller == null)
+            {
+                return null;
+            }
+
+            Transform pathContainer = controller.transform.Find("PathContainer");
+            if (pathContainer == null)
+            {
+                return null;
+            }
+
+            Transform fallbackNode = pathContainer.Find($"LevelNode_{index}");
+            return fallbackNode as RectTransform;
+        }
+
+        private static bool SyncSceneRectToProfileAndPrefab(HubPreviewLayoutTuningProfile profile, string elementId, RectTransform rect)
+        {
+            if (profile == null || rect == null)
+            {
+                return false;
+            }
+
+            HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(elementId);
+            Vector2 beforePosition = tuning.anchoredPosition;
+            float beforeWidth = tuning.width;
+            float beforeHeight = tuning.height;
+            bool beforePreserveAspect = tuning.preserveAspect;
+
+            tuning.CaptureFrom(rect, rect.GetComponent<Image>());
+            bool prefabChanged = ApplyLayoutToPrefabSource(rect, tuning, false, false);
+            return prefabChanged || (beforePosition - tuning.anchoredPosition).sqrMagnitude > 0.0001f
+                || !Mathf.Approximately(beforeWidth, tuning.width)
+                || !Mathf.Approximately(beforeHeight, tuning.height)
+                || beforePreserveAspect != tuning.preserveAspect;
+        }
+
+        private static bool SyncControllerRailToPrefabSource(LevelHubPreviewController controller)
+        {
+            if (controller == null)
+            {
+                return false;
+            }
+
+            GameObject outermostPrefabRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(controller.gameObject);
+            string prefabAssetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(controller.gameObject);
+            if (outermostPrefabRoot == null || string.IsNullOrWhiteSpace(prefabAssetPath))
+            {
+                return false;
+            }
+
+            string relativePath = GetRelativeHierarchyPath(controller.transform, outermostPrefabRoot.transform);
+            GameObject prefabRoot = PrefabUtility.LoadPrefabContents(prefabAssetPath);
+            if (prefabRoot == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                RectTransform prefabRect = FindRelativeRectTransform(prefabRoot.transform, relativePath);
+                LevelHubPreviewController prefabController = prefabRect != null
+                    ? prefabRect.GetComponent<LevelHubPreviewController>()
+                    : prefabRoot.GetComponent<LevelHubPreviewController>();
+                if (prefabController == null)
+                {
+                    return false;
+                }
+
+                SerializedObject source = new SerializedObject(controller);
+                SerializedObject target = new SerializedObject(prefabController);
+                bool changed = false;
+                changed |= CopyRailPoints(source.FindProperty("railPoints"), target.FindProperty("railPoints"));
+                changed |= CopyIntProperty(source.FindProperty("totalLevels"), target.FindProperty("totalLevels"));
+                changed |= CopyFloatProperty(source.FindProperty("dragPixelsPerLevel"), target.FindProperty("dragPixelsPerLevel"));
+                changed |= CopyFloatProperty(source.FindProperty("snapSharpness"), target.FindProperty("snapSharpness"));
+
+                if (!changed)
+                {
+                    return false;
+                }
+
+                target.ApplyModifiedPropertiesWithoutUndo();
+                PrefabUtility.SaveAsPrefabAsset(prefabRoot, prefabAssetPath);
+                AssetDatabase.ImportAsset(prefabAssetPath, ImportAssetOptions.ForceSynchronousImport);
+                return true;
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(prefabRoot);
+            }
+        }
+
+        private static bool CopyRailPoints(SerializedProperty source, SerializedProperty target)
+        {
+            if (source == null || target == null || !source.isArray || !target.isArray)
+            {
+                return false;
+            }
+
+            bool changed = false;
+            if (target.arraySize != source.arraySize)
+            {
+                target.arraySize = source.arraySize;
+                changed = true;
+            }
+
+            for (int i = 0; i < source.arraySize; i++)
+            {
+                SerializedProperty sourcePoint = source.GetArrayElementAtIndex(i);
+                SerializedProperty targetPoint = target.GetArrayElementAtIndex(i);
+                changed |= CopyVector2Property(sourcePoint.FindPropertyRelative("position"), targetPoint.FindPropertyRelative("position"));
+                changed |= CopyFloatProperty(sourcePoint.FindPropertyRelative("scale"), targetPoint.FindPropertyRelative("scale"));
+                changed |= CopyFloatProperty(sourcePoint.FindPropertyRelative("rotation"), targetPoint.FindPropertyRelative("rotation"));
+                changed |= CopyFloatProperty(sourcePoint.FindPropertyRelative("alpha"), targetPoint.FindPropertyRelative("alpha"));
+            }
+
+            return changed;
+        }
+
+        private static bool CopyVector2Property(SerializedProperty source, SerializedProperty target)
+        {
+            if (source == null || target == null)
+            {
+                return false;
+            }
+
+            Vector2 value = source.vector2Value;
+            if ((target.vector2Value - value).sqrMagnitude <= 0.0001f)
+            {
+                return false;
+            }
+
+            target.vector2Value = value;
+            return true;
+        }
+
+        private static bool CopyVector2Value(SerializedProperty target, Vector2 value)
+        {
+            if (target == null)
+            {
+                return false;
+            }
+
+            if ((target.vector2Value - value).sqrMagnitude <= 0.0001f)
+            {
+                return false;
+            }
+
+            target.vector2Value = value;
+            return true;
+        }
+
+        private static bool CopyFloatProperty(SerializedProperty source, SerializedProperty target)
+        {
+            if (source == null || target == null)
+            {
+                return false;
+            }
+
+            float value = source.floatValue;
+            if (Mathf.Approximately(target.floatValue, value))
+            {
+                return false;
+            }
+
+            target.floatValue = value;
+            return true;
+        }
+
+        private static bool CopyIntProperty(SerializedProperty source, SerializedProperty target)
+        {
+            if (source == null || target == null)
+            {
+                return false;
+            }
+
+            int value = source.intValue;
+            if (target.intValue == value)
+            {
+                return false;
+            }
+
+            target.intValue = value;
+            return true;
+        }
+
         private static void HandleSceneViewGUI(SceneView sceneView)
         {
             RectTransform alttas = GetSelectedSceneAlttasForResize();
             if (alttas != null)
             {
+                DrawAlttasMoveHandle(sceneView, alttas);
                 DrawAlttasResizeHandles(sceneView, alttas);
+            }
+
+            if (s_AlttasMoveTarget != null && IsMouseUpEvent(Event.current))
+            {
+                CommitAlttasMove(sceneView);
+            }
+
+            if (s_AlttasResizeTarget != null && IsMouseUpEvent(Event.current))
+            {
+                CommitAlttasResize(sceneView);
+            }
+
+            RectTransform bottomPageNav = GetSelectedSceneBottomPageNavForLiveEdit();
+            if (bottomPageNav != null)
+            {
+                DrawBottomPageNavMoveHandle(sceneView, bottomPageNav);
+                DrawBottomPageNavResizeHandles(sceneView, bottomPageNav);
+            }
+
+            if (s_BottomPageNavResizeTarget != null && IsMouseUpEvent(Event.current))
+            {
+                CommitBottomPageNavResize(sceneView);
+            }
+
+            if (s_BottomPageNavMoveTarget != null && IsMouseUpEvent(Event.current))
+            {
+                CommitBottomPageNavMove(sceneView);
             }
 
             RectTransform oynaButton = GetSelectedSceneOynaButtonForMove();
@@ -546,7 +868,19 @@ namespace WordSpinAlpha.Editor
 
                 if (widthChanged || heightChanged)
                 {
-                    Undo.RecordObject(alttas, "Resize Alttas");
+                    if (!s_AlttasResizeUndoRecorded)
+                    {
+                        HubPreviewLayoutTuningProfile profileForUndo = HubPreviewLayoutTuningProfile.Load();
+                        Undo.RecordObject(alttas, "Resize Alttas");
+                        if (profileForUndo != null)
+                        {
+                            Undo.RecordObject(profileForUndo, "Resize Alttas");
+                        }
+
+                        s_AlttasResizeUndoRecorded = true;
+                        s_AlttasResizeTarget = alttas;
+                    }
+
                     Vector2 sizeDelta = alttas.sizeDelta;
                     if (widthChanged)
                     {
@@ -562,8 +896,74 @@ namespace WordSpinAlpha.Editor
                     EditorUtility.SetDirty(alttas);
                     PrefabUtility.RecordPrefabInstancePropertyModifications(alttas);
                     EditorSceneManager.MarkSceneDirty(alttas.gameObject.scene);
+                    s_AlttasResizeTarget = alttas;
                     sceneView.Repaint();
                 }
+            }
+            finally
+            {
+                Handles.color = previousColor;
+                Handles.zTest = previousZTest;
+            }
+        }
+
+        private static void DrawAlttasMoveHandle(SceneView sceneView, RectTransform alttas)
+        {
+            if (sceneView == null || alttas == null)
+            {
+                return;
+            }
+
+            Vector3 worldPosition = alttas.position;
+            float handleSize = Mathf.Max(0.08f, HandleUtility.GetHandleSize(worldPosition) * 0.08f);
+
+            UnityEngine.Rendering.CompareFunction previousZTest = Handles.zTest;
+            Color previousColor = Handles.color;
+            try
+            {
+                Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
+                Handles.color = new Color(0.17f, 0.78f, 1f, 1f);
+
+                EditorGUI.BeginChangeCheck();
+                Vector3 movedWorldPosition = Handles.FreeMoveHandle(
+                    worldPosition,
+                    handleSize,
+                    Vector3.zero,
+                    Handles.RectangleHandleCap);
+                if (!EditorGUI.EndChangeCheck())
+                {
+                    return;
+                }
+
+                if (!s_AlttasMoveUndoRecorded)
+                {
+                    HubPreviewLayoutTuningProfile profileForUndo = HubPreviewLayoutTuningProfile.Load();
+                    Undo.RecordObject(alttas, "Move Alttas");
+                    if (profileForUndo != null)
+                    {
+                        Undo.RecordObject(profileForUndo, "Move Alttas");
+                    }
+
+                    s_AlttasMoveUndoRecorded = true;
+                    s_AlttasMoveTarget = alttas;
+                }
+
+                Vector2 anchoredPosition = WorldPositionToAnchoredPosition(alttas, movedWorldPosition);
+                alttas.anchoredPosition = anchoredPosition;
+
+                HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+                if (profile != null)
+                {
+                    HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.AlttasElementId);
+                    tuning.anchoredPosition = anchoredPosition;
+                    tuning.NormalizeInPlace(alttas.GetComponent<Image>());
+                    EditorUtility.SetDirty(profile);
+                }
+
+                PrefabUtility.RecordPrefabInstancePropertyModifications(alttas);
+                EditorSceneManager.MarkSceneDirty(alttas.gameObject.scene);
+                s_AlttasMoveTarget = alttas;
+                sceneView.Repaint();
             }
             finally
             {
@@ -797,12 +1197,12 @@ namespace WordSpinAlpha.Editor
 
                 if (!ApplyLayoutToPrefabSource(rotator, tuning))
                 {
-                    EditorSceneManager.MarkSceneDirty(rotator.gameObject.scene);
+                    MarkAndSaveScene(rotator.gameObject.scene);
                 }
             }
             else
             {
-                EditorSceneManager.MarkSceneDirty(rotator.gameObject.scene);
+                MarkAndSaveScene(rotator.gameObject.scene);
             }
 
             if (sceneView != null)
@@ -853,6 +1253,30 @@ namespace WordSpinAlpha.Editor
         {
             s_MainMenuRotatorMoveTarget = null;
             s_MainMenuRotatorMoveUndoRecorded = false;
+        }
+
+        private static void ResetAlttasMoveState()
+        {
+            s_AlttasMoveTarget = null;
+            s_AlttasMoveUndoRecorded = false;
+        }
+
+        private static void ResetAlttasResizeState()
+        {
+            s_AlttasResizeTarget = null;
+            s_AlttasResizeUndoRecorded = false;
+        }
+
+        private static void ResetBottomPageNavMoveState()
+        {
+            s_BottomPageNavMoveTarget = null;
+            s_BottomPageNavMoveUndoRecorded = false;
+        }
+
+        private static void ResetBottomPageNavResizeState()
+        {
+            s_BottomPageNavResizeTarget = null;
+            s_BottomPageNavResizeUndoRecorded = false;
         }
 
         private static void ResetOynaButtonMoveState()
@@ -939,7 +1363,7 @@ namespace WordSpinAlpha.Editor
             if (!ApplyLayoutToPrefabSource(rect, tuning))
             {
                 tuning.ApplyTo(rect, image);
-                EditorSceneManager.MarkSceneDirty(rect.gameObject.scene);
+                MarkAndSaveScene(rect.gameObject.scene);
             }
 
             SceneView.RepaintAll();
@@ -970,7 +1394,7 @@ namespace WordSpinAlpha.Editor
             if (!ApplyLayoutToPrefabSource(rect, tuning))
             {
                 tuning.ApplyTo(rect, image);
-                EditorSceneManager.MarkSceneDirty(rect.gameObject.scene);
+                MarkAndSaveScene(rect.gameObject.scene);
             }
 
             SceneView.RepaintAll();
@@ -1039,13 +1463,17 @@ namespace WordSpinAlpha.Editor
             if (!ApplyLayoutToPrefabSource(rect, tuning))
             {
                 tuning.ApplyTo(rect, image);
-                EditorSceneManager.MarkSceneDirty(rect.gameObject.scene);
+                MarkAndSaveScene(rect.gameObject.scene);
             }
 
             SceneView.RepaintAll();
         }
 
-        private static bool ApplyLayoutToPrefabSource(RectTransform sceneRect, HubPreviewLayoutTuningProfile.LayoutElementTuning tuning)
+        private static bool ApplyLayoutToPrefabSource(
+            RectTransform sceneRect,
+            HubPreviewLayoutTuningProfile.LayoutElementTuning tuning,
+            bool saveScene = true,
+            bool markSceneDirty = true)
         {
             if (sceneRect == null || tuning == null)
             {
@@ -1078,12 +1506,231 @@ namespace WordSpinAlpha.Editor
                 tuning.ApplyTo(prefabRect, prefabImage);
                 PrefabUtility.SaveAsPrefabAsset(prefabRoot, prefabAssetPath);
                 AssetDatabase.ImportAsset(prefabAssetPath, ImportAssetOptions.ForceSynchronousImport);
+
+                Image sceneImage = sceneRect.GetComponent<Image>();
+                tuning.ApplyTo(sceneRect, sceneImage);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(sceneRect);
+                if (sceneImage != null)
+                {
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(sceneImage);
+                }
+
+                if (markSceneDirty)
+                {
+                    EditorSceneManager.MarkSceneDirty(sceneRect.gameObject.scene);
+                }
+
+                if (saveScene)
+                {
+                    SaveSceneIfPossible(sceneRect.gameObject.scene);
+                }
+
                 return true;
             }
             finally
             {
                 PrefabUtility.UnloadPrefabContents(prefabRoot);
             }
+        }
+
+        private static void DrawBottomPageNavMoveHandle(SceneView sceneView, RectTransform bottomPageNav)
+        {
+            if (sceneView == null || bottomPageNav == null)
+            {
+                return;
+            }
+
+            Vector3 worldPosition = bottomPageNav.position;
+            float handleSize = Mathf.Max(0.08f, HandleUtility.GetHandleSize(worldPosition) * 0.08f);
+
+            UnityEngine.Rendering.CompareFunction previousZTest = Handles.zTest;
+            Color previousColor = Handles.color;
+            try
+            {
+                Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
+                Handles.color = new Color(0.2f, 0.86f, 1f, 1f);
+
+                EditorGUI.BeginChangeCheck();
+                Vector3 movedWorldPosition = Handles.FreeMoveHandle(
+                    worldPosition,
+                    handleSize,
+                    Vector3.zero,
+                    Handles.RectangleHandleCap);
+                if (!EditorGUI.EndChangeCheck())
+                {
+                    return;
+                }
+
+                if (!s_BottomPageNavMoveUndoRecorded)
+                {
+                    HubPreviewLayoutTuningProfile profileForUndo = HubPreviewLayoutTuningProfile.Load();
+                    Undo.RecordObject(bottomPageNav, "Move Bottom Page Nav");
+                    if (profileForUndo != null)
+                    {
+                        Undo.RecordObject(profileForUndo, "Move Bottom Page Nav");
+                    }
+
+                    s_BottomPageNavMoveUndoRecorded = true;
+                    s_BottomPageNavMoveTarget = bottomPageNav;
+                }
+
+                Vector2 anchoredPosition = WorldPositionToAnchoredPosition(bottomPageNav, movedWorldPosition);
+                ApplyBottomPageNavMove(bottomPageNav, anchoredPosition);
+                sceneView.Repaint();
+            }
+            finally
+            {
+                Handles.color = previousColor;
+                Handles.zTest = previousZTest;
+            }
+        }
+
+        private static void DrawBottomPageNavResizeHandles(SceneView sceneView, RectTransform bottomPageNav)
+        {
+            if (sceneView == null || bottomPageNav == null)
+            {
+                return;
+            }
+
+            Vector3 worldCenter = bottomPageNav.TransformPoint(new Vector3(bottomPageNav.rect.center.x, bottomPageNav.rect.center.y, 0f));
+            Vector3 widthAxis = bottomPageNav.right.normalized;
+            Vector3 heightAxis = bottomPageNav.up.normalized;
+            float halfWidth = Mathf.Max(0.5f, bottomPageNav.rect.width * 0.5f);
+            float halfHeight = Mathf.Max(0.5f, bottomPageNav.rect.height * 0.5f);
+
+            Vector3 bottomLeft = worldCenter - widthAxis * halfWidth - heightAxis * halfHeight;
+            Vector3 bottomRight = worldCenter + widthAxis * halfWidth - heightAxis * halfHeight;
+            Vector3 topRight = worldCenter + widthAxis * halfWidth + heightAxis * halfHeight;
+            Vector3 topLeft = worldCenter - widthAxis * halfWidth + heightAxis * halfHeight;
+
+            UnityEngine.Rendering.CompareFunction previousZTest = Handles.zTest;
+            Color previousColor = Handles.color;
+            try
+            {
+                Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
+                Handles.DrawSolidRectangleWithOutline(
+                    new[] { bottomLeft, bottomRight, topRight, topLeft },
+                    new Color(0.2f, 0.86f, 1f, 0.04f),
+                    new Color(0.2f, 0.86f, 1f, 0.88f));
+
+                float handleSize = Mathf.Max(0.08f, HandleUtility.GetHandleSize(worldCenter) * 0.08f);
+                Vector3 widthHandlePosition = worldCenter + widthAxis * halfWidth;
+                Vector3 heightHandlePosition = worldCenter + heightAxis * halfHeight;
+                bool widthChanged = false;
+                bool heightChanged = false;
+                float widthDelta = 0f;
+                float heightDelta = 0f;
+
+                Handles.color = new Color(0.14f, 0.82f, 1f, 1f);
+                EditorGUI.BeginChangeCheck();
+                Vector3 movedWidthHandlePosition = Handles.Slider(widthHandlePosition, widthAxis, handleSize, Handles.SphereHandleCap, 0f);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    widthChanged = true;
+                    widthDelta = Vector3.Dot(movedWidthHandlePosition - widthHandlePosition, widthAxis) * 2f;
+                }
+
+                Handles.color = new Color(1f, 0.72f, 0.25f, 1f);
+                EditorGUI.BeginChangeCheck();
+                Vector3 movedHeightHandlePosition = Handles.Slider(heightHandlePosition, heightAxis, handleSize, Handles.SphereHandleCap, 0f);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    heightChanged = true;
+                    heightDelta = Vector3.Dot(movedHeightHandlePosition - heightHandlePosition, heightAxis) * 2f;
+                }
+
+                if (!widthChanged && !heightChanged)
+                {
+                    return;
+                }
+
+                if (!s_BottomPageNavResizeUndoRecorded)
+                {
+                    HubPreviewLayoutTuningProfile profileForUndo = HubPreviewLayoutTuningProfile.Load();
+                    Undo.RecordObject(bottomPageNav, "Resize Bottom Page Nav");
+                    if (profileForUndo != null)
+                    {
+                        Undo.RecordObject(profileForUndo, "Resize Bottom Page Nav");
+                    }
+
+                    s_BottomPageNavResizeUndoRecorded = true;
+                    s_BottomPageNavResizeTarget = bottomPageNav;
+                }
+
+                ApplyBottomPageNavResize(bottomPageNav, widthDelta, heightDelta);
+                sceneView.Repaint();
+            }
+            finally
+            {
+                Handles.color = previousColor;
+                Handles.zTest = previousZTest;
+            }
+        }
+
+        private static void ApplyBottomPageNavMove(RectTransform bottomPageNav, Vector2 anchoredPosition)
+        {
+            if (bottomPageNav == null)
+            {
+                return;
+            }
+
+            bottomPageNav.anchoredPosition = anchoredPosition;
+
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile != null)
+            {
+                HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.BottomPageNavElementId);
+                tuning.anchoredPosition = anchoredPosition;
+                EditorUtility.SetDirty(profile);
+            }
+
+            PrefabUtility.RecordPrefabInstancePropertyModifications(bottomPageNav);
+            EditorSceneManager.MarkSceneDirty(bottomPageNav.gameObject.scene);
+            s_BottomPageNavMoveTarget = bottomPageNav;
+        }
+
+        private static void ApplyBottomPageNavResize(RectTransform bottomPageNav, float widthDelta, float heightDelta)
+        {
+            if (bottomPageNav == null)
+            {
+                return;
+            }
+
+            Vector2 sizeDelta = bottomPageNav.sizeDelta;
+            bool sizeChanged = false;
+
+            if (!Mathf.Approximately(widthDelta, 0f))
+            {
+                sizeDelta.x = Mathf.Max(1f, sizeDelta.x + widthDelta);
+                sizeChanged = true;
+            }
+
+            if (!Mathf.Approximately(heightDelta, 0f))
+            {
+                sizeDelta.y = Mathf.Max(1f, sizeDelta.y + heightDelta);
+                sizeChanged = true;
+            }
+
+            if (!sizeChanged)
+            {
+                return;
+            }
+
+            bottomPageNav.sizeDelta = sizeDelta;
+
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile != null)
+            {
+                HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.BottomPageNavElementId);
+                tuning.width = sizeDelta.x;
+                tuning.height = sizeDelta.y;
+                tuning.NormalizeInPlace();
+                EditorUtility.SetDirty(profile);
+            }
+
+            PrefabUtility.RecordPrefabInstancePropertyModifications(bottomPageNav);
+            EditorSceneManager.MarkSceneDirty(bottomPageNav.gameObject.scene);
+            s_BottomPageNavResizeTarget = bottomPageNav;
         }
 
         private static void DrawOynaButtonMoveHandle(SceneView sceneView, RectTransform oynaButton)
@@ -1312,13 +1959,13 @@ namespace WordSpinAlpha.Editor
                 PrefabUtility.RecordPrefabInstancePropertyModifications(oynaButton);
                 if (!ApplyLayoutToPrefabSource(oynaButton, tuning))
                 {
-                    EditorSceneManager.MarkSceneDirty(oynaButton.gameObject.scene);
+                    MarkAndSaveScene(oynaButton.gameObject.scene);
                 }
             }
             else
             {
                 PrefabUtility.RecordPrefabInstancePropertyModifications(oynaButton);
-                EditorSceneManager.MarkSceneDirty(oynaButton.gameObject.scene);
+                MarkAndSaveScene(oynaButton.gameObject.scene);
             }
 
             if (sceneView != null)
@@ -1358,13 +2005,13 @@ namespace WordSpinAlpha.Editor
                 PrefabUtility.RecordPrefabInstancePropertyModifications(oynaButton);
                 if (!ApplyLayoutToPrefabSource(oynaButton, tuning))
                 {
-                    EditorSceneManager.MarkSceneDirty(oynaButton.gameObject.scene);
+                    MarkAndSaveScene(oynaButton.gameObject.scene);
                 }
             }
             else
             {
                 PrefabUtility.RecordPrefabInstancePropertyModifications(oynaButton);
-                EditorSceneManager.MarkSceneDirty(oynaButton.gameObject.scene);
+                MarkAndSaveScene(oynaButton.gameObject.scene);
             }
 
             if (sceneView != null)
@@ -1374,6 +2021,185 @@ namespace WordSpinAlpha.Editor
 
             SceneView.RepaintAll();
             ResetOynaButtonResizeState();
+        }
+
+        private static void CommitAlttasMove(SceneView sceneView)
+        {
+            RectTransform alttas = s_AlttasMoveTarget;
+            if (alttas == null)
+            {
+                ResetAlttasMoveState();
+                return;
+            }
+
+            if (!alttas.gameObject.scene.IsValid() || !alttas.gameObject.scene.isLoaded)
+            {
+                ResetAlttasMoveState();
+                return;
+            }
+
+            Image image = alttas.GetComponent<Image>();
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile != null)
+            {
+                HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.AlttasElementId);
+                tuning.CaptureFrom(alttas, image);
+                EditorUtility.SetDirty(profile);
+                AssetDatabase.SaveAssets();
+
+                PrefabUtility.RecordPrefabInstancePropertyModifications(alttas);
+                if (!ApplyLayoutToPrefabSource(alttas, tuning))
+                {
+                    MarkAndSaveScene(alttas.gameObject.scene);
+                }
+            }
+            else
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(alttas);
+                MarkAndSaveScene(alttas.gameObject.scene);
+            }
+
+            if (sceneView != null)
+            {
+                sceneView.Repaint();
+            }
+
+            SceneView.RepaintAll();
+            ResetAlttasMoveState();
+        }
+
+        private static void CommitAlttasResize(SceneView sceneView)
+        {
+            RectTransform alttas = s_AlttasResizeTarget;
+            if (alttas == null)
+            {
+                ResetAlttasResizeState();
+                return;
+            }
+
+            if (!alttas.gameObject.scene.IsValid() || !alttas.gameObject.scene.isLoaded)
+            {
+                ResetAlttasResizeState();
+                return;
+            }
+
+            Image image = alttas.GetComponent<Image>();
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile != null)
+            {
+                HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.AlttasElementId);
+                tuning.CaptureFrom(alttas, image);
+                EditorUtility.SetDirty(profile);
+                AssetDatabase.SaveAssets();
+
+                PrefabUtility.RecordPrefabInstancePropertyModifications(alttas);
+                if (!ApplyLayoutToPrefabSource(alttas, tuning))
+                {
+                    MarkAndSaveScene(alttas.gameObject.scene);
+                }
+            }
+            else
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(alttas);
+                MarkAndSaveScene(alttas.gameObject.scene);
+            }
+
+            if (sceneView != null)
+            {
+                sceneView.Repaint();
+            }
+
+            SceneView.RepaintAll();
+            ResetAlttasResizeState();
+        }
+
+        private static void CommitBottomPageNavMove(SceneView sceneView)
+        {
+            RectTransform bottomPageNav = s_BottomPageNavMoveTarget;
+            if (bottomPageNav == null)
+            {
+                ResetBottomPageNavMoveState();
+                return;
+            }
+
+            if (!bottomPageNav.gameObject.scene.IsValid() || !bottomPageNav.gameObject.scene.isLoaded)
+            {
+                ResetBottomPageNavMoveState();
+                return;
+            }
+
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile != null)
+            {
+                HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.BottomPageNavElementId);
+                tuning.anchoredPosition = bottomPageNav.anchoredPosition;
+                EditorUtility.SetDirty(profile);
+                AssetDatabase.SaveAssets();
+
+                PrefabUtility.RecordPrefabInstancePropertyModifications(bottomPageNav);
+                if (!ApplyLayoutToPrefabSource(bottomPageNav, tuning))
+                {
+                    MarkAndSaveScene(bottomPageNav.gameObject.scene);
+                }
+            }
+            else
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(bottomPageNav);
+                MarkAndSaveScene(bottomPageNav.gameObject.scene);
+            }
+
+            if (sceneView != null)
+            {
+                sceneView.Repaint();
+            }
+
+            SceneView.RepaintAll();
+            ResetBottomPageNavMoveState();
+        }
+
+        private static void CommitBottomPageNavResize(SceneView sceneView)
+        {
+            RectTransform bottomPageNav = s_BottomPageNavResizeTarget;
+            if (bottomPageNav == null)
+            {
+                ResetBottomPageNavResizeState();
+                return;
+            }
+
+            if (!bottomPageNav.gameObject.scene.IsValid() || !bottomPageNav.gameObject.scene.isLoaded)
+            {
+                ResetBottomPageNavResizeState();
+                return;
+            }
+
+            Image image = bottomPageNav.GetComponent<Image>();
+            HubPreviewLayoutTuningProfile profile = HubPreviewLayoutTuningProfile.Load();
+            if (profile != null)
+            {
+                HubPreviewLayoutTuningProfile.LayoutElementTuning tuning = profile.GetOrCreateElement(HubPreviewLayoutTuningProfile.BottomPageNavElementId);
+                tuning.CaptureFrom(bottomPageNav, image);
+                EditorUtility.SetDirty(profile);
+                AssetDatabase.SaveAssets();
+
+                PrefabUtility.RecordPrefabInstancePropertyModifications(bottomPageNav);
+                if (!ApplyLayoutToPrefabSource(bottomPageNav, tuning))
+                {
+                    MarkAndSaveScene(bottomPageNav.gameObject.scene);
+                }
+            }
+            else
+            {
+                PrefabUtility.RecordPrefabInstancePropertyModifications(bottomPageNav);
+                MarkAndSaveScene(bottomPageNav.gameObject.scene);
+            }
+
+            if (sceneView != null)
+            {
+                sceneView.Repaint();
+            }
+
+            SceneView.RepaintAll();
+            ResetBottomPageNavResizeState();
         }
 
         private static string GetRelativeHierarchyPath(Transform transform, Transform root)
@@ -1441,6 +2267,44 @@ namespace WordSpinAlpha.Editor
             }
 
             return FindSceneAlttas();
+        }
+
+        private static RectTransform FindDirectChildRect(Transform parent, string childName)
+        {
+            if (parent == null || string.IsNullOrWhiteSpace(childName))
+            {
+                return null;
+            }
+
+            Transform child = parent.Find(childName);
+            return child as RectTransform;
+        }
+
+        private static LevelHubPreviewController FindHubPreviewControllerInScene(Scene scene)
+        {
+            if (!IsHubPreviewScene(scene))
+            {
+                return null;
+            }
+
+            LevelHubPreviewController[] controllers = Object.FindObjectsByType<LevelHubPreviewController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int i = 0; i < controllers.Length; i++)
+            {
+                LevelHubPreviewController controller = controllers[i];
+                if (controller == null || controller.gameObject.scene != scene)
+                {
+                    continue;
+                }
+
+                return controller;
+            }
+
+            return null;
+        }
+
+        private static bool IsHubPreviewScene(Scene scene)
+        {
+            return scene.IsValid() && scene.isLoaded && scene.name == GameConstants.SceneHubPreview;
         }
 
         private static RectTransform FindSceneAlttas()
@@ -1571,6 +2435,25 @@ namespace WordSpinAlpha.Editor
             return null;
         }
 
+        private static RectTransform GetSelectedSceneBottomPageNavForLiveEdit()
+        {
+            GameObject selected = Selection.activeGameObject;
+            if (selected == null)
+            {
+                return null;
+            }
+
+            for (Transform current = selected.transform; current != null; current = current.parent)
+            {
+                if (current.name == BottomPageNavObjectName && current is RectTransform rect && IsHubPreviewContext(rect))
+                {
+                    return rect;
+                }
+            }
+
+            return null;
+        }
+
         private static RectTransform GetSelectedSceneOynaButtonForMove()
         {
             GameObject selected = Selection.activeGameObject;
@@ -1683,6 +2566,27 @@ namespace WordSpinAlpha.Editor
             }
 
             return false;
+        }
+
+        private static void MarkAndSaveScene(Scene scene)
+        {
+            if (!scene.IsValid() || !scene.isLoaded)
+            {
+                return;
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            SaveSceneIfPossible(scene);
+        }
+
+        private static void SaveSceneIfPossible(Scene scene)
+        {
+            if (!scene.IsValid() || !scene.isLoaded || string.IsNullOrWhiteSpace(scene.path))
+            {
+                return;
+            }
+
+            EditorSceneManager.SaveScene(scene);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace WordSpinAlpha.Core
             EnsureSingleton<PreviewStorePricingProvider>("PreviewStorePricingProvider");
             EnsureSingleton<StorePricingManager>("StorePricingManager");
             EnsureSingleton<SceneNavigator>("SceneNavigator");
+            EnsureSingleton<GlobalMusicManager>("GlobalMusicManager");
             EnsureSingleton<StatsManager>("StatsManager");
             EnsureSingleton<ScoreManager>("ScoreManager");
             EnsureSingleton<LevelEconomyManager>("LevelEconomyManager");

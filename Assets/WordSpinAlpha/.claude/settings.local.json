@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(grep -A 10 \"^--- .*&5792445892127425730$\\\\|^--- .*&2329975341416078402$\\\\|^--- .*&140620450076184161$\\\\|^--- .*&3351001494948478648$\\\\|^--- .*&1558323506763363834$\\\\|^--- .*&3701281981573026440$\" Generated/Prefabs/LevelHubPreview.prefab)",
+      "Bash(grep -A 15 '^--- !u!1 &__TRACKED_VAR__$' Generated/Prefabs/LevelHubPreview.prefab)",
+      "Bash(grep -n '^--- !u!.*&__TRACKED_VAR__$' Generated/Prefabs/LevelHubPreview.prefab)"
+    ]
+  }
+}
