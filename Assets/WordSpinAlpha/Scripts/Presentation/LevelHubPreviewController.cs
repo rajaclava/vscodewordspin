@@ -545,8 +545,15 @@ namespace WordSpinAlpha.Presentation
 
             if (topBarEnergyLabel != null && EnergyManager.Instance != null)
             {
-                topBarEnergyLabel.text =
-                    $"{EnergyManager.Instance.CurrentEnergy}/{EnergyManager.Instance.MaxEnergy}";
+                if (ShouldDisplayInfiniteEnergy())
+                {
+                    topBarEnergyLabel.text = "∞";
+                }
+                else
+                {
+                    topBarEnergyLabel.text =
+                        $"{EnergyManager.Instance.CurrentEnergy}/{EnergyManager.Instance.MaxEnergy}";
+                }
             }
 
             if (topBarHintLabel != null && EconomyManager.Instance != null)
@@ -563,6 +570,23 @@ namespace WordSpinAlpha.Presentation
             {
                 topBarLanguageLabel.text = CurrentLanguageCode().ToUpperInvariant();
             }
+        }
+
+        private static bool ShouldDisplayInfiniteEnergy()
+        {
+            if (DevTestPolicy.IsEnergyBypassEnabled())
+            {
+                return true;
+            }
+
+            if (TestPlayerModeManager.Instance != null &&
+                TestPlayerModeManager.Instance.TryGetEnergyOverride(out _, out _, out bool bypassEntryEnergy) &&
+                bypassEntryEnergy)
+            {
+                return true;
+            }
+
+            return EconomyManager.Instance != null && EconomyManager.Instance.PremiumMembershipActive;
         }
 
         private IEnumerator SnapRoutine()
