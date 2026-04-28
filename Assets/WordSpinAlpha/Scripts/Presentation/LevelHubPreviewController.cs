@@ -161,6 +161,11 @@ namespace WordSpinAlpha.Presentation
             GameEvents.EntryEnergyChanged += HandleTopBarEnergyChanged;
             GameEvents.SoftCurrencyChanged += HandleTopBarCurrencyChanged;
             GameEvents.LanguageChanged += HandleTopBarLanguageChanged;
+
+            if (Application.isPlaying)
+            {
+                EnsureTabVisibility(activeTab);
+            }
         }
 
         private void OnDisable()
@@ -187,6 +192,8 @@ namespace WordSpinAlpha.Presentation
                 Refresh();
                 return;
             }
+
+            EnsureTabVisibility(activeTab);
 
             // PHASE 2: Do not overwrite rail points with node positions in Play mode
             // CaptureRailPointsFromNodes();
